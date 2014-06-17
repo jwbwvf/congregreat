@@ -37,13 +37,8 @@ class CongregationsController extends AppController
      * @return void
      */
     public function view($id = null)
-    {
-        if (!$this->Congregation->exists($id))
-        {
-            throw new NotFoundException(__('Invalid congregation'));
-        }
-        $options = array('conditions' => array('Congregation.' . $this->Congregation->primaryKey => $id));        
-        $this->set('congregation', $this->Congregation->find('first', $options));    
+    {       
+        $this->set('congregation', $this->Congregation->getCongregation($id));    
     }
 
     /**
@@ -65,11 +60,30 @@ class CongregationsController extends AppController
                 $this->Session->setFlash(__('The congregation could not be saved. Please, try again.'));
             }
         }
-//        added by the cake bake, may not need them
-//        $addresses = $this->Congregation->Address->find('list');
-//        $emailAddresses = $this->Congregation->EmailAddress->find('list');
-//        $phones = $this->Congregation->Phone->find('list');
-//        $this->set(compact('addresses', 'emailAddresses', 'phones'));
+    }
+    
+    /**
+     * Adds a phone number to an existing congregation
+     * @param string $id congregation identifier
+     * @return void
+     * @throws NotFoundException
+     */
+    public function addPhoneNumber($id)
+    {        
+        if ($this->request->is('post'))
+        {            
+            if ($this->Congregation->addPhoneNumber($this->request->data))
+            {
+                $this->Session->setFlash(__('The congregation\'s phone number has been saved.'));
+                return $this->redirect(array('action' => 'view', $id));
+            }
+            else
+            {
+                $this->Session->setFlash(__('The congregation\'s phone number could not be saved. Please, try again.'));
+            }
+        }
+                
+        $this->set('congregation', $this->Congregation->getCongregation($id));        
     }
 
     /**
@@ -98,9 +112,8 @@ class CongregationsController extends AppController
             }
         }
         else
-        {
-            $options = array('conditions' => array('Congregation.' . $this->Congregation->primaryKey => $id));
-            $this->request->data = $this->Congregation->find('first', $options);
+        {            
+            $this->request->data = $this->Congregation->getCongregation($id);
         }
         $addresses = $this->Congregation->Address->find('list');
         $emailAddresses = $this->Congregation->EmailAddress->find('list');
@@ -110,7 +123,9 @@ class CongregationsController extends AppController
 
     /**
      * delete method
-     *
+     * this will remove any of the relationships between
+     * the congregation and the other models
+     * it does not remove the other models
      * @throws NotFoundException
      * @param string $id
      * @return void
@@ -134,4 +149,22 @@ class CongregationsController extends AppController
         return $this->redirect(array('action' => 'index'));
     }
 
+    public function deletePhoneNumber($id, $phoneNumberId)
+    {
+        $this->Congregation->id = $id;
+        if (!$this->Congregation->exists())
+        {
+            throw new NotFoundException(__('Invalid congregation'));
+        }    
+        $this->request->onlyAllow('post', 'delete');
+        if ($this->Congregation->deletePhoneNumber($phoneNumberId))
+        {
+            $this->Session->setFlash(__('The phone has been deleted.'));
+        }
+        else
+        {
+            $this->Session->setFlash(__('The phone could not be deleted. Please, try again.'));
+        }
+        return $this->redirect($this->referer());
+    }
 }

@@ -109,8 +109,8 @@ class PhoneTest extends CakeTestCase
         
         $result = $this->Phone->add($data);
         $this->assertFalse($result); 
-    }
-    
+    }   
+
     /**
      * helper method to create a valid phone data array
      * @return array with the phone properties

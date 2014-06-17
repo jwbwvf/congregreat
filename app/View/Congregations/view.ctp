@@ -1,11 +1,6 @@
 <div class="congregations view">
     <h2><?php echo __('Congregation'); ?></h2>
     <dl>
-        <dt><?php echo __('Id'); ?></dt>
-        <dd>
-            <?php echo h($congregation['Congregation']['id']); ?>
-            &nbsp;
-        </dd>
         <dt><?php echo __('Name'); ?></dt>
         <dd>
             <?php echo h($congregation['Congregation']['name']); ?>
@@ -13,7 +8,7 @@
         </dd>
         <dt><?php echo __('Website'); ?></dt>
         <dd>
-            <?php echo h($congregation['Congregation']['website']); ?>
+            <?php echo $this->Html->link($congregation['Congregation']['website'], $congregation['Congregation']['website']); ?>
             &nbsp;
         </dd>
     </dl>
@@ -25,12 +20,6 @@
         <li><?php echo $this->Form->postLink(__('Delete Congregation'), array('action' => 'delete', $congregation['Congregation']['id']), null, __('Are you sure you want to delete # %s?', $congregation['Congregation']['id'])); ?> </li>
         <li><?php echo $this->Html->link(__('List Congregations'), array('action' => 'index')); ?> </li>
         <li><?php echo $this->Html->link(__('New Congregation'), array('action' => 'add')); ?> </li>
-        <li><?php echo $this->Html->link(__('List Addresses'), array('controller' => 'addresses', 'action' => 'index')); ?> </li>
-        <li><?php echo $this->Html->link(__('New Address'), array('controller' => 'addresses', 'action' => 'add')); ?> </li>
-        <li><?php echo $this->Html->link(__('List Email Addresses'), array('controller' => 'email_addresses', 'action' => 'index')); ?> </li>
-        <li><?php echo $this->Html->link(__('New Email Address'), array('controller' => 'email_addresses', 'action' => 'add')); ?> </li>
-        <li><?php echo $this->Html->link(__('List Phones'), array('controller' => 'phones', 'action' => 'index')); ?> </li>
-        <li><?php echo $this->Html->link(__('New Phone'), array('controller' => 'phones', 'action' => 'add')); ?> </li>
     </ul>
 </div>
 <div class="related">
@@ -38,7 +27,6 @@
     <?php if (!empty($congregation['Address'])): ?>
         <table cellpadding = "0" cellspacing = "0">
             <tr>
-                <th><?php echo __('Id'); ?></th>
                 <th><?php echo __('Address'); ?></th>
                 <th><?php echo __('City'); ?></th>
                 <th><?php echo __('State'); ?></th>
@@ -48,14 +36,12 @@
             </tr>
             <?php foreach ($congregation['Address'] as $address): ?>
                 <tr>
-                    <td><?php echo $address['id']; ?></td>
                     <td><?php echo $address['street_address']; ?></td>
                     <td><?php echo $address['city']; ?></td>
                     <td><?php echo $address['state']; ?></td>
                     <td><?php echo $address['zipcode']; ?></td>
                     <td><?php echo $address['country']; ?></td>
                     <td class="actions">
-                        <?php echo $this->Html->link(__('View'), array('controller' => 'addresses', 'action' => 'view', $address['id'])); ?>
                         <?php echo $this->Html->link(__('Edit'), array('controller' => 'addresses', 'action' => 'edit', $address['id'])); ?>
                         <?php echo $this->Form->postLink(__('Delete'), array('controller' => 'addresses', 'action' => 'delete', $address['id']), null, __('Are you sure you want to delete # %s?', $address['id'])); ?>
                     </td>
@@ -75,16 +61,13 @@
     <?php if (!empty($congregation['EmailAddress'])): ?>
         <table cellpadding = "0" cellspacing = "0">
             <tr>
-                <th><?php echo __('Id'); ?></th>
                 <th><?php echo __('Email Address'); ?></th>
                 <th class="actions"><?php echo __('Actions'); ?></th>
             </tr>
             <?php foreach ($congregation['EmailAddress'] as $emailAddress): ?>
                 <tr>
-                    <td><?php echo $emailAddress['id']; ?></td>
                     <td><?php echo $emailAddress['email_address']; ?></td>
                     <td class="actions">
-                        <?php echo $this->Html->link(__('View'), array('controller' => 'email_addresses', 'action' => 'view', $emailAddress['id'])); ?>
                         <?php echo $this->Html->link(__('Edit'), array('controller' => 'email_addresses', 'action' => 'edit', $emailAddress['id'])); ?>
                         <?php echo $this->Form->postLink(__('Delete'), array('controller' => 'email_addresses', 'action' => 'delete', $emailAddress['id']), null, __('Are you sure you want to delete # %s?', $emailAddress['id'])); ?>
                     </td>
@@ -104,20 +87,17 @@
     <?php if (!empty($congregation['Phone'])): ?>
 	<table cellpadding = "0" cellspacing = "0">
             <tr>
-		<th><?php echo __('Id'); ?></th>
 		<th><?php echo __('Number'); ?></th>
 		<th><?php echo __('Type'); ?></th>
 		<th class="actions"><?php echo __('Actions'); ?></th>
             </tr>
             <?php foreach ($congregation['Phone'] as $phone): ?>
 		<tr>
-                    <td><?php echo $phone['id']; ?></td>
                     <td><?php echo $phone['number']; ?></td>
                     <td><?php echo $phone['type']; ?></td>
                     <td class="actions">
-                        <?php echo $this->Html->link(__('View'), array('controller' => 'phones', 'action' => 'view', $phone['id'])); ?>
-                        <?php echo $this->Html->link(__('Edit'), array('controller' => 'phones', 'action' => 'edit', $phone['id'])); ?>
-                        <?php echo $this->Form->postLink(__('Delete'), array('controller' => 'phones', 'action' => 'delete', $phone['id']), null, __('Are you sure you want to delete # %s?', $phone['id'])); ?>
+                        <?php echo $this->Html->link(__('Edit'), array('controller' => 'phones', 'action' => 'edit', $phone['id'], 'congregations', 'view', $congregation['Congregation']['id'])); ?>
+                        <?php echo $this->Form->postLink(__('Delete'), array('controller' => 'congregations', 'action' => 'deletePhoneNumber', $congregation['Congregation']['id'], $phone['id']), null, __('Are you sure you want to delete # %s?', $phone['id'])); ?>
                     </td>
 		</tr>
             <?php endforeach; ?>
@@ -126,7 +106,7 @@
 
     <div class="actions">
         <ul>
-            <li><?php echo $this->Html->link(__('New Phone'), array('controller' => 'phones', 'action' => 'add')); ?> </li>
+            <li><?php echo $this->Html->link(__('New Phone'), array('controller' => 'congregations', 'action' => 'addPhoneNumber', $congregation['Congregation']['id'])); ?> </li>
         </ul>
     </div>
 </div>

@@ -1,52 +1,41 @@
 <div class="congregations index">
-	<h2><?php echo __('Congregations'); ?></h2>
-	<table cellpadding="0" cellspacing="0">
+    <h2><?php echo __('Congregations'); ?></h2>
+    <table cellpadding="0" cellspacing="0">
 	<tr>
-			<th><?php echo $this->Paginator->sort('id'); ?></th>
-			<th><?php echo $this->Paginator->sort('name'); ?></th>
-			<th><?php echo $this->Paginator->sort('website'); ?></th>
-			<th><?php echo $this->Paginator->sort('created'); ?></th>
-			<th><?php echo $this->Paginator->sort('modified'); ?></th>
-			<th class="actions"><?php echo __('Actions'); ?></th>
+            <th><?php echo $this->Paginator->sort('name'); ?></th>
+            <th><?php echo $this->Paginator->sort('website'); ?></th>
+            <th class="actions"><?php echo __('Actions'); ?></th>
 	</tr>
 	<?php foreach ($congregations as $congregation): ?>
-	<tr>
-		<td><?php echo h($congregation['Congregation']['id']); ?>&nbsp;</td>
+            <tr>
 		<td><?php echo h($congregation['Congregation']['name']); ?>&nbsp;</td>
-		<td><?php echo h($congregation['Congregation']['website']); ?>&nbsp;</td>
-		<td><?php echo h($congregation['Congregation']['created']); ?>&nbsp;</td>
-		<td><?php echo h($congregation['Congregation']['modified']); ?>&nbsp;</td>
+		<td><?php echo $this->Html->link($congregation['Congregation']['website'], $congregation['Congregation']['website']); ?>&nbsp;</td>
 		<td class="actions">
-			<?php echo $this->Html->link(__('View'), array('action' => 'view', $congregation['Congregation']['id'])); ?>
-			<?php echo $this->Html->link(__('Edit'), array('action' => 'edit', $congregation['Congregation']['id'])); ?>
-			<?php echo $this->Form->postLink(__('Delete'), array('action' => 'delete', $congregation['Congregation']['id']), null, __('Are you sure you want to delete # %s?', $congregation['Congregation']['id'])); ?>
+                    <?php echo $this->Html->link(__('View'), array('action' => 'view', $congregation['Congregation']['id'])); ?>
+                    <?php echo $this->Html->link(__('Edit'), array('action' => 'edit', $congregation['Congregation']['id'])); ?>
+                    <?php echo $this->Form->postLink(__('Delete'), array('action' => 'delete', $congregation['Congregation']['id']), null, __('Are you sure you want to delete # %s?', $congregation['Congregation']['id'])); ?>
 		</td>
-	</tr>
-<?php endforeach; ?>
-	</table>
-	<p>
-	<?php
-	echo $this->Paginator->counter(array(
-	'format' => __('Page {:page} of {:pages}, showing {:current} records out of {:count} total, starting on record {:start}, ending on {:end}')
-	));
-	?>	</p>
-	<div class="paging">
-	<?php
-		echo $this->Paginator->prev('< ' . __('previous'), array(), null, array('class' => 'prev disabled'));
-		echo $this->Paginator->numbers(array('separator' => ''));
-		echo $this->Paginator->next(__('next') . ' >', array(), null, array('class' => 'next disabled'));
+            </tr>
+        <?php endforeach; ?>
+    </table>
+    <p>
+        <?php
+            echo $this->Paginator->counter(array(
+                'format' => __('Page {:page} of {:pages}, showing {:current} records out of {:count} total, starting on record {:start}, ending on {:end}')
+            ));
+        ?>
+    </p>
+    <div class="paging">
+        <?php
+            echo $this->Paginator->prev('< ' . __('previous'), array(), null, array('class' => 'prev disabled'));
+            echo $this->Paginator->numbers(array('separator' => ''));
+            echo $this->Paginator->next(__('next') . ' >', array(), null, array('class' => 'next disabled'));
 	?>
-	</div>
+    </div>
 </div>
 <div class="actions">
-	<h3><?php echo __('Actions'); ?></h3>
-	<ul>
-		<li><?php echo $this->Html->link(__('New Congregation'), array('action' => 'add')); ?></li>
-		<li><?php echo $this->Html->link(__('List Addresses'), array('controller' => 'addresses', 'action' => 'index')); ?> </li>
-		<li><?php echo $this->Html->link(__('New Address'), array('controller' => 'addresses', 'action' => 'add')); ?> </li>
-		<li><?php echo $this->Html->link(__('List Email Addresses'), array('controller' => 'email_addresses', 'action' => 'index')); ?> </li>
-		<li><?php echo $this->Html->link(__('New Email Address'), array('controller' => 'email_addresses', 'action' => 'add')); ?> </li>
-		<li><?php echo $this->Html->link(__('List Phones'), array('controller' => 'phones', 'action' => 'index')); ?> </li>
-		<li><?php echo $this->Html->link(__('New Phone'), array('controller' => 'phones', 'action' => 'add')); ?> </li>
-	</ul>
+    <h3><?php echo __('Actions'); ?></h3>
+    <ul>
+        <li><?php echo $this->Html->link(__('New Congregation'), array('action' => 'add')); ?></li>
+    </ul>
 </div>

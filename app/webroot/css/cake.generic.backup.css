@@ -158,9 +158,6 @@ th a.asc:after {
 th a.desc:after {
 	content: ' ⇡';
 }
-th.actions {
-    text-align: right;
-}
 table tr td {
 	padding: 6px;
 	text-align: left;
@@ -171,7 +168,7 @@ table tr:nth-child(even) {
 	background: #f9f9f9;
 }
 td.actions {
-	text-align: right;
+	text-align: center;
 	white-space: nowrap;
 }
 table td.actions a {

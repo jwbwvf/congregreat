@@ -96,7 +96,7 @@ class Congregation extends AppModel
     /**
      * saves a congregation and it's related data
      * phone, email, address
-     * @param array $data form data submited from
+     * @param array $data form data submitted from
      * View/Congregations/add.ctp
      * @return bool returns saveAll 
      */
@@ -129,25 +129,36 @@ class Congregation extends AppModel
      */
     private function areModelsValid($data)
     {        
-        if ($this->saveAll($data, array('validate' => 'only')) === false) 
+        if ($this->saveAll($data['Congregation'], array('validate' => 'only')) === false) 
         {
             return false;            
         }
-        if ($this->EmailAddress->saveAll($data, array('validate' => 'only')) === false) 
+        if ($this->isRelatedModelValid('EmailAddress', $data) === false)
         {
             return false;        
         }
-        if ($this->Phone->saveAll($data, array('validate' => 'only')) === false) 
+        if ($this->isRelatedModelValid('Phone', $data) === false)        
         {
             return false;
         }
-        if ($this->Address->saveAll($data, array('validate' => 'only')) ===  false) 
+        if ($this->isRelatedModelValid('Address', $data) ===  false) 
         {
             return false;        
         }
         
         return true;
     }    
+    
+    /**
+     * checks if a related model is valid
+     * @param type $model related model to the Congregation
+     * @param array $data contents of the model to verify
+     * @return boolean
+     */
+    private function isRelatedModelValid($model, $data)
+    {
+        return $this->$model->saveAll($data[$model], array('validate' => 'only'));
+    }
     
     /**
      * saves all models
@@ -178,4 +189,74 @@ class Congregation extends AppModel
         unset($data[$model]);
         $data[$model]['id'] = $updatedModel[$model]['id'];        
     }
+    
+    /**
+     * adds a new @Phone to the @Congregation
+     * @param array $data form data submitted from
+     * View/Congregations/view/add_phone_number.ctp
+     * @return mixed boolean false if save fails
+     * array of Phone added if successful
+     */
+    public function addPhoneNumber($data)
+    {
+        $this->id = $data['Congregation']['id'];
+        
+        //check if this phone already exists and use it if it does
+        $phone = $this->Phone->getPhoneByNumberAndType($data['Phone']['number'], $data['Phone']['type']);
+        
+        if (empty($phone))
+        {
+            $this->Phone->create();
+            if ($this->isRelatedModelValid('Phone', $data) === false) 
+            {
+                return false;
+            }
+            
+            return $this->Phone->save($data, false);            
+        }   
+        else
+        {
+            $association = array('congregation_id' => $this->id, 'phone_id' => $phone['Phone']['id']);
+            return $this->CongregationsPhone->save($association, false);
+        }
+    }
+    
+    /**
+     * retrievs the @Congregation for the given id
+     * @param int $id @Congregation identifier
+     * @return @Congregation
+     * @throws NotFoundException
+     */
+    public function getCongregation($id)
+    {
+        if (!$this->exists($id))
+        {
+            throw new NotFoundException(__('Invalid congregation'));
+        }
+        $options = array('conditions' => array('Congregation.' . $this->primaryKey => $id)); 
+        return $this->find('first', $options);
+    }
+    
+    /**
+     * removes the relationship with the @Phone
+     * if there are no other relationships with the @Phone
+     * the @Phone is deleted.
+     * @param int $phoneId
+     * @return bool
+     */
+    public function deletePhoneNumber($phoneId)
+    {
+        $this->CongregationsPhone->deleteAll(array('CongregationsPhone.phone_id' => $phoneId, 
+            'CongregationsPhone.congregation_id' => $this->id), false);
+        
+        //check if any one has this phone and if not delete the phone
+        $this->Phone->id = $phoneId;
+        if ($this->Phone->isInUse() === false)
+        {
+            $this->Phone->delete();
+        }
+        
+        return true;
+    }
+
 }

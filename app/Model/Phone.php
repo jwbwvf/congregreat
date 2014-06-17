@@ -75,4 +75,41 @@ class Phone extends AppModel
         $this->create();
         return $this->save($data);
     }
+    
+    /**
+     * finds a phone by the id
+     * @param int $id
+     * @return array
+     * @throws NotFoundException
+     */
+    public function getPhone($id)
+    {
+        if (!$this->exists($id))
+        {
+            throw new NotFoundException(__('Invalid phone'));
+        }
+        $options = array('conditions' => array('Phone.' . $this->primaryKey => $id));
+        return $this->find('first', $options);
+    }
+    
+    /**
+     * finds a @Phone by the number and type
+     * @param int $number
+     * @param string $type
+     * @return array
+     */
+    public function getPhoneByNumberAndType($number, $type)
+    {        
+        $options = array('conditions' => array('Phone.number' => $number, 'Phone.type' => $type));
+        return $this->find('first', $options);        
+    }
+    
+    /**
+     * checks if the phone is being used by a congregation
+     * @return boolean
+     */
+    public function isInUse()
+    {
+        return $this->CongregationsPhone->field('phone_id');
+    }
 }
