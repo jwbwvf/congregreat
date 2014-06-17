@@ -42,21 +42,8 @@ class EmailAddress extends AppModel
      * @var array
      */
     public $hasAndBelongsToMany = array(
-        'Member' => array(
-            'className' => 'Member',
-            'joinTable' => 'email_addresses_members',
-            'foreignKey' => 'email_address_id',
-            'associationForeignKey' => 'member_id',
-            'unique' => 'keepExisting',
-            'conditions' => '',
-            'fields' => '',
-            'order' => '',
-            'limit' => '',
-            'offset' => '',
-            'finderQuery' => '',
-        ),
         'Congregation' => array(
-            'className' => 'Organization',
+            'className' => 'Congregation',
             'joinTable' => 'congregations_email_addresses',
             'foreignKey' => 'email_address_id',
             'associationForeignKey' => 'congregation_id',
@@ -79,5 +66,16 @@ class EmailAddress extends AppModel
     {
         $this->create();
         return $this->save($data);
+    }
+    
+    /**
+     * finds an email address by the given email address
+     * @param string $emailAddress
+     * @return array
+     */
+    public function getEmailAddressByEmailAddress($emailAddress)
+    {
+        $options = array('conditions' => array('EmailAddress.email_address' => $emailAddress));
+        return $this->find('first', $options);      
     }
 }

@@ -195,7 +195,7 @@ class Congregation extends AppModel
      * @param array $data form data submitted from
      * View/Congregations/view/add_phone_number.ctp
      * @return mixed boolean false if save fails
-     * array of Phone added if successful
+     * array of @Phone added if successful
      */
     public function addPhoneNumber($data)
     {
@@ -258,5 +258,35 @@ class Congregation extends AppModel
         
         return true;
     }
-
+    
+    /**
+     * adds a new @EmailAddress to the @Congregation
+     * @param array $data form data submitted from
+     * View/Congregations/view/add_email_address.ctp
+     * @return mixed boolean false if save fails
+     * array of @EmailAddress added if successful
+     */    
+    public function addEmailAddress($data)
+    {
+        $this->id = $data['Congregation']['id'];
+        
+        //check if this email address already exists and use it if it does
+        $emailAddress = $this->EmailAddress->getEmailAddressByEmailAddress($data['EmailAddress']['email_address']);
+        
+        if (empty($emailAddress))
+        {
+            $this->EmailAddress->create();
+            if ($this->isRelatedModelValid('EmailAddress', $data) === false) 
+            {
+                return false;
+            }
+            
+            return $this->EmailAddress->save($data, false);            
+        }   
+        else
+        {
+            $association = array('congregation_id' => $this->id, 'email_address_id' => $emailAddress['EmailAddress']['id']);
+            return $this->CongregationsEmailAddress->save($association, false);
+        }        
+    }
 }

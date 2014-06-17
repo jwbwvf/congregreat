@@ -86,6 +86,24 @@ class CongregationsController extends AppController
         $this->set('congregation', $this->Congregation->getCongregation($id));        
     }
 
+    public function addEmailAddress($id)
+    {
+        if ($this->request->is('post'))
+        {            
+            if ($this->Congregation->addEmailAddress($this->request->data))
+            {
+                $this->Session->setFlash(__('The congregation\'s email address has been saved.'));
+                return $this->redirect(array('action' => 'view', $id));
+            }
+            else
+            {
+                $this->Session->setFlash(__('The congregation\'s email address could not be saved. Please, try again.'));
+            }
+        }
+                
+        $this->set('congregation', $this->Congregation->getCongregation($id));          
+    }
+    
     /**
      * edit method
      *

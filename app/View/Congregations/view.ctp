@@ -78,7 +78,7 @@
 
     <div class="actions">
         <ul>
-            <li><?php echo $this->Html->link(__('New Email Address'), array('controller' => 'email_addresses', 'action' => 'add')); ?> </li>
+            <li><?php echo $this->Html->link(__('New Email Address'), array('action' => 'addEmailAddress', $congregation['Congregation']['id'])); ?> </li>
         </ul>
     </div>
 </div>
@@ -106,7 +106,7 @@
 
     <div class="actions">
         <ul>
-            <li><?php echo $this->Html->link(__('New Phone'), array('controller' => 'congregations', 'action' => 'addPhoneNumber', $congregation['Congregation']['id'])); ?> </li>
+            <li><?php echo $this->Html->link(__('New Phone'), array('action' => 'addPhoneNumber', $congregation['Congregation']['id'])); ?> </li>
         </ul>
     </div>
 </div>

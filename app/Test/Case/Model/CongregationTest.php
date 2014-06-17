@@ -274,6 +274,55 @@ class CongregationTest extends CakeTestCase
     }            
 
     /**
+     * test adding an email address to an existing congregation
+     * @covers Congregation::addEmailAddress
+     * @covers Congregation::isRelatedModelValid
+     */
+    public function testAddEmailAddress()
+    {
+        $congregationData = $this->createCongregationsAddData();
+        $this->Congregation->add($congregationData);
+        
+        $emailAddressData = array(
+            'Congregation' => array('id' => $this->Congregation->id),
+            'EmailAddress' => array('email_address' => 'emailAddress@emails.com')
+        );
+        
+        $return = $this->Congregation->addEmailAddress($emailAddressData);
+        
+        $this->assertNotEqual(false, $return);
+            
+        $sql  = $this->buildCongregationsEmailAddressQuery($return['EmailAddress']['id']);
+        
+        $dbo = $this->Congregation->getDataSource();        
+        $dbo->rawQuery($sql);
+        $row = $dbo->fetchRow();
+        
+        $this->assertEqual($emailAddressData['EmailAddress']['email_address'], $row['email_addresses']['email_address']);
+        $this->assertEqual($emailAddressData['Congregation']['id'], $row['congregations']['id']);        
+    }
+    
+    /**
+     * tests adding an invalid email address to an existing congregation
+     * @covers Congregation::addEmailAddress
+     * @covers Congregation::isRelatedModelValid
+     */
+    public function testAddEmailAddress_InvalidEmailAddress()
+    {
+                $congregationData = $this->createCongregationsAddData();
+        $this->Congregation->add($congregationData);
+        
+        $emailAddressData = array(
+            'Congregation' => array('id' => $this->Congregation->id),
+            'EmailAddress' => array('email_address' => 'emailAddressemails.com')
+        );
+        
+        $return = $this->Congregation->addEmailAddress($emailAddressData);
+        
+        $this->assertFalse($return);
+    }
+
+    /**
      * helper method to validate the key value pairs are invalid
      * @param string $key field to be saved
      * @param string $value value of the field to be saved
@@ -340,7 +389,7 @@ class CongregationTest extends CakeTestCase
     /**
      * builds the query to retrieve the congregation
      * associated to the phone
-     * @param string $phoneId phone id
+     * @param int $phoneId phone id
      * @return string
      */    
     private function buildCongregationsPhoneNumberQuery($phoneId)
@@ -352,5 +401,22 @@ class CongregationTest extends CakeTestCase
                 JOIN congregations_phones cp ON phones.id = cp.phone_id
                 JOIN congregations ON cp.congregation_id = congregations.id
                 WHERE phones.id = '" . $phoneId . "'";
+    }
+    
+    /**
+     * builds the query to retrieve the congregations
+     * associated to the email address
+     * @param int $emailAddressId
+     * @return string
+     */
+    private function buildCongregationsEmailAddressQuery($emailAddressId)
+    {
+        return "SELECT 
+                congregations.id, 
+                email_addresses.email_address
+                FROM email_addresses
+                JOIN congregations_email_addresses cea ON email_addresses.id = cea.email_address_id
+                JOIN congregations ON cea.congregation_id = congregations.id
+                WHERE email_addresses.id = '" . $emailAddressId . "'";        
     }
 }
