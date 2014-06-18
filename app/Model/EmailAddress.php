@@ -78,4 +78,13 @@ class EmailAddress extends AppModel
         $options = array('conditions' => array('EmailAddress.email_address' => $emailAddress));
         return $this->find('first', $options);      
     }
+    
+    /**
+     * checks if the phone is being used by a congregation
+     * @return boolean
+     */
+    public function isInUse()
+    {
+        return $this->CongregationsEmailAddress->field('email_address_id');
+    }
 }

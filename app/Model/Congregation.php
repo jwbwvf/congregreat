@@ -289,4 +289,19 @@ class Congregation extends AppModel
             return $this->CongregationsEmailAddress->save($association, false);
         }        
     }
+    
+    public function deleteEmailAddress($emailAddressId)
+    {
+        $this->CongregationsEmailAddress->deleteAll(array('CongregationsEmailAddress.email_address_id' => $emailAddressId, 
+            'CongregationsEmailAddress.congregation_id' => $this->id), false);
+        
+        //check if any one has this email address and if not delete the email address
+        $this->EmailAddress->id = $emailAddressId;
+        if ($this->EmailAddress->isInUse() === false)
+        {
+            $this->EmailAddress->delete();
+        }
+        
+        return true;        
+    }
 }

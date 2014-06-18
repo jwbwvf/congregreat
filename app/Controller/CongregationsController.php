@@ -86,6 +86,12 @@ class CongregationsController extends AppController
         $this->set('congregation', $this->Congregation->getCongregation($id));        
     }
 
+    /**
+     * Adds an email address to an existing congregation
+     * @param string $id congregation identifier
+     * @return void
+     * @throws NotFoundException
+     */    
     public function addEmailAddress($id)
     {
         if ($this->request->is('post'))
@@ -141,9 +147,6 @@ class CongregationsController extends AppController
 
     /**
      * delete method
-     * this will remove any of the relationships between
-     * the congregation and the other models
-     * it does not remove the other models
      * @throws NotFoundException
      * @param string $id
      * @return void
@@ -167,6 +170,14 @@ class CongregationsController extends AppController
         return $this->redirect(array('action' => 'index'));
     }
 
+    /**
+     * deletes the congregation's phone relationship and deletes
+     * the phone if it's not in use by anything else
+     * @param int $id identifier of the @Congregation the @Phone belongs to
+     * @param int $phoneNumberId identifier of the @Phone to delete
+     * @return void
+     * @throws NotFoundException
+     */
     public function deletePhoneNumber($id, $phoneNumberId)
     {
         $this->Congregation->id = $id;
@@ -177,12 +188,39 @@ class CongregationsController extends AppController
         $this->request->onlyAllow('post', 'delete');
         if ($this->Congregation->deletePhoneNumber($phoneNumberId))
         {
-            $this->Session->setFlash(__('The phone has been deleted.'));
+            $this->Session->setFlash(__('The phone number has been deleted.'));
         }
         else
         {
-            $this->Session->setFlash(__('The phone could not be deleted. Please, try again.'));
+            $this->Session->setFlash(__('The phone number could not be deleted. Please, try again.'));
         }
         return $this->redirect($this->referer());
+    }
+    
+    /**
+     * deletes the congregation's email address relationship and deletes
+     * the email address if it's not in use by anything else
+     * @param int $id identifier of the @Congregation the @EmailAddress belongs to
+     * @param int $emailAddressId identifier of the @EmailAddress to delete
+     * @return void
+     * @throws NotFoundException
+     */
+    public function deleteEmailAddress($id, $emailAddressId)
+    {
+        $this->Congregation->id = $id;
+        if (!$this->Congregation->exists())
+        {
+            throw new NotFoundException(__('Invalid congregation'));
+        }    
+        $this->request->onlyAllow('post', 'delete');
+        if ($this->Congregation->deleteEmailAddress($emailAddressId))
+        {
+            $this->Session->setFlash(__('The email address has been deleted.'));
+        }
+        else
+        {
+            $this->Session->setFlash(__('The email address could not be deleted. Please, try again.'));
+        }
+        return $this->redirect($this->referer());        
     }
 }

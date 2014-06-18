@@ -321,6 +321,82 @@ class CongregationTest extends CakeTestCase
         
         $this->assertFalse($return);
     }
+    
+    public function testDeleteEmailAddress()
+    {
+        $congregationData = $this->createCongregationsAddData();
+        $this->Congregation->add($congregationData);
+        
+        $sql = "SELECT congregations_email_addresses.email_address_id, email_addresses.id 
+                FROM congregations_email_addresses
+                JOIN email_addresses ON congregations_email_addresses.email_address_id = email_addresses.id
+                WHERE congregation_id= '" . $this->Congregation->id . "'";
+        
+        $dbo = $this->Congregation->getDataSource();        
+        $dbo->rawQuery($sql);
+        $row = $dbo->fetchRow();
+        
+        $this->assertNotNull($row['congregations_email_addresses']['email_address_id']);
+        $emailAddressId = $row['email_addresses']['id'];
+        $this->assertNotNull($emailAddressId);
+               
+        $this->Congregation->deleteEmailAddress($emailAddressId);        
+                        
+        $dbo->rawQuery($sql);
+        $rowAfter = $dbo->fetchRow();        
+        
+        $this->assertNull($rowAfter['congregations_email_addresses']['email_address_id']);
+        $this->assertNull($rowAfter['email_addresses']['id']);
+        
+        $sqlEmailAddress = "SELECT id 
+                     FROM email_addresses where email_addresses.id= '" . $emailAddressId . "'";
+        
+        $dbo->rawQuery($sqlEmailAddress);
+        $rowEmailAddress = $dbo->fetchRow();        
+        
+        $this->assertNull($rowEmailAddress['email_addresses']['id']);        
+    }
+    
+    public function testDeleteEmailAddress_IsInUse()
+    {
+        $congregationData = $this->createCongregationsAddData();
+        $this->Congregation->add($congregationData);
+        
+        $secondCongregationData = $this->createCongregationsAddData();
+        $secondCongregationData['Congregation']['name'] = 'secondName';
+        
+        $congregation = ClassRegistry::init('Congregation');
+        $congregation->add($secondCongregationData);
+        
+        $sql = "SELECT congregations_email_addresses.email_address_id, email_addresses.id 
+                FROM congregations_email_addresses
+                JOIN email_addresses ON congregations_email_addresses.email_address_id = email_addresses.id
+                WHERE congregation_id= '" . $this->Congregation->id . "'";
+        
+        $dbo = $this->Congregation->getDataSource();        
+        $dbo->rawQuery($sql);
+        $row = $dbo->fetchRow();
+        
+        $this->assertNotNull($row['congregations_email_addresses']['email_address_id']);
+        $emailAddressId = $row['email_addresses']['id'];
+        $this->assertNotNull($emailAddressId);
+               
+        $this->Congregation->deleteEmailAddress($emailAddressId);        
+                        
+        $dbo->rawQuery($sql);
+        $rowAfter = $dbo->fetchRow();        
+        
+        $this->assertNull($rowAfter['congregations_email_addresses']['email_address_id']);
+        $this->assertNull($rowAfter['email_addresses']['id']);
+        
+        $sqlEmailAddress = "SELECT id 
+                     FROM email_addresses where email_addresses.id= '" . $emailAddressId . "'";
+        
+        $dbo->rawQuery($sqlEmailAddress);
+        $rowEmailAddress = $dbo->fetchRow();        
+        
+        $this->assertNotNull($rowEmailAddress['email_addresses']['id']);         
+    }
 
     /**
      * helper method to validate the key value pairs are invalid
