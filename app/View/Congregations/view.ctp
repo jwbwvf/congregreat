@@ -68,7 +68,7 @@
                 <tr>
                     <td><?php echo $emailAddress['email_address']; ?></td>
                     <td class="actions">
-                        <?php echo $this->Html->link(__('Edit'), array('controller' => 'email_addresses', 'action' => 'edit', $emailAddress['id'])); ?>
+                        <?php echo $this->Html->link(__('Edit'), array('action' => 'editEmailAddress', $congregation['Congregation']['id'], $emailAddress['id'])); ?>
                         <?php echo $this->Form->postLink(__('Delete'), array('action' => 'deleteEmailAddress', $congregation['Congregation']['id'], $emailAddress['id']), null, __('Are you sure you want to delete # %s?', $emailAddress['id'])); ?>
                     </td>
                 </tr>
@@ -96,7 +96,7 @@
                     <td><?php echo $phone['number']; ?></td>
                     <td><?php echo $phone['type']; ?></td>
                     <td class="actions">
-                        <?php echo $this->Html->link(__('Edit'), array('controller' => 'phones', 'action' => 'edit', $phone['id'], 'congregations', 'view', $congregation['Congregation']['id'])); ?>
+                        <?php echo $this->Html->link(__('Edit'), array('action' => 'editPhone', $congregation['Congregation']['id'], $phone['id'])); ?>
                         <?php echo $this->Form->postLink(__('Delete'), array('action' => 'deletePhoneNumber', $congregation['Congregation']['id'], $phone['id']), null, __('Are you sure you want to delete # %s?', $phone['id'])); ?>
                     </td>
 		</tr>

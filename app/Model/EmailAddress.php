@@ -68,14 +68,24 @@ class EmailAddress extends AppModel
         return $this->save($data);
     }
     
+    public function get($id)
+    {
+        if (!$this->exists($id))
+        {
+            throw new NotFoundException(__('Invalid email address'));
+        }
+        $options = array('conditions' => array('EmailAddress.' . $this->primaryKey => $id));
+        return $this->find('first', $options);        
+    }
+    
     /**
      * finds an email address by the given email address
      * @param string $emailAddress
      * @return array
      */
-    public function getEmailAddressByEmailAddress($emailAddress)
+    public function getByData($data)
     {
-        $options = array('conditions' => array('EmailAddress.email_address' => $emailAddress));
+        $options = array('conditions' => array('EmailAddress.email_address' => $data['email_address']));
         return $this->find('first', $options);      
     }
     

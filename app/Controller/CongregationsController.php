@@ -38,7 +38,7 @@ class CongregationsController extends AppController
      */
     public function view($id = null)
     {       
-        $this->set('congregation', $this->Congregation->getCongregation($id));    
+        $this->set('congregation', $this->Congregation->get($id));    
     }
 
     /**
@@ -83,7 +83,7 @@ class CongregationsController extends AppController
             }
         }
                 
-        $this->set('congregation', $this->Congregation->getCongregation($id));        
+        $this->set('congregation', $this->Congregation->get($id));        
     }
 
     /**
@@ -107,7 +107,7 @@ class CongregationsController extends AppController
             }
         }
                 
-        $this->set('congregation', $this->Congregation->getCongregation($id));          
+        $this->set('congregation', $this->Congregation->get($id));          
     }
     
     /**
@@ -137,7 +137,7 @@ class CongregationsController extends AppController
         }
         else
         {            
-            $this->request->data = $this->Congregation->getCongregation($id);
+            $this->request->data = $this->Congregation->get($id);
         }
         $addresses = $this->Congregation->Address->find('list');
         $emailAddresses = $this->Congregation->EmailAddress->find('list');
@@ -222,5 +222,37 @@ class CongregationsController extends AppController
             $this->Session->setFlash(__('The email address could not be deleted. Please, try again.'));
         }
         return $this->redirect($this->referer());        
+    }
+    
+    public function editPhone($id, $phoneId)
+    {
+        $this->editModel($id, $phoneId, 'Phone', 'phone');
+    }
+    
+    public function editEmailAddress($id, $emailAddressId)
+    {
+        $this->editModel($id, $emailAddressId, 'EmailAddress', 'email address');
+    }
+    
+    private function editModel($id, $modelId, $model, $modelLabel)
+    {
+        if ($this->request->is(array('post', 'put')))
+        {
+            if ($this->Congregation->$model->save($this->request->data))
+            {                
+                $this->Session->setFlash(__('The ' . $modelLabel . ' has been saved.'));
+                return $this->redirect(array('action' => 'view', $this->request->data['Congregation']['id']));
+            }
+            else
+            {
+                $this->Session->setFlash(__('The ' . $modelLabel . ' could not be saved. Please, try again.'));
+            }
+        }
+        else
+        {            
+            $this->request->data = $this->Congregation->$model->get($modelId);
+        }
+    
+        $this->set('congregationId', $id);        
     }
 }

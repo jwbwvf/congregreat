@@ -89,7 +89,7 @@ class Congregation extends AppModel
             'order' => '',
             'limit' => '',
             'offset' => '',
-            'finderQuery' => '',
+            'finderQuery' => '',            
         )
     );
 
@@ -188,8 +188,24 @@ class Congregation extends AppModel
         $updatedModel = $this->$model->save($data[$model], false);
         unset($data[$model]);
         $data[$model]['id'] = $updatedModel[$model]['id'];        
-    }
+    }   
     
+    /**
+     * retrievs the @Congregation for the given id
+     * @param int $id @Congregation identifier
+     * @return @Congregation
+     * @throws NotFoundException
+     */
+    public function get($id)
+    {
+        if (!$this->exists($id))
+        {
+            throw new NotFoundException(__('Invalid congregation'));
+        }
+        $options = array('conditions' => array('Congregation.' . $this->primaryKey => $id)); 
+        return $this->find('first', $options);
+    }   
+
     /**
      * adds a new @Phone to the @Congregation
      * @param array $data form data submitted from
@@ -199,64 +215,7 @@ class Congregation extends AppModel
      */
     public function addPhoneNumber($data)
     {
-        $this->id = $data['Congregation']['id'];
-        
-        //check if this phone already exists and use it if it does
-        $phone = $this->Phone->getPhoneByNumberAndType($data['Phone']['number'], $data['Phone']['type']);
-        
-        if (empty($phone))
-        {
-            $this->Phone->create();
-            if ($this->isRelatedModelValid('Phone', $data) === false) 
-            {
-                return false;
-            }
-            
-            return $this->Phone->save($data, false);            
-        }   
-        else
-        {
-            $association = array('congregation_id' => $this->id, 'phone_id' => $phone['Phone']['id']);
-            return $this->CongregationsPhone->save($association, false);
-        }
-    }
-    
-    /**
-     * retrievs the @Congregation for the given id
-     * @param int $id @Congregation identifier
-     * @return @Congregation
-     * @throws NotFoundException
-     */
-    public function getCongregation($id)
-    {
-        if (!$this->exists($id))
-        {
-            throw new NotFoundException(__('Invalid congregation'));
-        }
-        $options = array('conditions' => array('Congregation.' . $this->primaryKey => $id)); 
-        return $this->find('first', $options);
-    }
-    
-    /**
-     * removes the relationship with the @Phone
-     * if there are no other relationships with the @Phone
-     * the @Phone is deleted.
-     * @param int $phoneId
-     * @return bool
-     */
-    public function deletePhoneNumber($phoneId)
-    {
-        $this->CongregationsPhone->deleteAll(array('CongregationsPhone.phone_id' => $phoneId, 
-            'CongregationsPhone.congregation_id' => $this->id), false);
-        
-        //check if any one has this phone and if not delete the phone
-        $this->Phone->id = $phoneId;
-        if ($this->Phone->isInUse() === false)
-        {
-            $this->Phone->delete();
-        }
-        
-        return true;
+        return $this->addModel($data, 'Phone');
     }
     
     /**
@@ -268,40 +227,87 @@ class Congregation extends AppModel
      */    
     public function addEmailAddress($data)
     {
+        return $this->addModel($data, 'EmailAddress');
+    }
+    
+    public function addModel($data, $model)
+    {
         $this->id = $data['Congregation']['id'];
         
-        //check if this email address already exists and use it if it does
-        $emailAddress = $this->EmailAddress->getEmailAddressByEmailAddress($data['EmailAddress']['email_address']);
+        //check if this the model already exists and use it if it does
+        $existingModel = $this->$model->getByData($data[$model]);
         
-        if (empty($emailAddress))
+        if (empty($existingModel))
         {
-            $this->EmailAddress->create();
-            if ($this->isRelatedModelValid('EmailAddress', $data) === false) 
+            $this->$model->create();
+            if ($this->isRelatedModelValid($model, $data) === false) 
             {
                 return false;
             }
             
-            return $this->EmailAddress->save($data, false);            
+            return $this->$model->save($data, false);            
         }   
         else
-        {
-            $association = array('congregation_id' => $this->id, 'email_address_id' => $emailAddress['EmailAddress']['id']);
-            return $this->CongregationsEmailAddress->save($association, false);
-        }        
+        {            
+            $foreignKey = $this->hasAndBelongsToMany[$model]['foreignKey'];
+            $associatedForeignKey = $this->hasAndBelongsToMany[$model]['associationForeignKey'];
+            $association = array($foreignKey => $this->id, $associatedForeignKey => $existingModel[$model]['id']);
+            
+            $joinModel = 'Congregations' . $model;
+            return $this->$joinModel->save($association, false);
+        }           
     }
     
-    public function deleteEmailAddress($emailAddressId)
+    /**
+     * removes the relationship with the @Phone
+     * if there are no other relationships with the @Phone
+     * the @Phone is deleted.
+     * @param int $phoneId
+     * @return boolean
+     */
+    public function deletePhoneNumber($phoneId)
     {
-        $this->CongregationsEmailAddress->deleteAll(array('CongregationsEmailAddress.email_address_id' => $emailAddressId, 
-            'CongregationsEmailAddress.congregation_id' => $this->id), false);
+        return $this->deleteModel($phoneId, 'Phone');
+    }    
+    
+    /**
+     * removes the relationship with the @EmailAddress
+     * if there are no other relationshiops with the @EmailAddress
+     * the @EmailAddress is deleted
+     * @param int $emailAddressId
+     * @return boolean
+     */
+    public function deleteEmailAddress($emailAddressId)
+    {   
+        return $this->deleteModel($emailAddressId, 'EmailAddress');
+    }
+    
+    /**
+     * removes the relationship with the model
+     * if there are no other relationshiops with the model
+     * the model is deleted
+     * @param int $modelId 
+     * @param string $model name of the model
+     * @return boolean
+     */
+    public function deleteModel($modelId, $model)
+    {   
+        $foreignKey = $this->hasAndBelongsToMany[$model]['foreignKey'];
+        $associatedForeignKey = $this->hasAndBelongsToMany[$model]['associationForeignKey'];
+        
+        $joinModel = 'Congregations' . $model;
+
+        $this->$joinModel->deleteAll(array($joinModel . '.' . $associatedForeignKey => $modelId, 
+            $joinModel . '.' . $foreignKey => $this->id), false);
         
         //check if any one has this email address and if not delete the email address
-        $this->EmailAddress->id = $emailAddressId;
-        if ($this->EmailAddress->isInUse() === false)
+        $this->$model->id = $modelId;
+        if ($this->$model->isInUse() === false)
         {
-            $this->EmailAddress->delete();
+            $this->$model->delete();
         }
         
-        return true;        
+        return true;          
     }
+
 }

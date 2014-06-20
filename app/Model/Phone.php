@@ -82,7 +82,7 @@ class Phone extends AppModel
      * @return array
      * @throws NotFoundException
      */
-    public function getPhone($id)
+    public function get($id)
     {
         if (!$this->exists($id))
         {
@@ -98,9 +98,9 @@ class Phone extends AppModel
      * @param string $type
      * @return array
      */
-    public function getPhoneByNumberAndType($number, $type)
-    {        
-        $options = array('conditions' => array('Phone.number' => $number, 'Phone.type' => $type));
+    public function getByData($data)
+    {                
+        $options = array('conditions' => array('Phone.number' => $data['number'], 'Phone.type' => $data['type']));
         return $this->find('first', $options);        
     }
     

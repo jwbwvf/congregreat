@@ -3,9 +3,7 @@
     <fieldset>
         <legend><?php echo __('Edit Phone'); ?></legend>
 	<?php
-            echo $this->Form->Hidden('Referer.controller', array('value' => $controller));
-            echo $this->Form->Hidden('Referer.action', array('value' => $action));
-            echo $this->Form->Hidden('Referer.Id', array('value' => $ownerId));
+            echo $this->Form->Hidden('Congregation.id', array('value' => $congregationId));
             echo $this->Form->input('id');
             echo $this->Form->input('number');
             echo $this->Form->input('type', array(
