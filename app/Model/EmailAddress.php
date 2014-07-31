@@ -80,7 +80,7 @@ class EmailAddress extends AppModel
     
     /**
      * finds an email address by the given email address
-     * @param string $emailAddress
+     * @param string @EmailAddress
      * @return array
      */
     public function getByData($data)
@@ -90,11 +90,13 @@ class EmailAddress extends AppModel
     }
     
     /**
-     * checks if the phone is being used by a congregation
+     * checks if the email address is being used by a congregation
      * @return boolean
      */
     public function isInUse()
     {
-        return $this->CongregationsEmailAddress->field('email_address_id');
+        $options = array('conditions' => array('CongregationsEmailAddress.email_address_id' => $this->id));                        
+        $congregationsEmailAddress = $this->CongregationsEmailAddress->find('first', $options);
+        return !empty($congregationsEmailAddress);
     }
 }

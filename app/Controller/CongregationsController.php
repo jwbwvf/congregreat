@@ -109,6 +109,30 @@ class CongregationsController extends AppController
                 
         $this->set('congregation', $this->Congregation->get($id));          
     }
+
+    /**
+     * Adds an address to an existing congregation
+     * @param string $id congregation identifier
+     * @return void
+     * @throws NotFoundException
+     */    
+    public function addAddress($id)
+    {
+        if ($this->request->is('post'))
+        {            
+            if ($this->Congregation->addAddress($this->request->data))
+            {
+                $this->Session->setFlash(__('The congregation\'s address has been saved.'));
+                return $this->redirect(array('action' => 'view', $id));
+            }
+            else
+            {
+                $this->Session->setFlash(__('The congregation\'s address could not be saved. Please, try again.'));
+            }
+        }
+                
+        $this->set('congregation', $this->Congregation->get($id));          
+    }
     
     /**
      * edit method
@@ -153,13 +177,8 @@ class CongregationsController extends AppController
      */
     public function delete($id = null)
     {
-        $this->Congregation->id = $id;
-        if (!$this->Congregation->exists())
-        {
-            throw new NotFoundException(__('Invalid congregation'));
-        }
         $this->request->onlyAllow('post', 'delete');
-        if ($this->Congregation->delete())
+        if ($this->Congregation->delete($id))
         {
             $this->Session->setFlash(__('The congregation has been deleted.'));
         }
@@ -224,6 +243,33 @@ class CongregationsController extends AppController
         return $this->redirect($this->referer());        
     }
     
+    /**
+     * deletes the congregation's address relationship and deletes
+     * the address if it's not in use by anything else
+     * @param int $id identifier of the @Congregation the @Address belongs to
+     * @param int $addressId identifier of the @Address to delete
+     * @return void
+     * @throws NotFoundException
+     */
+    public function deleteAddress($id, $addressId)
+    {
+        $this->Congregation->id = $id;
+        if (!$this->Congregation->exists())
+        {
+            throw new NotFoundException(__('Invalid congregation'));
+        }    
+        $this->request->onlyAllow('post', 'delete');
+        if ($this->Congregation->deleteAddress($addressId))
+        {
+            $this->Session->setFlash(__('The address has been deleted.'));
+        }
+        else
+        {
+            $this->Session->setFlash(__('The address could not be deleted. Please, try again.'));
+        }
+        return $this->redirect($this->referer());        
+    }    
+    
     public function editPhone($id, $phoneId)
     {
         $this->editModel($id, $phoneId, 'Phone', 'phone');
@@ -232,6 +278,11 @@ class CongregationsController extends AppController
     public function editEmailAddress($id, $emailAddressId)
     {
         $this->editModel($id, $emailAddressId, 'EmailAddress', 'email address');
+    }
+    
+    public function editAddress($id, $addressId)
+    {
+        $this->editModel($id, $addressId, 'Address', 'address');
     }
     
     private function editModel($id, $modelId, $model, $modelLabel)

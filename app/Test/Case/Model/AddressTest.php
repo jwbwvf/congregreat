@@ -15,13 +15,7 @@ class AddressTest extends CakeTestCase
      * @var array
      */
     public $fixtures = array(
-        'app.address',
-//        'app.congregation',
-//        'app.addresses_congregation',
-//        'app.email_address',
-//        'app.email_addresses_congregation',
-//        'app.phone',
-//        'app.congregations_phone'
+        'app.address'
     );
 
     /**

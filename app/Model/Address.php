@@ -144,4 +144,42 @@ class Address extends AppModel
         $this->create();
         return $this->save($data);
     }
+    
+    public function get($id)
+    {
+        if (!$this->exists($id))
+        {
+            throw new NotFoundException(__('Invalid address'));
+        }
+        $options = array('conditions' => array('Address.' . $this->primaryKey => $id));
+        return $this->find('first', $options);        
+    }    
+    
+    /**
+     * finds an address by the given address
+     * @param string $Address
+     * @return array
+     */
+    public function getByData($data)
+    {
+        $options = array('conditions' => array(
+            'Address.street_address' => $data['street_address'], 
+            'Address.city' => $data['city'],
+            'Address.state' => $data['state'],
+            'Address.zipcode' => $data['zipcode'],
+            'Address.country' => $data['country']
+        ));
+        return $this->find('first', $options);      
+    }    
+    
+    /**
+     * checks if the address is being used by a congregation
+     * @return boolean
+     */
+    public function isInUse()
+    {
+        $options = array('conditions' => array('AddressesCongregation.address_id' => $this->id));
+        $addressesCongregation = $this->AddressesCongregation->find('first', $options);
+        return !empty($addressesCongregation);
+    }    
 }

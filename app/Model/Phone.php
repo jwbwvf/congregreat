@@ -110,6 +110,8 @@ class Phone extends AppModel
      */
     public function isInUse()
     {
-        return $this->CongregationsPhone->field('phone_id');
+        $options = array('conditions' => array('CongregationsPhone.phone_id' => $this->id));
+        $congregationsPhone = $this->CongregationsPhone->find('first', $options);
+        return !empty($congregationsPhone);
     }
 }

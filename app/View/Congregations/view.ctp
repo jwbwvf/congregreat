@@ -42,8 +42,8 @@
                     <td><?php echo $address['zipcode']; ?></td>
                     <td><?php echo $address['country']; ?></td>
                     <td class="actions">
-                        <?php echo $this->Html->link(__('Edit'), array('controller' => 'addresses', 'action' => 'edit', $address['id'])); ?>
-                        <?php echo $this->Form->postLink(__('Delete'), array('controller' => 'addresses', 'action' => 'delete', $address['id']), null, __('Are you sure you want to delete # %s?', $address['id'])); ?>
+                        <?php echo $this->Html->link(__('Edit'), array('action' => 'editAddress', $congregation['Congregation']['id'], $address['id'])); ?>
+                        <?php echo $this->Form->postLink(__('Delete'), array('action' => 'deleteAddress', $congregation['Congregation']['id'], $address['id']), null, __('Are you sure you want to delete # %s?', $address['id'])); ?>
                     </td>
                 </tr>
             <?php endforeach; ?>
@@ -52,7 +52,7 @@
 
     <div class="actions">
         <ul>
-            <li><?php echo $this->Html->link(__('New Address'), array('controller' => 'addresses', 'action' => 'add')); ?> </li>
+            <li><?php echo $this->Html->link(__('New Address'), array('action' => 'addAddress', $congregation['Congregation']['id'])); ?> </li>
         </ul>
     </div>
 </div>
