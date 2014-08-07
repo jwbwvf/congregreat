@@ -137,7 +137,7 @@ class CongregationPhoneTest extends CongregationBase
         
         $this->assertNotNull($rowPhone['phones']['id']);
     } 
-       
+    
     /**
      * builds the query to retrieve the congregation
      * associated to the phone

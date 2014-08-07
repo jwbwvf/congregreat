@@ -7,6 +7,7 @@ App::uses('AppController', 'Controller');
  *
  * @property Member $Member
  * @property PaginatorComponent $Paginator
+ * @property SessionComponent $Session
  */
 class MembersController extends AppController
 {
@@ -16,7 +17,7 @@ class MembersController extends AppController
      *
      * @var array
      */
-    public $components = array('Paginator');
+    public $components = array('Paginator', 'Session');
 
     /**
      * index method
@@ -66,6 +67,14 @@ class MembersController extends AppController
                 $this->Session->setFlash(__('The member could not be saved. Please, try again.'));
             }
         }
+        $congregations = $this->Member->Congregation->find('list');
+        $anniversaries = $this->Member->Anniversary->find('list');
+        $addresses = $this->Member->Address->find('list');
+        $emailAddresses = $this->Member->EmailAddress->find('list');
+        $groups = $this->Member->Group->find('list');
+        $phones = $this->Member->Phone->find('list');
+        $tasks = $this->Member->Task->find('list');
+        $this->set(compact('congregations', 'anniversaries', 'addresses', 'emailAddresses', 'groups', 'phones', 'tasks'));
     }
 
     /**
@@ -98,6 +107,14 @@ class MembersController extends AppController
             $options = array('conditions' => array('Member.' . $this->Member->primaryKey => $id));
             $this->request->data = $this->Member->find('first', $options);
         }
+        $congregations = $this->Member->Congregation->find('list');
+        $anniversaries = $this->Member->Anniversary->find('list');
+        $addresses = $this->Member->Address->find('list');
+        $emailAddresses = $this->Member->EmailAddress->find('list');
+        $groups = $this->Member->Group->find('list');
+        $phones = $this->Member->Phone->find('list');
+        $tasks = $this->Member->Task->find('list');
+        $this->set(compact('congregations', 'anniversaries', 'addresses', 'emailAddresses', 'groups', 'phones', 'tasks'));
     }
 
     /**

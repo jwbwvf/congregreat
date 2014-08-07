@@ -126,7 +126,7 @@ class CongregationEmailAddressTest extends CongregationBase
         
         $this->assertNotNull($rowEmailAddress['email_addresses']['id']);         
     } 
-    
+
     /**
      * builds the query to retrieve the congregations
      * associated to the email address

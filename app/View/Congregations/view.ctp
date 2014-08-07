@@ -17,7 +17,7 @@
     <h3><?php echo __('Actions'); ?></h3>
     <ul>
         <li><?php echo $this->Html->link(__('Edit Congregation'), array('action' => 'edit', $congregation['Congregation']['id'])); ?> </li>
-        <li><?php echo $this->Form->postLink(__('Delete Congregation'), array('action' => 'delete', $congregation['Congregation']['id']), null, __('Are you sure you want to delete # %s?', $congregation['Congregation']['id'])); ?> </li>
+        <li><?php echo $this->Form->postLink(__('Delete Congregation'), array('action' => 'delete', $congregation['Congregation']['id']), null, __('Are you sure you want to delete %s?', $congregation['Congregation']['name'])); ?> </li>
         <li><?php echo $this->Html->link(__('List Congregations'), array('action' => 'index')); ?> </li>
         <li><?php echo $this->Html->link(__('New Congregation'), array('action' => 'add')); ?> </li>
     </ul>

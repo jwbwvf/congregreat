@@ -152,7 +152,7 @@ class CongregationAddressTest extends CongregationBase
         
         $this->assertNotNull($rowAddress['addresses']['id']);                   
     }
-    
+
     private function buildCongregationsAddressQuery($addressId)
     {
         return "SELECT 

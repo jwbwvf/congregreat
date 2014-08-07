@@ -13,7 +13,7 @@
 		<td class="actions">
                     <?php echo $this->Html->link(__('View'), array('action' => 'view', $congregation['Congregation']['id'])); ?>
                     <?php echo $this->Html->link(__('Edit'), array('action' => 'edit', $congregation['Congregation']['id'])); ?>
-                    <?php echo $this->Form->postLink(__('Delete'), array('action' => 'delete', $congregation['Congregation']['id']), null, __('Are you sure you want to delete # %s?', $congregation['Congregation']['id'])); ?>
+                    <?php echo $this->Form->postLink(__('Delete'), array('action' => 'delete', $congregation['Congregation']['id']), null, __('Are you sure you want to delete %s?', $congregation['Congregation']['name'])); ?>
 		</td>
             </tr>
         <?php endforeach; ?>

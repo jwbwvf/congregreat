@@ -99,11 +99,6 @@ class CongregationTest extends CongregationBase
     {
         $this->validate('Phone', 'number', '5555-555-5555');       
     }     
-
-    public function testEdit()
-    {
-        
-    }
     
     /**
      * test deleting a congregation and all it's
@@ -116,8 +111,7 @@ class CongregationTest extends CongregationBase
      */
     public function testDelete()
     {
-        $return = $this->Congregation->add($this->congregationAddData);
-        $this->assertTrue($return);        
+        $this->Congregation->add($this->congregationAddData);      
         
         $dbo = $this->Congregation->getDataSource();
         $sql = $this->buildCongregationsAddDataQuery();        

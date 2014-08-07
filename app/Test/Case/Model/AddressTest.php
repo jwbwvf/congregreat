@@ -107,6 +107,11 @@ class AddressTest extends CakeTestCase
         $this->validate('country', '');
     }
     
+    public function testEdit()
+    {
+        
+    }
+    
     /**
      * helper method to validate the key value pairs are invalid
      * @param string $key field to be saved

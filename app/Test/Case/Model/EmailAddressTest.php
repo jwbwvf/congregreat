@@ -62,5 +62,5 @@ class EmailAddressTest extends CakeTestCase
         
         $result = $this->EmailAddress->add($data);
         $this->assertFalse($result);
-    }    
+    }
 }
