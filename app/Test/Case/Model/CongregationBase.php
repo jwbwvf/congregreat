@@ -61,4 +61,10 @@ public $congregationAddData = array(
 
         parent::tearDown();
     }
+    
+    public function test()
+    {
+        //prevent test failure for not having a test
+        $this->assertTrue(true);
+    }
 }

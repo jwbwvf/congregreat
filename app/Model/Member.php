@@ -1,6 +1,6 @@
 <?php
 
-App::uses('AppModel', 'Model');
+App::uses('ContactableModel', 'Model');
 
 /**
  * Member Model
@@ -17,7 +17,7 @@ App::uses('AppModel', 'Model');
  * @property Phone $Phone
  * @property Task $Task
  */
-class Member extends AppModel
+class Member extends ContactableModel
 {
 
     /**
@@ -255,6 +255,64 @@ class Member extends AppModel
             'offset' => '',
             'finderQuery' => '',
         )
-    );
+    );  
 
+    /**
+     * validates every model
+     * @param array $data containing each models data
+     * @return boolean true if every model is valid otherwise false
+     */
+    protected function areModelsValid($data)
+    {        
+        if ($this->saveAll($data['Member'], array('validate' => 'only')) === false) 
+        {
+            return false;            
+        }
+
+        return parent::areModelsValid($data);
+    }    
+    
+    /**
+     * retrievs the @Member for the given id
+     * @param int $id @Member identifier
+     * @return @Member
+     * @throws NotFoundException
+     */
+    public function get($id)
+    {
+        if (!$this->exists($id))
+        {
+            throw new NotFoundException(__('Invalid member'));
+        }
+        $options = array('conditions' => array('Member.' . $this->primaryKey => $id)); 
+        return $this->find('first', $options);
+    }      
+    
+    public function addModel($data, $model)
+    {
+        $this->id = $data['Member']['id'];
+        
+        //check if this the model already exists and use it if it does
+        $existingModel = $this->$model->getByData($data[$model]);
+        
+        if (empty($existingModel))
+        {
+            $this->$model->create();
+            if (parent::isRelatedModelValid($model, $data) === false) 
+            {
+                return false;
+            }
+            
+            return $this->$model->save($data, false);            
+        }   
+        else
+        {            
+            $foreignKey = $this->hasAndBelongsToMany[$model]['foreignKey'];
+            $associatedForeignKey = $this->hasAndBelongsToMany[$model]['associationForeignKey'];
+            $association = array($foreignKey => $this->id, $associatedForeignKey => $existingModel[$model]['id']);
+            
+            $joinModel = 'Member' . $model;
+            return $this->$joinModel->save($association, false);
+        }           
+    }              
 }
