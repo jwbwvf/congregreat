@@ -54,6 +54,19 @@ class EmailAddress extends AppModel
             'limit' => '',
             'offset' => '',
             'finderQuery' => '',
+        ),
+        'Member' => array(
+            'className' => 'Member',
+            'joinTable' => 'email_addresses_members',
+            'foreignKey' => 'email_address_id',
+            'associationForeignKey' => 'member_id',
+            'unique' => 'keepExisting',
+            'conditions' => '',
+            'fields' => '',
+            'order' => '',
+            'limit' => '',
+            'offset' => '',
+            'finderQuery' => '',        
         )
     );
 
@@ -90,13 +103,21 @@ class EmailAddress extends AppModel
     }
     
     /**
-     * checks if the email address is being used by a congregation
+     * checks if the email address is being used by a member or congregation
      * @return boolean
      */
     public function isInUse()
     {
-        $options = array('conditions' => array('CongregationsEmailAddress.email_address_id' => $this->id));                        
-        $congregationsEmailAddress = $this->CongregationsEmailAddress->find('first', $options);
+        $memberOptions = array('conditions' => array('EmailAddressesMember.email_address_id' => $this->id));                        
+        $emailAddressMembers = $this->EmailAddressesMember->find('first', $memberOptions);
+        
+        if (!empty($emailAddressMembers))
+        {
+            return true;
+        }
+        
+        $congregationOptions = array('conditions' => array('CongregationsEmailAddress.email_address_id' => $this->id));                        
+        $congregationsEmailAddress = $this->CongregationsEmailAddress->find('first', $congregationOptions);
         return !empty($congregationsEmailAddress);
     }
 }

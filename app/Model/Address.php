@@ -136,7 +136,20 @@ class Address extends AppModel
             'limit' => '',
             'offset' => '',
             'finderQuery' => '',
-        )
+        ),
+        'Member' => array(
+            'className' => 'Member',
+            'joinTable' => 'addresses_members',
+            'foreignKey' => 'address_id',
+            'associationForeignKey' => 'member_id',
+            'unique' => 'keepExisting',
+            'conditions' => '',
+            'fields' => '',
+            'order' => '',
+            'limit' => '',
+            'offset' => '',
+            'finderQuery' => '',
+        )        
     );
 
     public function add($data)
@@ -173,13 +186,21 @@ class Address extends AppModel
     }    
     
     /**
-     * checks if the address is being used by a congregation
+     * checks if the address is being used by a member or congregation
      * @return boolean
      */
     public function isInUse()
     {
-        $options = array('conditions' => array('AddressesCongregation.address_id' => $this->id));
-        $addressesCongregation = $this->AddressesCongregation->find('first', $options);
+        $memberOptions = array('conditions' => array('AddressesMember.address_id' => $this->id));
+        $addressesMember = $this->AddressesMember->find('first', $memberOptions);
+        
+        if (!empty($addressesMember))
+        {
+            return true;
+        }
+        
+        $congregationOptions = array('conditions' => array('AddressesCongregation.address_id' => $this->id));
+        $addressesCongregation = $this->AddressesCongregation->find('first', $congregationOptions);
         return !empty($addressesCongregation);
     }    
 }

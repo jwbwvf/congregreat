@@ -1,5 +1,5 @@
 <div class="members form">
-    <?php echo $this->Form->create('Member'); ?>
+    <?php echo $this->Form->create('Member', array('type' => 'file')); ?>
     <fieldset>
         <legend><?php echo __('Add Member'); ?></legend>
         <?php

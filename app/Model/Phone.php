@@ -62,7 +62,20 @@ class Phone extends AppModel
             'limit' => '',
             'offset' => '',
             'finderQuery' => '',
-        )
+        ),
+       'Member' => array(
+            'className' => 'Member',
+            'joinTable' => 'members_phones',
+            'foreignKey' => 'phone_id',
+            'associationForeignKey' => 'member_id',
+            'unique' => 'keepExisting',
+            'conditions' => '',
+            'fields' => '',
+            'order' => '',
+            'limit' => '',
+            'offset' => '',
+            'finderQuery' => '',
+        )        
     );
 
     /**
@@ -105,13 +118,21 @@ class Phone extends AppModel
     }
     
     /**
-     * checks if the phone is being used by a congregation
+     * checks if the phone is being used by a member or congregation
      * @return boolean
      */
     public function isInUse()
     {
-        $options = array('conditions' => array('CongregationsPhone.phone_id' => $this->id));
-        $congregationsPhone = $this->CongregationsPhone->find('first', $options);
+        $memberOptions = array('conditions' => array('MembersPhone.phone_id' => $this->id));
+        $membersPhone = $this->MembersPhone->find('first', $memberOptions);
+        
+        if (!empty($membersPhone))
+        {
+            return true;
+        }
+        
+        $congregationOptions = array('conditions' => array('CongregationsPhone.phone_id' => $this->id));
+        $congregationsPhone = $this->CongregationsPhone->find('first', $congregationOptions);
         return !empty($congregationsPhone);
     }
 }

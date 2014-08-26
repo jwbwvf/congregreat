@@ -3,7 +3,7 @@
     <fieldset>
         <legend><?php echo __('Add Address'); ?></legend>
         <?php 
-            echo $this->Form->hidden('Congregation.id', array('value' => $congregation['Congregation']['id']));        
+            echo $this->Form->hidden('Member.id', array('value' => $member['Member']['id']));        
             echo $this->element('add_address');
         ?>
     </fieldset>

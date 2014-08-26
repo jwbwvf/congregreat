@@ -1,7 +1,6 @@
 <?php
 
 App::uses('Congregation', 'Model');
-App::uses('CongregationTestHelper', 'Test');
 App::uses('CongregationBase', 'Test/Case/Model');
 
 class CongregationEmailAddressTest extends CongregationBase

@@ -28,33 +28,40 @@ class Member extends ContactableModel
     public $validate = array(
         'id' => array(
             'numeric' => array(
-                'rule' => array('numeric'),
-            //'message' => 'Your custom message here',
-            //'allowEmpty' => false,
-            //'required' => false,
-            //'last' => false, // Stop validation after this rule
-            //'on' => 'create', // Limit validation to 'create' or 'update' operations
-            ),
+                'rule' => array('numeric')
+            )
         ),
         'congregation_id' => array(
             'numeric' => array(
                 'rule' => array('numeric'),
             //'message' => 'Your custom message here',
-            //'allowEmpty' => false,
-            //'required' => false,
+            'allowEmpty' => false,
+            'required' => true,
             //'last' => false, // Stop validation after this rule
-            //'on' => 'create', // Limit validation to 'create' or 'update' operations
+            'on' => 'create', // Limit validation to 'create' or 'update' operations
             ),
         ),
+        'first_name' => array(
+            'rule' => 'notEmpty',
+            'message' => 'Member first name is required',
+            'allowEmpty' => false,
+            'required' => true,
+            //'last' => false, // Stop validation after this rule
+            'on' => 'create' // Limit validation to 'create' or 'update' operations
+        ),        
+        'last_name' => array(
+            'rule' => 'notEmpty',
+            'message' => 'Member last name is required',
+            'allowEmpty' => false,
+            'required' => true,
+            //'last' => false, // Stop validation after this rule
+            'on' => 'create' // Limit validation to 'create' or 'update' operations
+        ),        
         'birth_date' => array(
             'date' => array(
                 'rule' => array('date'),
-            //'message' => 'Your custom message here',
-            //'allowEmpty' => false,
-            //'required' => false,
-            //'last' => false, // Stop validation after this rule
-            //'on' => 'create', // Limit validation to 'create' or 'update' operations
-            ),
+                'message' => 'Invalid date of birth',
+            )
         ),
         'baptized' => array(
             'numeric' => array(
@@ -105,15 +112,15 @@ class Member extends ContactableModel
      *
      * @var array
      */
-    public $hasOne = array(
-        'User' => array(
-            'className' => 'User',
-            'foreignKey' => 'member_id',
-            'conditions' => '',
-            'fields' => '',
-            'order' => ''
-        )
-    );
+//    public $hasOne = array(
+//        'User' => array(
+//            'className' => 'User',
+//            'foreignKey' => 'member_id',
+//            'conditions' => '',
+//            'fields' => '',
+//            'order' => ''
+//        )
+//    );
 
     /**
      * belongsTo associations
@@ -142,47 +149,47 @@ class Member extends ContactableModel
      *
      * @var array
      */
-    public $hasMany = array(
-        'Absence' => array(
-            'className' => 'Absence',
-            'foreignKey' => 'member_id',
-            'dependent' => false,
-            'conditions' => '',
-            'fields' => '',
-            'order' => '',
-            'limit' => '',
-            'offset' => '',
-            'exclusive' => '',
-            'finderQuery' => '',
-            'counterQuery' => ''
-        ),
-        'Contribution' => array(
-            'className' => 'Contribution',
-            'foreignKey' => 'member_id',
-            'dependent' => false,
-            'conditions' => '',
-            'fields' => '',
-            'order' => '',
-            'limit' => '',
-            'offset' => '',
-            'exclusive' => '',
-            'finderQuery' => '',
-            'counterQuery' => ''
-        ),
-        'MemberTaskAssignment' => array(
-            'className' => 'MemberTaskAssignment',
-            'foreignKey' => 'member_id',
-            'dependent' => false,
-            'conditions' => '',
-            'fields' => '',
-            'order' => '',
-            'limit' => '',
-            'offset' => '',
-            'exclusive' => '',
-            'finderQuery' => '',
-            'counterQuery' => ''
-        )
-    );
+//    public $hasMany = array(
+//        'Absence' => array(
+//            'className' => 'Absence',
+//            'foreignKey' => 'member_id',
+//            'dependent' => false,
+//            'conditions' => '',
+//            'fields' => '',
+//            'order' => '',
+//            'limit' => '',
+//            'offset' => '',
+//            'exclusive' => '',
+//            'finderQuery' => '',
+//            'counterQuery' => ''
+//        ),
+//        'Contribution' => array(
+//            'className' => 'Contribution',
+//            'foreignKey' => 'member_id',
+//            'dependent' => false,
+//            'conditions' => '',
+//            'fields' => '',
+//            'order' => '',
+//            'limit' => '',
+//            'offset' => '',
+//            'exclusive' => '',
+//            'finderQuery' => '',
+//            'counterQuery' => ''
+//        ),
+//        'MemberTaskAssignment' => array(
+//            'className' => 'MemberTaskAssignment',
+//            'foreignKey' => 'member_id',
+//            'dependent' => false,
+//            'conditions' => '',
+//            'fields' => '',
+//            'order' => '',
+//            'limit' => '',
+//            'offset' => '',
+//            'exclusive' => '',
+//            'finderQuery' => '',
+//            'counterQuery' => ''
+//        )
+//    );
 
     /**
      * hasAndBelongsToMany associations
@@ -193,6 +200,7 @@ class Member extends ContactableModel
         'Address' => array(
             'className' => 'Address',
             'joinTable' => 'addresses_members',
+            'joinModel' => 'AddressesMember',
             'foreignKey' => 'member_id',
             'associationForeignKey' => 'address_id',
             'unique' => 'keepExisting',
@@ -206,6 +214,7 @@ class Member extends ContactableModel
         'EmailAddress' => array(
             'className' => 'EmailAddress',
             'joinTable' => 'email_addresses_members',
+            'joinModel' => 'EmailAddressesMember',
             'foreignKey' => 'member_id',
             'associationForeignKey' => 'email_address_id',
             'unique' => 'keepExisting',
@@ -216,22 +225,23 @@ class Member extends ContactableModel
             'offset' => '',
             'finderQuery' => '',
         ),
-        'Group' => array(
-            'className' => 'Group',
-            'joinTable' => 'groups_members',
-            'foreignKey' => 'member_id',
-            'associationForeignKey' => 'group_id',
-            'unique' => 'keepExisting',
-            'conditions' => '',
-            'fields' => '',
-            'order' => '',
-            'limit' => '',
-            'offset' => '',
-            'finderQuery' => '',
-        ),
+//        'Group' => array(
+//            'className' => 'Group',
+//            'joinTable' => 'groups_members',
+//            'foreignKey' => 'member_id',
+//            'associationForeignKey' => 'group_id',
+//            'unique' => 'keepExisting',
+//            'conditions' => '',
+//            'fields' => '',
+//            'order' => '',
+//            'limit' => '',
+//            'offset' => '',
+//            'finderQuery' => '',
+//        ),
         'Phone' => array(
             'className' => 'Phone',
             'joinTable' => 'members_phones',
+            'joinModel' => 'MembersPhone',
             'foreignKey' => 'member_id',
             'associationForeignKey' => 'phone_id',
             'unique' => 'keepExisting',
@@ -241,20 +251,20 @@ class Member extends ContactableModel
             'limit' => '',
             'offset' => '',
             'finderQuery' => '',
-        ),
-        'Task' => array(
-            'className' => 'Task',
-            'joinTable' => 'members_tasks',
-            'foreignKey' => 'member_id',
-            'associationForeignKey' => 'task_id',
-            'unique' => 'keepExisting',
-            'conditions' => '',
-            'fields' => '',
-            'order' => '',
-            'limit' => '',
-            'offset' => '',
-            'finderQuery' => '',
-        )
+        )//,
+//        'Task' => array(
+//            'className' => 'Task',
+//            'joinTable' => 'members_tasks',
+//            'foreignKey' => 'member_id',
+//            'associationForeignKey' => 'task_id',
+//            'unique' => 'keepExisting',
+//            'conditions' => '',
+//            'fields' => '',
+//            'order' => '',
+//            'limit' => '',
+//            'offset' => '',
+//            'finderQuery' => '',
+//        )
     );  
 
     /**
@@ -314,5 +324,18 @@ class Member extends ContactableModel
             $joinModel = 'Member' . $model;
             return $this->$joinModel->save($association, false);
         }           
-    }              
+    }         
+    
+    public function storeProfilePicture($data)
+    {
+        if (is_uploaded_file($data['Member']['profile_picture']['tmp_name']))
+        {
+            move_uploaded_file($data['Member']['profile_picture']['tmp_name'], 
+                    '../webroot/img/members/' . $data['Member']['profile_picture']['name']);
+            
+            return $data['Member']['profile_picture']['name'];
+        }        
+        
+        return "";
+    }
 }

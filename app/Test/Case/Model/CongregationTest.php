@@ -1,7 +1,6 @@
 <?php
 
 App::uses('Congregation', 'Model');
-App::uses('CongregationTestHelper', 'Test');
 App::uses('CongregationBase', 'Test/Case/Model');
 
 /**
@@ -11,9 +10,7 @@ App::uses('CongregationBase', 'Test/Case/Model');
 class CongregationTest extends CongregationBase
 {
     /**
-     * test adding a congregation with
-     * all of it's related data
-     * phone, email, address
+     * test adding a congregation with all of it's related data: phone, email, address
      * @covers Congregation::add
      * @covers Congregation::createModels
      * @covers Congregation::areModelsValid
@@ -55,17 +52,6 @@ class CongregationTest extends CongregationBase
     {        
         $this->validate('Congregation', 'name', '');
     }
-    
-    /**
-     * test adding a congregation that is missing a website
-     * @covers Congregation::add
-     * @covers Congregation::createModels
-     * @covers Congregation::areModelsValid
-     */
-    public function testAdd_MissingWebsite()
-    {        
-        $this->validate('Congregation', 'website', '');
-    }    
 
     /**
      * test adding a congregation that has an invalid email address

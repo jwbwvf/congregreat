@@ -743,3 +743,17 @@ pre {
 #url-rewriting-warning {
 	display:none;
 }
+
+#profile {
+    width: 76%;/** same as view width **/
+}
+
+#profile-picture {    
+    width: 300px;
+    float: left;
+}
+
+#profile-details {
+    overflow: hidden;
+    padding-left: 1.5%;
+}

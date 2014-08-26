@@ -163,10 +163,6 @@ class CongregationsController extends AppController
         {            
             $this->request->data = $this->Congregation->get($id);
         }
-        $addresses = $this->Congregation->Address->find('list');
-        $emailAddresses = $this->Congregation->EmailAddress->find('list');
-        $phones = $this->Congregation->Phone->find('list');
-        $this->set(compact('addresses', 'emailAddresses', 'phones'));
     }
 
     /**
@@ -190,8 +186,7 @@ class CongregationsController extends AppController
     }
 
     /**
-     * deletes the congregation's phone relationship and deletes
-     * the phone if it's not in use by anything else
+     * deletes the congregation's phone relationship and deletes the phone if it's not in use by anything else
      * @param int $id identifier of the @Congregation the @Phone belongs to
      * @param int $phoneNumberId identifier of the @Phone to delete
      * @return void
@@ -244,8 +239,7 @@ class CongregationsController extends AppController
     }
     
     /**
-     * deletes the congregation's address relationship and deletes
-     * the address if it's not in use by anything else
+     * deletes the congregation's address relationship and deletes the address if it's not in use by anything else
      * @param int $id identifier of the @Congregation the @Address belongs to
      * @param int $addressId identifier of the @Address to delete
      * @return void

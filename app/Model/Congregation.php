@@ -36,11 +36,11 @@ class Congregation extends ContactableModel
         ),
         'website' => array(
             'rule' => 'notEmpty',
-            'message' => 'Congregation website is required',
-            'allowEmpty' => false,
-            'required' => true,
+            //'message' => 'Congregation website is required',
+            'allowEmpty' => true,
+            'required' => false,
             //'last' => false, // Stop validation after this rule
-            'on' => 'create' // Limit validation to 'create' or 'update' operations
+            //'on' => 'create' // Limit validation to 'create' or 'update' operations
         ),
     );
 

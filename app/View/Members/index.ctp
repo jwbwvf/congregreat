@@ -19,7 +19,9 @@
                 <td class="actions">
                     <?php echo $this->Html->link(__('View'), array('action' => 'view', $member['Member']['id'])); ?>
                     <?php echo $this->Html->link(__('Edit'), array('action' => 'edit', $member['Member']['id'])); ?>
-                    <?php echo $this->Form->postLink(__('Delete'), array('action' => 'delete', $member['Member']['id']), null, __('Are you sure you want to delete # %s?', $member['Member']['id'])); ?>
+                    <?php echo $this->Form->postLink(__('Delete'), array('action' => 'delete', $member['Member']['id']), 
+                            null, __('Are you sure you want to delete %s?', $member['Member']['first_name'] . ' ' . 
+                                    $member['Member']['last_name'])); ?>
                 </td>
             </tr>
         <?php endforeach; ?>

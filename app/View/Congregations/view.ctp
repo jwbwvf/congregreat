@@ -43,7 +43,7 @@
                     <td><?php echo $address['country']; ?></td>
                     <td class="actions">
                         <?php echo $this->Html->link(__('Edit'), array('action' => 'editAddress', $congregation['Congregation']['id'], $address['id'])); ?>
-                        <?php echo $this->Form->postLink(__('Delete'), array('action' => 'deleteAddress', $congregation['Congregation']['id'], $address['id']), null, __('Are you sure you want to delete # %s?', $address['id'])); ?>
+                        <?php echo $this->Form->postLink(__('Delete'), array('action' => 'deleteAddress', $congregation['Congregation']['id'], $address['id']), null, __('Are you sure you want to delete %s?', $address['street_address'])); ?>
                     </td>
                 </tr>
             <?php endforeach; ?>
@@ -69,7 +69,7 @@
                     <td><?php echo $emailAddress['email_address']; ?></td>
                     <td class="actions">
                         <?php echo $this->Html->link(__('Edit'), array('action' => 'editEmailAddress', $congregation['Congregation']['id'], $emailAddress['id'])); ?>
-                        <?php echo $this->Form->postLink(__('Delete'), array('action' => 'deleteEmailAddress', $congregation['Congregation']['id'], $emailAddress['id']), null, __('Are you sure you want to delete # %s?', $emailAddress['id'])); ?>
+                        <?php echo $this->Form->postLink(__('Delete'), array('action' => 'deleteEmailAddress', $congregation['Congregation']['id'], $emailAddress['id']), null, __('Are you sure you want to delete %s?', $emailAddress['email_address'])); ?>
                     </td>
                 </tr>
             <?php endforeach; ?>
@@ -97,7 +97,7 @@
                     <td><?php echo $phone['type']; ?></td>
                     <td class="actions">
                         <?php echo $this->Html->link(__('Edit'), array('action' => 'editPhone', $congregation['Congregation']['id'], $phone['id'])); ?>
-                        <?php echo $this->Form->postLink(__('Delete'), array('action' => 'deletePhoneNumber', $congregation['Congregation']['id'], $phone['id']), null, __('Are you sure you want to delete # %s?', $phone['id'])); ?>
+                        <?php echo $this->Form->postLink(__('Delete'), array('action' => 'deletePhoneNumber', $congregation['Congregation']['id'], $phone['id']), null, __('Are you sure you want to delete # %s?', $phone['number'])); ?>
                     </td>
 		</tr>
             <?php endforeach; ?>

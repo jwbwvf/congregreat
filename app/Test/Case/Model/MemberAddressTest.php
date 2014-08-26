@@ -1,16 +1,16 @@
 <?php
 
-App::uses('Congregation', 'Model');
-App::uses('CongregationBase', 'Test/Case/Model');
+App::uses('Member', 'Model');
+App::uses('MemberBase', 'Test/Case/Model');
 
-class CongregationAddressTest extends CongregationBase
-{     
-    public function testAddAddress()
+class MemberAddressTest extends MemberBase
+{
+   public function testAddAddress()
     {        
-        $this->Congregation->add($this->congregationAddData);
+        $this->Member->add($this->memberAddData);
         
         $addressData = array(
-            'Congregation' => array('id' => $this->Congregation->id),
+            'Member' => array('id' => $this->Member->id),
             'Address' => array(
                 'street_address' => '555 elm grove',
                 'city' => 'stl',
@@ -20,13 +20,13 @@ class CongregationAddressTest extends CongregationBase
             )
         );
         
-        $return = $this->Congregation->addAddress($addressData);
+        $return = $this->Member->addAddress($addressData);
         
         $this->assertNotEqual(false, $return);
         
-        $sql  = $this->buildCongregationsAddressQuery($return['Address']['id']);
+        $sql  = $this->buildMembersAddressQuery($return['Address']['id']);
         
-        $dbo = $this->Congregation->getDataSource();        
+        $dbo = $this->Member->getDataSource();        
         $dbo->rawQuery($sql);
         $row = $dbo->fetchRow();
         
@@ -35,15 +35,15 @@ class CongregationAddressTest extends CongregationBase
         $this->assertEqual($addressData['Address']['state'], $row['addresses']['state']);
         $this->assertEqual($addressData['Address']['zipcode'], $row['addresses']['zipcode']);
         $this->assertEqual($addressData['Address']['country'], $row['addresses']['country']);
-        $this->assertEqual($addressData['Congregation']['id'], $row['congregations']['id']);        
+        $this->assertEqual($addressData['Member']['id'], $row['members']['id']);        
     }
     
     public function testAddAddress_InvalidState()
     {
-        $this->Congregation->add($this->congregationAddData);
+        $this->Member->add($this->memberAddData);
         
         $addressData = array(
-            'Congregation' => array('id' => $this->Congregation->id),
+            'Member' => array('id' => $this->Member->id),
             'Address' => array(
                 'street_address' => '555 elm grove',
                 'city' => 'stl',
@@ -53,17 +53,17 @@ class CongregationAddressTest extends CongregationBase
             )
         );
         
-        $return = $this->Congregation->addAddress($addressData);
+        $return = $this->Member->addAddress($addressData);
         
         $this->assertEqual(false, $return);        
     }
     
     public function testAddAddress_InvalidZipcode()
     {
-        $this->Congregation->add($this->congregationAddData);
+        $this->Member->add($this->memberAddData);
         
         $addressData = array(
-            'Congregation' => array('id' => $this->Congregation->id),
+            'Member' => array('id' => $this->Member->id),
             'Address' => array(
                 'street_address' => '555 elm grove',
                 'city' => 'stl',
@@ -73,34 +73,34 @@ class CongregationAddressTest extends CongregationBase
             )
         );
         
-        $return = $this->Congregation->addAddress($addressData);
+        $return = $this->Member->addAddress($addressData);
         
         $this->assertEqual(false, $return);        
     }   
     
     public function testDeleteAddress()
     {
-        $this->Congregation->add($this->congregationAddData);
+        $this->Member->add($this->memberAddData);
         
-        $sql = "SELECT addresses_congregations.address_id, addresses.id 
-                FROM addresses_congregations
-                JOIN addresses ON addresses_congregations.address_id = addresses.id
-                WHERE congregation_id= '" . $this->Congregation->id . "'";
+        $sql = "SELECT addresses_members.address_id, addresses.id 
+                FROM addresses_members
+                JOIN addresses ON addresses_members.address_id = addresses.id
+                WHERE member_id= '" . $this->Member->id . "'";
         
-        $dbo = $this->Congregation->getDataSource();        
+        $dbo = $this->Member->getDataSource();        
         $dbo->rawQuery($sql);
         $row = $dbo->fetchRow();
         
-        $this->assertNotNull($row['addresses_congregations']['address_id']);
+        $this->assertNotNull($row['addresses_members']['address_id']);
         $addressId = $row['addresses']['id'];
         $this->assertNotNull($addressId);
                
-        $this->Congregation->deleteAddress($addressId);        
+        $this->Member->deleteAddress($addressId);        
                         
         $dbo->rawQuery($sql);
         $rowAfter = $dbo->fetchRow();        
         
-        $this->assertNull($rowAfter['addresses_congregations']['address_id']);
+        $this->assertNull($rowAfter['addresses_members']['address_id']);
         $this->assertNull($rowAfter['addresses']['id']);
         
         $sqlAddress = "SELECT id 
@@ -114,33 +114,33 @@ class CongregationAddressTest extends CongregationBase
     
     public function testDeleteAddress_IsInUse()
     {
-        $this->Congregation->add($this->congregationAddData);
+        $this->Member->add($this->memberAddData);
         
-        $secondCongregationData = $this->congregationAddData;
-        $secondCongregationData['Congregation']['name'] = 'secondName';
+        $secondMemberData = $this->memberAddData;
+        $secondMemberData['Member']['name'] = 'secondName';
         
-        $congregation = ClassRegistry::init('Congregation');
-        $congregation->add($secondCongregationData);
+        $member = ClassRegistry::init('Member');
+        $member->add($secondMemberData);
         
-        $sql = "SELECT addresses_congregations.address_id, addresses.id 
-                FROM addresses_congregations
-                JOIN addresses ON addresses_congregations.address_id = addresses.id
-                WHERE congregation_id= '" . $this->Congregation->id . "'";
+        $sql = "SELECT addresses_members.address_id, addresses.id 
+                FROM addresses_members
+                JOIN addresses ON addresses_members.address_id = addresses.id
+                WHERE member_id= '" . $this->Member->id . "'";
         
-        $dbo = $this->Congregation->getDataSource();        
+        $dbo = $this->Member->getDataSource();        
         $dbo->rawQuery($sql);
         $row = $dbo->fetchRow();
         
-        $this->assertNotNull($row['addresses_congregations']['address_id']);
+        $this->assertNotNull($row['addresses_members']['address_id']);
         $addressId = $row['addresses']['id'];
         $this->assertNotNull($addressId);
                
-        $this->Congregation->deleteAddress($addressId);        
+        $this->Member->deleteAddress($addressId);        
                         
         $dbo->rawQuery($sql);
         $rowAfter = $dbo->fetchRow();        
         
-        $this->assertNull($rowAfter['addresses_congregations']['address_id']);
+        $this->assertNull($rowAfter['addresses_members']['address_id']);
         $this->assertNull($rowAfter['addresses']['id']);
         
         $sqlAddress = "SELECT id 
@@ -152,14 +152,14 @@ class CongregationAddressTest extends CongregationBase
         $this->assertNotNull($rowAddress['addresses']['id']);                   
     }
 
-    private function buildCongregationsAddressQuery($addressId)
+    private function buildMembersAddressQuery($addressId)
     {
         return "SELECT 
-                congregations.id, 
+                members.id, 
                 addresses.street_address, addresses.city, addresses.state, addresses.zipcode, addresses.country
                 FROM addresses
-                JOIN addresses_congregations ac ON addresses.id = ac.address_id
-                JOIN congregations ON ac.congregation_id = congregations.id
+                JOIN addresses_members am ON addresses.id = am.address_id
+                JOIN members ON am.member_id = members.id
                 WHERE addresses.id = '" . $addressId . "'";          
-    }
+    }    
 }

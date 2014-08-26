@@ -1,12 +1,18 @@
 <?php
 
-class CongregationBase extends CakeTestCase
+class MemberBase extends CakeTestCase
 {
-
-    public $congregationAddData = array(
-            'Congregation' => array(
-                'name' => 'testCongregation',
-                'website' => 'testCongregation.org'
+    public $memberAddData = array(
+            'Member' => array(
+                'congregation_id' => '1',
+                'first_name' => 'testFirstName',
+                'last_name' => 'testLastName',
+                'middle_name' => 'testMiddleName',
+                'gender' => 'Male',
+                'birth_date' => '1980-06-01',
+                'baptized' => '1',
+                'profile_picture' => 'testFirstName testLastName.jpg',
+                'anniversary_id' => '1'
             ),
             'EmailAddress' => array(
                 'email_address' => 'test@test.com'
@@ -23,7 +29,7 @@ class CongregationBase extends CakeTestCase
                 'country' => 'United States'
             )
         );
-
+    
     /**
      * Fixtures
      *
@@ -38,9 +44,18 @@ class CongregationBase extends CakeTestCase
         'app.congregations_email_address',
         'app.phone',
         'app.congregations_phone',
+        'app.anniversary',
+//        'app.user',
+//        'app.absence',
+//        'app.contribution',
+//        'app.member_task_assignment',
         'app.addresses_member',
         'app.email_addresses_member',
-        'app.members_phone'
+//        'app.group',
+//        'app.groups_member',
+        'app.members_phone',
+//        'app.task',
+//        'app.members_task'
     );
 
     /**
@@ -51,7 +66,7 @@ class CongregationBase extends CakeTestCase
     public function setUp()
     {
         parent::setUp();
-        $this->Congregation = ClassRegistry::init('Congregation');
+        $this->Member = ClassRegistry::init('Member');
     }
 
     /**
@@ -61,14 +76,14 @@ class CongregationBase extends CakeTestCase
      */
     public function tearDown()
     {
-        unset($this->Congregation);
+        unset($this->Member);
 
         parent::tearDown();
     }
-    
+
     public function test()
     {
         //prevent test failure for not having a test
         $this->assertTrue(true);
-    }
+    }    
 }
