@@ -177,7 +177,44 @@ class MembersController extends AppController
         $congregations = $this->Member->Congregation->find('list');
         $this->set(compact('congregations'));
     }
-
+    
+    public function editPhone($id, $phoneId)
+    {
+        $this->editModel($id, $phoneId, 'Phone', 'phone');
+    }
+    
+    public function editEmailAddress($id, $emailAddressId)
+    {
+        $this->editModel($id, $emailAddressId, 'EmailAddress', 'email address');
+    }
+    
+    public function editAddress($id, $addressId)
+    {
+        $this->editModel($id, $addressId, 'Address', 'address');
+    }
+    
+    private function editModel($id, $modelId, $model, $modelLabel)
+    {
+        if ($this->request->is(array('post', 'put')))
+        {
+            if ($this->Member->$model->save($this->request->data))
+            {                
+                $this->Session->setFlash(__('The ' . $modelLabel . ' has been saved.'));
+                return $this->redirect(array('action' => 'view', $this->request->data['Member']['id']));
+            }
+            else
+            {
+                $this->Session->setFlash(__('The ' . $modelLabel . ' could not be saved. Please, try again.'));
+            }
+        }
+        else
+        {            
+            $this->request->data = $this->Member->$model->get($modelId);
+        }
+    
+        $this->set('memberId', $id);        
+    }   
+        
     /**
      * delete method
      *

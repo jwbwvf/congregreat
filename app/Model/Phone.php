@@ -77,17 +77,6 @@ class Phone extends AppModel
             'finderQuery' => '',
         )        
     );
-
-    /**
-     * saves a phone
-     * @param array $datal
-     * @return On success Phone if its not empty or true, false on failure
-     */
-    public function add($data)
-    {
-        $this->create();
-        return $this->save($data);
-    }
     
     /**
      * finds a phone by the id

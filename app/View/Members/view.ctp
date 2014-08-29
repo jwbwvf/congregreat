@@ -70,7 +70,7 @@
                     <td><?php echo $address['zipcode']; ?></td>
                     <td><?php echo $address['country']; ?></td>
                     <td class="actions">
-                        <?php echo $this->Html->link(__('Edit'), array('controller' => 'addresses', 'action' => 'edit', $address['id'])); ?>
+                        <?php echo $this->Html->link(__('Edit'), array('action' => 'editAddress', $member['Member']['id'], $address['id'])); ?>
                         <?php echo $this->Form->postLink(__('Delete'), array('action' => 'deleteAddress', $member['Member']['id'], $address['id']), null, __('Are you sure you want to delete %s?', $address['street_address'])); ?>
                     </td>
                 </tr>
@@ -96,7 +96,7 @@
                 <tr>                
                     <td><?php echo $emailAddress['email_address']; ?></td>
                     <td class="actions">
-                        <?php echo $this->Html->link(__('Edit'), array('controller' => 'email_addresses', 'action' => 'edit', $emailAddress['id'])); ?>
+                        <?php echo $this->Html->link(__('Edit'), array('action' => 'editEmailAddress', $member['Member']['id'], $emailAddress['id'])); ?>
                         <?php echo $this->Form->postLink(__('Delete'), array('action' => 'deleteEmailAddress', $member['Member']['id'], $emailAddress['id']), null, __('Are you sure you want to delete %s?', $emailAddress['email_address'])); ?>
                     </td>
                 </tr>
@@ -125,7 +125,7 @@
                     <td><?php echo $phone['number']; ?></td>
                     <td><?php echo $phone['type']; ?></td>
                     <td class="actions">
-                        <?php echo $this->Html->link(__('Edit'), array('controller' => 'phones', 'action' => 'edit', $phone['id'])); ?>
+                        <?php echo $this->Html->link(__('Edit'), array('action' => 'editPhone', $member['Member']['id'], $phone['id'])); ?>
                         <?php echo $this->Form->postLink(__('Delete'), array('action' => 'deletePhoneNumber', $member['Member']['id'], $phone['id']), null, __('Are you sure you want to delete # %s?', $phone['number'])); ?>
                     </td>
                 </tr>

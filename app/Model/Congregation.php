@@ -2,7 +2,6 @@
 
 App::uses('ContactableModel', 'Model');
 
-
 /**
  * Congregation Model
  *
@@ -12,7 +11,6 @@ App::uses('ContactableModel', 'Model');
  */
 class Congregation extends ContactableModel
 {
-
     /**
      * Display field
      *
@@ -94,22 +92,12 @@ class Congregation extends ContactableModel
             'offset' => '',
             'finderQuery' => '',            
         )
-    );    
+    );   
     
-    /**
-     * validates every model
-     * @param array $data containing each models data
-     * @return boolean true if every model is valid otherwise false
-     */
-    protected function areModelsValid($data)
-    {        
-        if ($this->saveAll($data['Congregation'], array('validate' => 'only')) === false) 
-        {
-            return false;            
-        }
-
-        return parent::areModelsValid($data);
-    }             
+    protected function isValid($data)
+    {
+        return $this->saveAll($data['Congregation'], array('validate' => 'only'));
+    }
     
     /**
      * retrievs the @Congregation for the given id
@@ -127,6 +115,18 @@ class Congregation extends ContactableModel
         return $this->find('first', $options);
     }   
     
+    public function add($data)
+    {
+        $this->create();     
+        if ($this->isValid($data) === false)
+        {
+            return false;
+        }
+        $this->save($data['Congregation']);
+        $data['Congregation']['id'] = $this->id;
+        return parent::add($data);
+    }
+    
     public function addModel($data, $model)
     {
         $this->id = $data['Congregation']['id'];
@@ -137,12 +137,12 @@ class Congregation extends ContactableModel
         if (empty($existingModel))
         {
             $this->$model->create();
-            if (parent::isRelatedModelValid($model, $data) === false) 
+            if ($this->isRelatedModelValid($model, $data) === false) 
             {
                 return false;
             }
             
-            return $this->$model->save($data, false);            
+            return $this->$model->save($data, false);
         }   
         else
         {            
@@ -150,7 +150,7 @@ class Congregation extends ContactableModel
             $associatedForeignKey = $this->hasAndBelongsToMany[$model]['associationForeignKey'];
             $association = array($foreignKey => $this->id, $associatedForeignKey => $existingModel[$model]['id']);
             
-            $joinModel = 'Congregations' . $model;
+            $joinModel = $this->hasAndBelongsToMany[$model]['joinModel'];
             return $this->$joinModel->save($association, false);
         }           
     }

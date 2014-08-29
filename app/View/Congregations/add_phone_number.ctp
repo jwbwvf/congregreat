@@ -4,7 +4,7 @@
         <legend><?php echo __('Add Phone'); ?></legend>
         <?php 
             echo $this->Form->hidden('Congregation.id', array('value' => $congregation['Congregation']['id']));
-            echo $this->element('add_phone')
+            echo $this->element('phone')
             ?>
     </fieldset>
     <?php echo $this->Form->end(__('Submit')); ?>

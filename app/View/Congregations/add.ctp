@@ -8,9 +8,9 @@
             
             echo $this->Form->input('EmailAddress.email_address', array('type' => 'email', 'maxlength' => 254));
             
-            echo $this->element('add_phone');
+            echo $this->element('phone');
             
-            echo $this->element('add_address');
+            echo $this->element('address');
         ?>
     </fieldset>
     <?php echo $this->Form->end(__('Submit')); ?>

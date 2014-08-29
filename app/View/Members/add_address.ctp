@@ -4,7 +4,7 @@
         <legend><?php echo __('Add Address'); ?></legend>
         <?php 
             echo $this->Form->hidden('Member.id', array('value' => $member['Member']['id']));        
-            echo $this->element('add_address');
+            echo $this->element('address');
         ?>
     </fieldset>
     <?php echo $this->Form->end(__('Submit')); ?>

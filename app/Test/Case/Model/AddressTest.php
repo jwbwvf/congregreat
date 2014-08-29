@@ -44,16 +44,6 @@ class AddressTest extends CakeTestCase
     /**
      * @covers Address::add
      */
-    public function testAdd()
-    {
-        $data = $this->createAddress();        
-        $result = $this->Address->add($data);        
-        $this->assertNotEqual(false, $result); 
-    }
-
-    /**
-     * @covers Address::add
-     */
     public function testAdd_InvalidZipcode_NonNumeric()
     {           
         $this->validate('zipcode', 'AAAAA');
@@ -107,11 +97,6 @@ class AddressTest extends CakeTestCase
         $this->validate('country', '');
     }
     
-    public function testEdit()
-    {
-        
-    }
-    
     /**
      * helper method to validate the key value pairs are invalid
      * @param string $key field to be saved
@@ -122,7 +107,8 @@ class AddressTest extends CakeTestCase
         $data = $this->createAddress();
         $data[$key] = $value;
         
-        $result = $this->Address->add($data);
+        $this->Address->create();
+        $result = $this->Address->save($data);
         $this->assertFalse($result); 
     }
             

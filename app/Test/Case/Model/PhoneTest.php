@@ -47,8 +47,10 @@ class PhoneTest extends CakeTestCase
      */
     public function testAdd()
     {
-        $data = $this->createPhone();        
-        $result = $this->Phone->add($data);
+        $data = $this->createPhone();
+        
+        $this->Phone->create();
+        $result = $this->Phone->save($data);
         $this->assertNotEquals(false, $result);
     }
     
@@ -107,7 +109,8 @@ class PhoneTest extends CakeTestCase
         $data = $this->createPhone();
         $data[$key] = $value;
         
-        $result = $this->Phone->add($data);
+        $this->Phone->create();
+        $result = $this->Phone->save($data);
         $this->assertFalse($result); 
     }   
 

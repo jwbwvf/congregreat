@@ -13,9 +13,9 @@ class AddressesCongregationFixture extends CakeTestFixture
      * @var array
      */
     public $fields = array(
-        'id' => array('type' => 'integer', 'null' => false, 'default' => null, 'key' => 'primary', 'comment' => 'address identifier'),
-        'address_id' => array('type' => 'integer', 'null' => false, 'default' => null, 'key' => 'index'),
-        'congregation_id' => array('type' => 'integer', 'null' => false, 'default' => null, 'key' => 'index', 'comment' => 'congregation identifier'),
+        'id' => array('type' => 'integer', 'null' => false, 'default' => null, 'key' => 'primary', 'unsigned' => true, 'comment' => 'address identifier'),
+        'address_id' => array('type' => 'integer', 'null' => false, 'default' => null, 'key' => 'index', 'unsigned' => true),
+        'congregation_id' => array('type' => 'integer', 'null' => false, 'default' => null, 'key' => 'index', 'unsigned' => true, 'comment' => 'congregation identifier'),
         'created' => array('type' => 'datetime', 'null' => false, 'default' => null, 'comment' => 'date address was created'),
         'modified' => array('type' => 'datetime', 'null' => false, 'default' => null, 'comment' => 'last date address was modified'),
         'indexes' => array(

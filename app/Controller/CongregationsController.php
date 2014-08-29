@@ -211,6 +211,21 @@ class CongregationsController extends AppController
         return $this->redirect($this->referer());
     }
     
+    public function editPhone($id, $phoneId)
+    {
+        $this->editModel($id, $phoneId, 'Phone', 'phone');
+    }
+    
+    public function editEmailAddress($id, $emailAddressId)
+    {
+        $this->editModel($id, $emailAddressId, 'EmailAddress', 'email address');
+    }
+    
+    public function editAddress($id, $addressId)
+    {
+        $this->editModel($id, $addressId, 'Address', 'address');
+    }
+        
     /**
      * deletes the congregation's email address relationship and deletes
      * the email address if it's not in use by anything else
@@ -262,22 +277,7 @@ class CongregationsController extends AppController
             $this->Session->setFlash(__('The address could not be deleted. Please, try again.'));
         }
         return $this->redirect($this->referer());        
-    }    
-    
-    public function editPhone($id, $phoneId)
-    {
-        $this->editModel($id, $phoneId, 'Phone', 'phone');
-    }
-    
-    public function editEmailAddress($id, $emailAddressId)
-    {
-        $this->editModel($id, $emailAddressId, 'EmailAddress', 'email address');
-    }
-    
-    public function editAddress($id, $addressId)
-    {
-        $this->editModel($id, $addressId, 'Address', 'address');
-    }
+    }        
     
     private function editModel($id, $modelId, $model, $modelLabel)
     {

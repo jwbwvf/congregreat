@@ -152,12 +152,6 @@ class Address extends AppModel
         )        
     );
 
-    public function add($data)
-    {
-        $this->create();
-        return $this->save($data);
-    }
-    
     public function get($id)
     {
         if (!$this->exists($id))

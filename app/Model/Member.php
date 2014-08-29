@@ -5,21 +5,13 @@ App::uses('ContactableModel', 'Model');
 /**
  * Member Model
  *
- * @property User $User
  * @property Congregation $Congregation
- * @property Anniversary $Anniversary
- * @property Absence $Absence
- * @property Contribution $Contribution
- * @property MemberTaskAssignment $MemberTaskAssignment
  * @property Address $Address
  * @property EmailAddress $EmailAddress
- * @property Group $Group
  * @property Phone $Phone
- * @property Task $Task
  */
 class Member extends ContactableModel
 {
-
     /**
      * Validation rules
      *
@@ -267,19 +259,9 @@ class Member extends ContactableModel
 //        )
     );  
 
-    /**
-     * validates every model
-     * @param array $data containing each models data
-     * @return boolean true if every model is valid otherwise false
-     */
-    protected function areModelsValid($data)
+    protected function isValid($data)
     {        
-        if ($this->saveAll($data['Member'], array('validate' => 'only')) === false) 
-        {
-            return false;            
-        }
-
-        return parent::areModelsValid($data);
+        return $this->saveAll($data['Member'], array('validate' => 'only'));
     }    
     
     /**
@@ -297,6 +279,18 @@ class Member extends ContactableModel
         $options = array('conditions' => array('Member.' . $this->primaryKey => $id)); 
         return $this->find('first', $options);
     }      
+    
+    public function add($data)
+    {
+        $this->create();     
+        if ($this->isValid($data) === false)
+        {
+            return false;
+        }
+        $this->save($data['Member']);
+        $data['Member']['id'] = $this->id;
+        return parent::add($data);
+    }
     
     public function addModel($data, $model)
     {
@@ -321,7 +315,7 @@ class Member extends ContactableModel
             $associatedForeignKey = $this->hasAndBelongsToMany[$model]['associationForeignKey'];
             $association = array($foreignKey => $this->id, $associatedForeignKey => $existingModel[$model]['id']);
             
-            $joinModel = 'Member' . $model;
+            $joinModel = $this->hasAndBelongsToMany[$model]['joinModel'];
             return $this->$joinModel->save($association, false);
         }           
     }         

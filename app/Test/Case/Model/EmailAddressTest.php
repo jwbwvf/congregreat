@@ -48,7 +48,8 @@ class EmailAddressTest extends CakeTestCase
     {
         $data = array('email_address' => 'email@email.com');
         
-        $result = $this->EmailAddress->add($data);
+        $this->EmailAddress->create();
+        $result = $this->EmailAddress->save($data);
         $this->assertNotEqual(false, $result);
     }
     
@@ -60,7 +61,8 @@ class EmailAddressTest extends CakeTestCase
     {
         $data = array('email_address' => 'email.com');
         
-        $result = $this->EmailAddress->add($data);
+        $this->EmailAddress->create();
+        $result = $this->EmailAddress->save($data);
         $this->assertFalse($result);
     }
 }

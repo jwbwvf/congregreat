@@ -8,49 +8,13 @@ class ContactableModel extends AppModel
      * @return bool returns saveAll 
      */    
     public function add($data) 
-    {                
-        $this->createModels();                
-        if ($this->areModelsValid($data)) 
-        {
-            return $this->saveModels($data);
-        }
-        
-        return false;
-    }
-    
-    /**
-     * creates all models including this
-     */    
-    private function createModels()
-    {
-        $this->create();
-        $this->EmailAddress->create();
-        $this->Phone->create();
-        $this->Address->create();        
-    }
-    
-    /**
-     * validates every model
-     * @param array $data containing each models data
-     * @return boolean true if every model is valid otherwise false
-     */    
-    protected function areModelsValid($data)
-    {                
-        if ($this->isRelatedModelValid('EmailAddress', $data) === false)
-        {
-            return false;        
-        }
-        if ($this->isRelatedModelValid('Phone', $data) === false)        
-        {
-            return false;
-        }
-        if ($this->isRelatedModelValid('Address', $data) ===  false) 
-        {
-            return false;        
-        }
+    {                        
+        $this->addAddress($data);
+        $this->addEmailAddress($data);
+        $this->addPhoneNumber($data);
         
         return true;
-    }    
+    }
     
     /**
      * checks if a related model is valid
@@ -61,48 +25,7 @@ class ContactableModel extends AppModel
     protected function isRelatedModelValid($model, $data)
     {
         return $this->$model->saveAll($data[$model], array('validate' => 'only'));
-    }
-    
-    /**
-     * saves all models
-     * @param array $data
-     * @return boolean returns saveAll on this
-     */    
-    private function saveModels($data)
-    {
-        $this->saveRelatedModel('EmailAddress', $data);
-        $this->saveRelatedModel('Phone', $data);
-        $this->saveRelatedModel('Address', $data);
-        
-        //This model must be saved last because it's dependent on the 
-        //related models having ids to populate the join tables
-        return $this->saveAll($data, array('validate' => false));
     }   
-    
-    /**
-     * convience method to save the related models, resets the model array to only contain the newly created id, 
-     * so that join tables can be filled out
-     * @param type $model
-     * @param array $data
-     */    
-    private function saveRelatedModel($model, &$data)
-    {        
-        //check if model already exists
-        //if it does use it's id instead of creating a new one
-        $existingModel = $this->$model->getByData($data[$model]);
-        if (empty($existingModel))
-        {
-            $updatedModel = $this->$model->save($data[$model], false);
-            $modelId = $updatedModel[$model]['id'];        
-        }
-        else
-        {            
-            $modelId = $existingModel[$model]['id'];
-        }
-        
-        unset($data[$model]);
-        $data[$model]['id'] = $modelId;
-    }     
     
     /**
      * adds a new @Phone to the ContactableModel

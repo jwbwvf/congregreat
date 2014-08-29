@@ -69,17 +69,6 @@ class EmailAddress extends AppModel
             'finderQuery' => '',        
         )
     );
-
-    /**
-     * saves an email address
-     * @param array $data
-     * @return On success EmailAddress if its not empty or true, false on failure
-     */
-    public function add($data)
-    {
-        $this->create();
-        return $this->save($data);
-    }
     
     public function get($id)
     {
