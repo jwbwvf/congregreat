@@ -27,6 +27,10 @@ class MembersController extends AppController
     public function index()
     {
         $this->Member->recursive = 0;
+        
+        $paginator = array('fields' => array('id', 'first_name', 'last_name', 'baptized', 'Congregation.id', 'Congregation.name'));
+
+        $this->Paginator->settings = $paginator;
         $this->set('members', $this->Paginator->paginate());
     }
 
@@ -171,7 +175,10 @@ class MembersController extends AppController
         }
         else
         {
-            $options = array('conditions' => array('Member.' . $this->Member->primaryKey => $id));
+            $this->Member->recursive = -1;
+            $options = array('conditions' => array('Member.' . $this->Member->primaryKey => $id), 
+                'fields' => array('id', 'first_name', 'last_name', 'middle_name', 'gender', 'birth_date', 'baptized', 
+                    'profile_picture'));
             $this->request->data = $this->Member->find('first', $options);
         }
         $congregations = $this->Member->Congregation->find('list');
@@ -200,7 +207,7 @@ class MembersController extends AppController
             if ($this->Member->$model->save($this->request->data))
             {                
                 $this->Session->setFlash(__('The ' . $modelLabel . ' has been saved.'));
-                return $this->redirect(array('action' => 'view', $this->request->data['Member']['id']));
+                return $this->redirect(array('action' => 'view', $id));
             }
             else
             {
@@ -209,6 +216,7 @@ class MembersController extends AppController
         }
         else
         {            
+            $this->Member->$model->recursive = -1;
             $this->request->data = $this->Member->$model->get($modelId);
         }
     

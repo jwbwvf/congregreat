@@ -13,7 +13,7 @@ class CongregationFixture extends CakeTestFixture
      * @var array
      */
     public $fields = array(
-        'id' => array('type' => 'integer', 'null' => false, 'default' => null, 'key' => 'primary', 'comment' => 'congregation identifier'),
+        'id' => array('type' => 'integer', 'null' => false, 'default' => null, 'key' => 'primary', 'unsigned' => true, 'comment' => 'congregation identifier'),
         'name' => array('type' => 'string', 'null' => false, 'default' => null, 'length' => 100, 'key' => 'unique', 'collate' => 'utf8_unicode_ci', 'comment' => 'name of the congregation', 'charset' => 'utf8'),
         'website' => array('type' => 'string', 'null' => false, 'default' => null, 'length' => 256, 'collate' => 'armscii8_general_ci', 'comment' => 'congregations website address', 'charset' => 'armscii8'),
         'created' => array('type' => 'datetime', 'null' => false, 'default' => null, 'comment' => 'date the congregation was created'),

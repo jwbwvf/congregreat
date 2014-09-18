@@ -49,7 +49,7 @@ class EmailAddress extends AppModel
             'associationForeignKey' => 'congregation_id',
             'unique' => 'keepExisting',
             'conditions' => '',
-            'fields' => '',
+            'fields' => 'id',
             'order' => '',
             'limit' => '',
             'offset' => '',
@@ -62,7 +62,7 @@ class EmailAddress extends AppModel
             'associationForeignKey' => 'member_id',
             'unique' => 'keepExisting',
             'conditions' => '',
-            'fields' => '',
+            'fields' => 'id',
             'order' => '',
             'limit' => '',
             'offset' => '',
@@ -76,7 +76,8 @@ class EmailAddress extends AppModel
         {
             throw new NotFoundException(__('Invalid email address'));
         }
-        $options = array('conditions' => array('EmailAddress.' . $this->primaryKey => $id));
+        $options = array('conditions' => array('EmailAddress.' . $this->primaryKey => $id),
+            'fields' => array('id', 'email_address'));
         return $this->find('first', $options);        
     }
     

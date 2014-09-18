@@ -13,7 +13,7 @@ class AddressFixture extends CakeTestFixture
      * @var array
      */
     public $fields = array(
-        'id' => array('type' => 'integer', 'null' => false, 'default' => null, 'key' => 'primary', 'comment' => 'address identifier'),
+        'id' => array('type' => 'integer', 'null' => false, 'default' => null, 'key' => 'primary', 'unsigned' => true, 'comment' => 'address identifier'),
         'street_address' => array('type' => 'string', 'null' => false, 'default' => null, 'length' => 60, 'collate' => 'utf8_unicode_ci', 'comment' => 'street address', 'charset' => 'utf8'),
         'city' => array('type' => 'string', 'null' => false, 'default' => null, 'length' => 50, 'collate' => 'utf8_unicode_ci', 'comment' => 'city', 'charset' => 'utf8'),
         'state' => array('type' => 'string', 'null' => false, 'default' => null, 'length' => 12, 'collate' => 'utf8_unicode_ci', 'comment' => 'state', 'charset' => 'utf8'),

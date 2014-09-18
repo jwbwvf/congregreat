@@ -45,6 +45,27 @@ class Congregation extends ContactableModel
     //The Associations below have been created with all possible keys, those that are not needed can be removed
 
     /**
+     * hasMany associations
+     *
+     * @var array
+     */
+    public $hasMany = array(
+        'Member' => array(
+            'className' => 'Member',
+            'foreignKey' => 'congregation_id',
+            'dependent' => false,
+            'conditions' => '',
+            'fields' => array('id', 'first_name', 'last_name'),
+            'order' => '',
+            'limit' => '',
+            'offset' => '',
+            'exclusive' => '',
+            'finderQuery' => '',
+            'counterQuery' => ''
+        )
+    );    
+    
+    /**
      * hasAndBelongsToMany associations
      *
      * @var array
@@ -58,7 +79,7 @@ class Congregation extends ContactableModel
             'associationForeignKey' => 'address_id',
             'unique' => 'keepExisting',
             'conditions' => '',
-            'fields' => '',
+            'fields' => array('id', 'street_address', 'city', 'state', 'zipcode', 'country'),
             'order' => '',
             'limit' => '',
             'offset' => '',
@@ -72,7 +93,7 @@ class Congregation extends ContactableModel
             'associationForeignKey' => 'email_address_id',
             'unique' => 'keepExisting',
             'conditions' => '',
-            'fields' => '',
+            'fields' => array('id', 'email_address'),
             'order' => '',
             'limit' => '',
             'offset' => '',
@@ -86,7 +107,7 @@ class Congregation extends ContactableModel
             'associationForeignKey' => 'phone_id',
             'unique' => 'keepExisting',
             'conditions' => '',
-            'fields' => '',
+            'fields' => array('id', 'number', 'type'),
             'order' => '',
             'limit' => '',
             'offset' => '',
@@ -111,7 +132,10 @@ class Congregation extends ContactableModel
         {
             throw new NotFoundException(__('Invalid congregation'));
         }
-        $options = array('conditions' => array('Congregation.' . $this->primaryKey => $id)); 
+        $options = array(
+            'conditions' => array('Congregation.' . $this->primaryKey => $id),
+            'fields' => array('id', 'name', 'website')
+            ); 
         return $this->find('first', $options);
     }   
     
@@ -122,14 +146,14 @@ class Congregation extends ContactableModel
         {
             return false;
         }
-        $this->save($data['Congregation']);
+        $this->save($data['Congregation']);        
         $data['Congregation']['id'] = $this->id;
         return parent::add($data);
     }
     
     public function addModel($data, $model)
     {
-        $this->id = $data['Congregation']['id'];
+        //$this->id = $data['Congregation']['id'];
         
         //check if this the model already exists and use it if it does
         $existingModel = $this->$model->getByData($data[$model]);
@@ -141,7 +165,7 @@ class Congregation extends ContactableModel
             {
                 return false;
             }
-            
+                        
             return $this->$model->save($data, false);
         }   
         else

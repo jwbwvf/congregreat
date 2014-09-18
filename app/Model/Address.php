@@ -131,7 +131,7 @@ class Address extends AppModel
             'associationForeignKey' => 'congregation_id',
             'unique' => 'keepExisting',
             'conditions' => '',
-            'fields' => '',
+            'fields' => 'id',
             'order' => '',
             'limit' => '',
             'offset' => '',
@@ -144,7 +144,7 @@ class Address extends AppModel
             'associationForeignKey' => 'member_id',
             'unique' => 'keepExisting',
             'conditions' => '',
-            'fields' => '',
+            'fields' => 'id',
             'order' => '',
             'limit' => '',
             'offset' => '',
@@ -158,7 +158,8 @@ class Address extends AppModel
         {
             throw new NotFoundException(__('Invalid address'));
         }
-        $options = array('conditions' => array('Address.' . $this->primaryKey => $id));
+        $options = array('conditions' => array('Address.' . $this->primaryKey => $id),
+            'fields' => array('id', 'street_address', 'city', 'state', 'zipcode', 'country'));
         return $this->find('first', $options);        
     }    
     

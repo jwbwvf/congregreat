@@ -26,6 +26,10 @@ class CongregationsController extends AppController
     public function index()
     {
         $this->Congregation->recursive = 0;
+                
+        $paginator = array('fields' => array('id', 'name', 'website'));
+
+        $this->Paginator->settings = $paginator;
         $this->set('congregations', $this->Paginator->paginate());
     }
 
@@ -161,7 +165,10 @@ class CongregationsController extends AppController
         }
         else
         {            
-            $this->request->data = $this->Congregation->get($id);
+            $this->Congregation->recursive = -1;
+            $options = array('conditions' => array('Congregation.' . $this->Congregation->primaryKey => $id),
+                'fields' => array('id', 'name', 'website'));
+            $this->request->data = $this->Congregation->find('first', $options);
         }
     }
 
@@ -286,7 +293,7 @@ class CongregationsController extends AppController
             if ($this->Congregation->$model->save($this->request->data))
             {                
                 $this->Session->setFlash(__('The ' . $modelLabel . ' has been saved.'));
-                return $this->redirect(array('action' => 'view', $this->request->data['Congregation']['id']));
+                return $this->redirect(array('action' => 'view', $id));
             }
             else
             {
@@ -295,6 +302,7 @@ class CongregationsController extends AppController
         }
         else
         {            
+            $this->Congregation->$model->recursive = -1;            
             $this->request->data = $this->Congregation->$model->get($modelId);
         }
     

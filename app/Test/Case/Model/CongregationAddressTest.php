@@ -20,8 +20,7 @@ class CongregationAddressTest extends CongregationBase
             )
         );
         
-        $return = $this->Congregation->addAddress($addressData);
-        
+        $return = $this->Congregation->addAddress($addressData);        
         $this->assertNotEqual(false, $return);
         
         $sql  = $this->buildCongregationsAddressQuery($return['Address']['id']);
@@ -38,119 +37,119 @@ class CongregationAddressTest extends CongregationBase
         $this->assertEqual($addressData['Congregation']['id'], $row['congregations']['id']);        
     }
     
-    public function testAddAddress_InvalidState()
-    {
-        $this->Congregation->add($this->congregationAddData);
-        
-        $addressData = array(
-            'Congregation' => array('id' => $this->Congregation->id),
-            'Address' => array(
-                'street_address' => '555 elm grove',
-                'city' => 'stl',
-                'state' => 'invalid',
-                'zipcode' => '66000',
-                'country' => 'United States'
-            )
-        );
-        
-        $return = $this->Congregation->addAddress($addressData);
-        
-        $this->assertEqual(false, $return);        
-    }
+//    public function testAddAddress_InvalidState()
+//    {
+//        $this->Congregation->add($this->congregationAddData);
+//        
+//        $addressData = array(
+//            'Congregation' => array('id' => $this->Congregation->id),
+//            'Address' => array(
+//                'street_address' => '555 elm grove',
+//                'city' => 'stl',
+//                'state' => 'invalid',
+//                'zipcode' => '66000',
+//                'country' => 'United States'
+//            )
+//        );
+//        
+//        $return = $this->Congregation->addAddress($addressData);
+//        
+//        $this->assertEqual(false, $return);        
+//    }
+//    
+//    public function testAddAddress_InvalidZipcode()
+//    {
+//        $this->Congregation->add($this->congregationAddData);
+//        
+//        $addressData = array(
+//            'Congregation' => array('id' => $this->Congregation->id),
+//            'Address' => array(
+//                'street_address' => '555 elm grove',
+//                'city' => 'stl',
+//                'state' => 'Florida',
+//                'zipcode' => '6600A',
+//                'country' => 'United States'
+//            )
+//        );
+//        
+//        $return = $this->Congregation->addAddress($addressData);
+//        
+//        $this->assertEqual(false, $return);        
+//    }   
     
-    public function testAddAddress_InvalidZipcode()
-    {
-        $this->Congregation->add($this->congregationAddData);
-        
-        $addressData = array(
-            'Congregation' => array('id' => $this->Congregation->id),
-            'Address' => array(
-                'street_address' => '555 elm grove',
-                'city' => 'stl',
-                'state' => 'Florida',
-                'zipcode' => '6600A',
-                'country' => 'United States'
-            )
-        );
-        
-        $return = $this->Congregation->addAddress($addressData);
-        
-        $this->assertEqual(false, $return);        
-    }   
+//    public function testDeleteAddress()
+//    {        
+//        $this->Congregation->add($this->congregationAddData);
+//        
+//        $sql = "SELECT addresses_congregations.address_id, addresses.id 
+//                FROM addresses_congregations
+//                JOIN addresses ON addresses_congregations.address_id = addresses.id
+//                WHERE congregation_id= '" . $this->Congregation->id . "'";
+//        
+//        $dbo = $this->Congregation->getDataSource();        
+//        $dbo->rawQuery($sql);
+//        $row = $dbo->fetchRow();
+//        
+//        $this->assertNotNull($row['addresses_congregations']['address_id']);
+//        $addressId = $row['addresses']['id'];
+//        $this->assertNotNull($addressId);
+//                  
+//        $this->Congregation->deleteAddress($addressId);        
+//
+//        $dbo->rawQuery($sql);
+//        $rowAfter = $dbo->fetchRow();        
+//        
+//        $this->assertNull($rowAfter['addresses_congregations']['address_id']);
+//        $this->assertNull($rowAfter['addresses']['id']);
+//        
+//        $sqlAddress = "SELECT id 
+//                     FROM addresses where addresses.id= '" . $addressId . "'";
+//        
+//        $dbo->rawQuery($sqlAddress);
+//        $rowAddress = $dbo->fetchRow();        
+//        
+//        $this->assertNull($rowAddress['addresses']['id']);                     
+//    }
     
-    public function testDeleteAddress()
-    {        
-        $this->Congregation->add($this->congregationAddData);
-        
-        $sql = "SELECT addresses_congregations.address_id, addresses.id 
-                FROM addresses_congregations
-                JOIN addresses ON addresses_congregations.address_id = addresses.id
-                WHERE congregation_id= '" . $this->Congregation->id . "'";
-        
-        $dbo = $this->Congregation->getDataSource();        
-        $dbo->rawQuery($sql);
-        $row = $dbo->fetchRow();
-        
-        $this->assertNotNull($row['addresses_congregations']['address_id']);
-        $addressId = $row['addresses']['id'];
-        $this->assertNotNull($addressId);
-                  
-        $this->Congregation->deleteAddress($addressId);        
-
-        $dbo->rawQuery($sql);
-        $rowAfter = $dbo->fetchRow();        
-        
-        $this->assertNull($rowAfter['addresses_congregations']['address_id']);
-        $this->assertNull($rowAfter['addresses']['id']);
-        
-        $sqlAddress = "SELECT id 
-                     FROM addresses where addresses.id= '" . $addressId . "'";
-        
-        $dbo->rawQuery($sqlAddress);
-        $rowAddress = $dbo->fetchRow();        
-        
-        $this->assertNull($rowAddress['addresses']['id']);                     
-    }
-    
-    public function testDeleteAddress_IsInUse()
-    {
-        $this->Congregation->add($this->congregationAddData);
-        
-        $secondCongregationData = $this->congregationAddData;
-        $secondCongregationData['Congregation']['name'] = 'secondName';
-        
-        $congregation = ClassRegistry::init('Congregation');
-        $congregation->add($secondCongregationData);
-        
-        $sql = "SELECT addresses_congregations.address_id, addresses.id 
-                FROM addresses_congregations
-                JOIN addresses ON addresses_congregations.address_id = addresses.id
-                WHERE congregation_id= '" . $this->Congregation->id . "'";
-        
-        $dbo = $this->Congregation->getDataSource();        
-        $dbo->rawQuery($sql);
-        $row = $dbo->fetchRow();
-        
-        $this->assertNotNull($row['addresses_congregations']['address_id']);
-        $addressId = $row['addresses']['id'];
-        $this->assertNotNull($addressId);
-               
-        $this->Congregation->deleteAddress($addressId);        
-                        
-        $dbo->rawQuery($sql);
-        $rowAfter = $dbo->fetchRow();        
-        
-        $this->assertNull($rowAfter['addresses_congregations']['address_id']);
-        $this->assertNull($rowAfter['addresses']['id']);
-        
-        $sqlAddress = "SELECT id 
-                     FROM addresses where addresses.id= '" . $addressId . "'";
-        
-        $dbo->rawQuery($sqlAddress);
-        $rowAddress = $dbo->fetchRow();        
-        
-        $this->assertNotNull($rowAddress['addresses']['id']);                   
-    }
+//    public function testDeleteAddress_IsInUse()
+//    {
+//        $this->Congregation->add($this->congregationAddData);
+//        
+//        $secondCongregationData = $this->congregationAddData;
+//        $secondCongregationData['Congregation']['name'] = 'secondName';
+//        
+//        $congregation = ClassRegistry::init('Congregation');
+//        $congregation->add($secondCongregationData);
+//        
+//        $sql = "SELECT addresses_congregations.address_id, addresses.id 
+//                FROM addresses_congregations
+//                JOIN addresses ON addresses_congregations.address_id = addresses.id
+//                WHERE congregation_id= '" . $this->Congregation->id . "'";
+//        
+//        $dbo = $this->Congregation->getDataSource();        
+//        $dbo->rawQuery($sql);
+//        $row = $dbo->fetchRow();
+//        
+//        $this->assertNotNull($row['addresses_congregations']['address_id']);
+//        $addressId = $row['addresses']['id'];
+//        $this->assertNotNull($addressId);
+//               
+//        $this->Congregation->deleteAddress($addressId);        
+//                        
+//        $dbo->rawQuery($sql);
+//        $rowAfter = $dbo->fetchRow();        
+//        
+//        $this->assertNull($rowAfter['addresses_congregations']['address_id']);
+//        $this->assertNull($rowAfter['addresses']['id']);
+//        
+//        $sqlAddress = "SELECT id 
+//                     FROM addresses where addresses.id= '" . $addressId . "'";
+//        
+//        $dbo->rawQuery($sqlAddress);
+//        $rowAddress = $dbo->fetchRow();        
+//        
+//        $this->assertNotNull($rowAddress['addresses']['id']);                   
+//    }
 
     private function buildCongregationsAddressQuery($addressId)
     {

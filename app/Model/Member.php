@@ -127,13 +127,13 @@ class Member extends ContactableModel
             'fields' => '',
             'order' => ''
         ),
-        'Anniversary' => array(
-            'className' => 'Anniversary',
-            'foreignKey' => 'anniversary_id',
-            'conditions' => '',
-            'fields' => '',
-            'order' => ''
-        )
+//        'Anniversary' => array(
+//            'className' => 'Anniversary',
+//            'foreignKey' => 'anniversary_id',
+//            'conditions' => '',
+//            'fields' => '',
+//            'order' => ''
+//        )
     );
 
     /**
@@ -197,7 +197,7 @@ class Member extends ContactableModel
             'associationForeignKey' => 'address_id',
             'unique' => 'keepExisting',
             'conditions' => '',
-            'fields' => '',
+            'fields' => array('id', 'street_address', 'city', 'state', 'zipcode', 'country'),
             'order' => '',
             'limit' => '',
             'offset' => '',
@@ -211,7 +211,7 @@ class Member extends ContactableModel
             'associationForeignKey' => 'email_address_id',
             'unique' => 'keepExisting',
             'conditions' => '',
-            'fields' => '',
+            'fields' => array('id', 'email_address'),
             'order' => '',
             'limit' => '',
             'offset' => '',
@@ -238,7 +238,7 @@ class Member extends ContactableModel
             'associationForeignKey' => 'phone_id',
             'unique' => 'keepExisting',
             'conditions' => '',
-            'fields' => '',
+            'fields' => array('id', 'number', 'type'),
             'order' => '',
             'limit' => '',
             'offset' => '',
@@ -275,8 +275,14 @@ class Member extends ContactableModel
         if (!$this->exists($id))
         {
             throw new NotFoundException(__('Invalid member'));
-        }
-        $options = array('conditions' => array('Member.' . $this->primaryKey => $id)); 
+        }       
+        
+        $options = array(
+            'conditions' => array('Member.' . $this->primaryKey => $id),
+            'fields' => array('id', 'first_name', 'last_name', 'middle_name', 'birth_date',
+                'profile_picture', 'baptized',
+                'Congregation.id', 'Congregation.name')            
+            ); 
         return $this->find('first', $options);
     }      
     

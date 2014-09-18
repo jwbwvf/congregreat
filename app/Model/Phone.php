@@ -57,7 +57,7 @@ class Phone extends AppModel
             'associationForeignKey' => 'congregation_id',
             'unique' => 'keepExisting',
             'conditions' => '',
-            'fields' => '',
+            'fields' => 'id',
             'order' => '',
             'limit' => '',
             'offset' => '',
@@ -70,7 +70,7 @@ class Phone extends AppModel
             'associationForeignKey' => 'member_id',
             'unique' => 'keepExisting',
             'conditions' => '',
-            'fields' => '',
+            'fields' => 'id',
             'order' => '',
             'limit' => '',
             'offset' => '',
@@ -90,7 +90,8 @@ class Phone extends AppModel
         {
             throw new NotFoundException(__('Invalid phone'));
         }
-        $options = array('conditions' => array('Phone.' . $this->primaryKey => $id));
+        $options = array('conditions' => array('Phone.' . $this->primaryKey => $id),
+            'fields' => array('id', 'number', 'type'));
         return $this->find('first', $options);
     }
     
