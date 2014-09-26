@@ -20,6 +20,7 @@
         <li><?php echo $this->Form->postLink(__('Delete Congregation'), array('action' => 'delete', $congregation['Congregation']['id']), null, __('Are you sure you want to delete %s?', $congregation['Congregation']['name'])); ?> </li>
         <li><?php echo $this->Html->link(__('List Congregations'), array('action' => 'index')); ?> </li>
         <li><?php echo $this->Html->link(__('New Congregation'), array('action' => 'add')); ?> </li>
+        <li><?php echo $this->Html->link(__('Follow Congregation'), array('action' => 'requestToFollow', $congregation['Congregation']['id'])); ?> </li>
     </ul>
 </div>
 <div class="related">

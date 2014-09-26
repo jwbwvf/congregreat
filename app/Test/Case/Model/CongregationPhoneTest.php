@@ -5,6 +5,17 @@ App::uses('CongregationBase', 'Test/Case/Model');
 
 class CongregationPhoneTest extends CongregationBase
 {        
+    //Add the line below at the beginning of each test
+    //$this->skipTestEvaluator->shouldSkip(__FUNCTION__);
+    //add test name to the array with
+    //1 - run, 0 - do not run
+    protected $tests = array(
+        'testAddEmailAddress'                       => 1,        
+        'testAddEmailAddress_InvalidEmailAddress'   => 1,
+        'testDeleteEmailAddress'                    => 1,
+        'testDeleteEmailAddress_IsInUse'            => 1,
+    );
+    
     /**
      * test adding a phone number to an existing congregation
      * @covers Congregation::addPhoneNumber

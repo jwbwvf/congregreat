@@ -1,6 +1,7 @@
 <?php
 
 App::uses('ContactableModel', 'Model');
+App::uses('CongregationFollowRequestStatus', 'Model');
 
 /**
  * Congregation Model
@@ -56,6 +57,32 @@ class Congregation extends ContactableModel
             'dependent' => false,
             'conditions' => '',
             'fields' => array('id', 'first_name', 'last_name'),
+            'order' => '',
+            'limit' => '',
+            'offset' => '',
+            'exclusive' => '',
+            'finderQuery' => '',
+            'counterQuery' => ''
+        ),
+        'CongregationFollowRequestLeader' => array(
+            'className' => 'CongregationFollowRequest',
+            'foreignKey' => 'leader_id',
+            'dependent' => false,
+            'conditions' => '',
+            'fields' => '',
+            'order' => '',
+            'limit' => '',
+            'offset' => '',
+            'exclusive' => '',
+            'finderQuery' => '',
+            'counterQuery' => ''            
+        ),
+        'CongregationFollowRequestRequestingFollower' => array(
+            'className' => 'CongregationFollowRequest',
+            'foreignKey' => 'requesting_follower_id',
+            'dependent' => false,
+            'conditions' => '',
+            'fields' => '',
             'order' => '',
             'limit' => '',
             'offset' => '',
@@ -152,9 +179,7 @@ class Congregation extends ContactableModel
     }
     
     public function addModel($data, $model)
-    {
-        //$this->id = $data['Congregation']['id'];
-        
+    {        
         //check if this the model already exists and use it if it does
         $existingModel = $this->$model->getByData($data[$model]);
         
@@ -178,5 +203,37 @@ class Congregation extends ContactableModel
             return $this->$joinModel->save($association, false);
         }           
     }
-
+    
+    /**
+     * 
+     * @param int $followerId the id of the congregation requesting to follow another congregation
+     * @param int $leaderId the id of the congregation to be followed
+     * @return type
+     */
+    public function addFollowRequest($followerId, $leaderId)
+    {
+        $this->CongregationFollowRequestRequestingFollower->create();
+        return $this->CongregationFollowRequestRequestingFollower->save(array('requesting_follower_id' => $followerId,
+            'leader_id' => $leaderId, 'status' => CongregationFollowRequestStatus::PENDING));       
+    }
+//
+//    /**
+//     * 
+//     * @param int $followRequestId the id of the followRequest that is pending acceptance
+//     */
+//    public function acceptFollowRequest($followRequestId)
+//    {
+//        
+//    }
+    
+    /**
+     * 
+     * @param int $followRequestId the id of the followRequest that is pending rejection
+     */
+    public function rejectFollowRequest($followRequestId)
+    {
+        $this->CongregationFollowRequestRequestingFollower->id = $followRequestId;
+        $this->CongregationFollowRequestRequestingFollower->saveField('status', 
+                CongregationFollowRequestStatus::REJECTED);
+    }
 }

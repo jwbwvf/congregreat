@@ -1,8 +1,11 @@
 <?php
 
+App::uses('SkipTestEvaluator', 'Test/Lib');
+
 class CongregationBase extends CakeTestCase
 {
-
+    protected $skipTestEvaluator;
+    
     public $congregationAddData = array(
             'Congregation' => array(
                 'name' => 'testCongregation',
@@ -40,7 +43,8 @@ class CongregationBase extends CakeTestCase
         'app.congregations_phone',
         'app.addresses_member',
         'app.email_addresses_member',
-        'app.members_phone'
+        'app.members_phone',
+        'app.congregation_follow_request'
     );
 
     /**
@@ -52,6 +56,8 @@ class CongregationBase extends CakeTestCase
     {
         parent::setUp();
         $this->Congregation = ClassRegistry::init('Congregation');
+        
+        $this->skipTestEvaluator = new SkipTestEvaluator($this->tests);
     }
 
     /**
@@ -69,6 +75,6 @@ class CongregationBase extends CakeTestCase
     public function test()
     {
         //prevent test failure for not having a test
-        $this->assertTrue(true);
+        $this->markTestSkipped('fake test to prevent failure for base class not having a test.');
     }
 }

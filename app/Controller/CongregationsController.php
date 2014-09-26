@@ -308,4 +308,27 @@ class CongregationsController extends AppController
     
         $this->set('congregationId', $id);        
     }
+    
+    /**
+     * 
+     * @param int $followerId the id of the congregation requesting to follow another congregation
+     * @param int $leaderId the id of the congregation to be followed
+     * @return type
+     */
+    public function requestToFollow($leaderId)
+    {   
+        //TODO get the congregation id off the session
+        //don't want to pass the congregation id in because it would need checked
+        //TODO need ACL for this, check if privileged enough to request to follow another congregation 
+        //i.e. elder, deacon, admin decides for the congregation what other congregations they want to follow
+        if ($this->Congregation->addFollowRequest($followerId, $leaderId))
+        {
+            $this->Session->setFlash(__('A request to follow the congregation has been sent.'));
+            return $this->redirect(array('action' => 'index'));
+        }
+        else
+        {
+            $this->Session->setFlash(__('Unable to send a request to follow the congregation. Please, try again.'));
+        }     
+    }        
 }

@@ -5,6 +5,17 @@ App::uses('CongregationBase', 'Test/Case/Model');
 
 class CongregationEmailAddressTest extends CongregationBase
 {   
+    //Add the line below at the beginning of each test
+    //$this->skipTestEvaluator->shouldSkip(__FUNCTION__);
+    //add test name to the array with
+    //1 - run, 0 - do not run
+    protected $tests = array(
+        'testAddEmailAddress'                       => 1,        
+        'testAddEmailAddress_InvalidEmailAddress'   => 1,
+        'testDeleteEmailAddress'                    => 1,
+        'testDeleteEmailAddress_IsInUse'            => 1,
+    );
+    
     /**
      * test adding an email address to an existing congregation
      * @covers Congregation::addEmailAddress
@@ -12,6 +23,8 @@ class CongregationEmailAddressTest extends CongregationBase
      */
     public function testAddEmailAddress()
     {
+        $this->skipTestEvaluator->shouldSkip(__FUNCTION__);
+        
         $this->Congregation->add($this->congregationAddData);
         
         $emailAddressData = array(
@@ -40,6 +53,8 @@ class CongregationEmailAddressTest extends CongregationBase
      */
     public function testAddEmailAddress_InvalidEmailAddress()
     {
+        $this->skipTestEvaluator->shouldSkip(__FUNCTION__);
+        
         $this->Congregation->add($this->congregationAddData);
         
         $emailAddressData = array(
@@ -54,6 +69,8 @@ class CongregationEmailAddressTest extends CongregationBase
     
     public function testDeleteEmailAddress()
     {
+        $this->skipTestEvaluator->shouldSkip(__FUNCTION__);
+        
         $this->Congregation->add($this->congregationAddData);
         
         $sql = "SELECT congregations_email_addresses.email_address_id, email_addresses.id 
@@ -88,6 +105,8 @@ class CongregationEmailAddressTest extends CongregationBase
     
     public function testDeleteEmailAddress_IsInUse()
     {
+        $this->skipTestEvaluator->shouldSkip(__FUNCTION__);
+        
         $this->Congregation->add($this->congregationAddData);
         
         $secondCongregationData = $this->congregationAddData;
