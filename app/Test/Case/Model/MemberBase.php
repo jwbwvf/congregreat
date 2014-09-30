@@ -1,7 +1,11 @@
 <?php
 
+App::uses('SkipTestEvaluator', 'Test/Lib');
+
 class MemberBase extends CakeTestCase
 {
+    protected $skipTestEvaluator;
+    
     public $memberAddData = array(
             'Member' => array(
                 'congregation_id' => '1',
@@ -67,6 +71,8 @@ class MemberBase extends CakeTestCase
     {
         parent::setUp();
         $this->Member = ClassRegistry::init('Member');
+        
+        $this->skipTestEvaluator = new SkipTestEvaluator($this->tests);
     }
 
     /**
@@ -84,6 +90,6 @@ class MemberBase extends CakeTestCase
     public function test()
     {
         //prevent test failure for not having a test
-        $this->assertTrue(true);
+        $this->markTestSkipped('fake test to prevent failure for base class not having a test.');
     }    
 }

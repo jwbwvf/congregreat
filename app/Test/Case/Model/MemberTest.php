@@ -9,13 +9,30 @@ App::uses('MemberBase', 'Test/Case/Model');
  */
 class MemberTest extends MemberBase
 {   
-
+    //Add the line below at the beginning of each test
+    //$this->skipTestEvaluator->shouldSkip(__FUNCTION__);
+    //add test name to the array with
+    //1 - run, 0 - do not run
+    protected $tests = array(
+        'testAdd'                           => 1,        
+        'testAdd_MissingCongregationId'     => 1,
+        'testAdd_MissingFirstName'          => 1,
+        'testAdd_MissingLastName'           => 1,
+        'testAdd_InvalidEmail'              => 1, 
+        'testAdd_InvalidAddress'            => 1,
+        'testAdd_InvalidPhoneNumber'        => 1,
+        'testDelete'                        => 1,
+        'testDelete_ExistingAssociations'   => 1,
+    );
+    
     /**
      * test adding a member with all it's related data: phone, email, address
      * 
      */
     public function testAdd()
     {
+        $this->skipTestEvaluator->shouldSkip(__FUNCTION__);
+        
         $return = $this->Member->add($this->memberAddData);
         $this->assertTrue($return);
         
@@ -45,19 +62,24 @@ class MemberTest extends MemberBase
     
     public function testAdd_MissingCongregationId()
     {
+        $this->skipTestEvaluator->shouldSkip(__FUNCTION__);
+        
         $this->validate('Member', 'congregation_id', '');
     }
     
     public function testAdd_MissingFirstName()
     {
+        $this->skipTestEvaluator->shouldSkip(__FUNCTION__);
+        
         $this->validate('Member', 'first_name', '');                
     }
     
     public function testAdd_MissingLastName()
     {
+        $this->skipTestEvaluator->shouldSkip(__FUNCTION__);
+        
         $this->validate('Member', 'last_name', '');        
     }    
-
     
     /**
      * test adding a member that has an invalid email address
@@ -67,6 +89,8 @@ class MemberTest extends MemberBase
      */
     public function testAdd_InvalidEmail()
     {
+        $this->skipTestEvaluator->shouldSkip(__FUNCTION__);
+        
         $this->validate('EmailAddress', 'email_address', 'invalidEmail@nowhere');      
     } 
     
@@ -78,6 +102,8 @@ class MemberTest extends MemberBase
      */
     public function testAdd_InvalidAddress()
     {
+        $this->skipTestEvaluator->shouldSkip(__FUNCTION__);
+        
         $this->validate('Address', 'zipcode', '6405A');
     }        
     
@@ -89,6 +115,8 @@ class MemberTest extends MemberBase
      */    
     public function testAdd_InvalidPhoneNumber()
     {
+        $this->skipTestEvaluator->shouldSkip(__FUNCTION__);
+        
         $this->validate('Phone', 'number', '5555-555-5555');       
     } 
     
@@ -103,6 +131,8 @@ class MemberTest extends MemberBase
      */
     public function testDelete()
     {
+        $this->skipTestEvaluator->shouldSkip(__FUNCTION__);
+        
         $this->Member->add($this->memberAddData);      
         
         $dbo = $this->Member->getDataSource();
@@ -146,6 +176,8 @@ class MemberTest extends MemberBase
      */
     public function testDelete_ExistingAssociations()
     {
+        $this->skipTestEvaluator->shouldSkip(__FUNCTION__);
+        
         $return = $this->Member->add($this->memberAddData);
         $this->assertTrue($return);        
         

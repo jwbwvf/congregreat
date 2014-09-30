@@ -5,8 +5,22 @@ App::uses('MemberBase', 'Test/Case/Model');
 
 class MemberAddressTest extends MemberBase
 {
-   public function testAddAddress()
+    //Add the line below at the beginning of each test
+    //$this->skipTestEvaluator->shouldSkip(__FUNCTION__);
+    //add test name to the array with
+    //1 - run, 0 - do not run
+    protected $tests = array(
+        'testAdd'               => 1,        
+        'testAdd_InvalidState'  => 1,
+        'testAdd_InvalidZipcode'=> 1,
+        'testDelete'            => 1,
+        'testDelete_IsInUse'    => 1,
+    );
+    
+    public function testAdd()
     {        
+        $this->skipTestEvaluator->shouldSkip(__FUNCTION__);
+        
         $this->Member->add($this->memberAddData);
         
         $addressData = array(
@@ -38,8 +52,10 @@ class MemberAddressTest extends MemberBase
         $this->assertEqual($addressData['Member']['id'], $row['members']['id']);        
     }
     
-    public function testAddAddress_InvalidState()
+    public function testAdd_InvalidState()
     {
+        $this->skipTestEvaluator->shouldSkip(__FUNCTION__);
+        
         $this->Member->add($this->memberAddData);
         
         $addressData = array(
@@ -58,8 +74,10 @@ class MemberAddressTest extends MemberBase
         $this->assertEqual(false, $return);        
     }
     
-    public function testAddAddress_InvalidZipcode()
+    public function testAdd_InvalidZipcode()
     {
+        $this->skipTestEvaluator->shouldSkip(__FUNCTION__);
+        
         $this->Member->add($this->memberAddData);
         
         $addressData = array(
@@ -78,8 +96,10 @@ class MemberAddressTest extends MemberBase
         $this->assertEqual(false, $return);        
     }   
     
-    public function testDeleteAddress()
+    public function testDelete()
     {
+        $this->skipTestEvaluator->shouldSkip(__FUNCTION__);
+        
         $this->Member->add($this->memberAddData);
         
         $sql = "SELECT addresses_members.address_id, addresses.id 
@@ -112,8 +132,10 @@ class MemberAddressTest extends MemberBase
         $this->assertNull($rowAddress['addresses']['id']);                     
     }
     
-    public function testDeleteAddress_IsInUse()
+    public function testDelete_IsInUse()
     {
+        $this->skipTestEvaluator->shouldSkip(__FUNCTION__);
+        
         $this->Member->add($this->memberAddData);
         
         $secondMemberData = $this->memberAddData;

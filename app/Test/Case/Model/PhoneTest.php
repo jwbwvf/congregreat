@@ -1,6 +1,7 @@
 <?php
 
 App::uses('Phone', 'Model');
+App::uses('SkipTestEvaluator', 'Test/Lib');
 
 /**
  * Phone Test Case
@@ -9,6 +10,19 @@ App::uses('Phone', 'Model');
 class PhoneTest extends CakeTestCase
 {
 
+    //Add the line below at the beginning of each test
+    //$this->skipTestEvaluator->shouldSkip(__FUNCTION__);
+    //add test name to the array with
+    //1 - run, 0 - do not run
+    protected $tests = array(
+        'testAdd'                           => 1,        
+        'testAdd_MissingNumber'             => 1,
+        'testAdd_InvalidNumberFormat'       => 1,
+        'testAdd_InvalidNumber_LengthLong'  => 1,
+        'testAdd_InvalidNumber_LengthShort' => 1,        
+        'testAdd_testAdd_InvalidType'       => 1,
+    );
+    
     /**
      * Fixtures
      *
@@ -27,6 +41,8 @@ class PhoneTest extends CakeTestCase
     {
         parent::setUp();
         $this->Phone = ClassRegistry::init('Phone');
+        
+        $this->skipTestEvaluator = new SkipTestEvaluator($this->tests);
     }
 
     /**
@@ -47,6 +63,8 @@ class PhoneTest extends CakeTestCase
      */
     public function testAdd()
     {
+        $this->skipTestEvaluator->shouldSkip(__FUNCTION__);
+        
         $data = $this->createPhone();
         
         $this->Phone->create();
@@ -60,6 +78,8 @@ class PhoneTest extends CakeTestCase
      */
     public function testAdd_MissingNumber()
     {
+        $this->skipTestEvaluator->shouldSkip(__FUNCTION__);
+        
         $this->validate('number', '');     
     }
 
@@ -69,6 +89,8 @@ class PhoneTest extends CakeTestCase
      */
     public function testAdd_InvalidNumberFormat()
     {   
+        $this->skipTestEvaluator->shouldSkip(__FUNCTION__);
+        
         $this->validate('number', '(555)-555-5555');
     }  
     
@@ -78,6 +100,8 @@ class PhoneTest extends CakeTestCase
      */
     public function testAdd_InvalidNumber_LengthLong()
     {   
+        $this->skipTestEvaluator->shouldSkip(__FUNCTION__);
+        
         $this->validate('number', '5555-555-5555');
     }
     
@@ -87,6 +111,8 @@ class PhoneTest extends CakeTestCase
      */
     public function testAdd_InvalidNumber_LengthShort()
     {   
+        $this->skipTestEvaluator->shouldSkip(__FUNCTION__);
+        
         $this->validate('number', '555-555-555');
     }    
     
@@ -96,6 +122,8 @@ class PhoneTest extends CakeTestCase
      */
     public function testAdd_InvalidType()
     {   
+        $this->skipTestEvaluator->shouldSkip(__FUNCTION__);
+        
         $this->validate('type', 'invalid');
     }
     

@@ -1,6 +1,7 @@
 <?php
 
 App::uses('Address', 'Model');
+App::uses('SkipTestEvaluator', 'Test/Lib');
 
 /**
  * Address Test Case
@@ -8,7 +9,20 @@ App::uses('Address', 'Model');
  */
 class AddressTest extends CakeTestCase
 {
-
+    //Add the line below at the beginning of each test
+    //$this->skipTestEvaluator->shouldSkip(__FUNCTION__);
+    //add test name to the array with
+    //1 - run, 0 - do not run
+    protected $tests = array(        
+        'testAdd_InvalidZipcode_NonNumeric'     => 1,
+        'testAdd_InvalidZipcode_LengthLong'     => 1,
+        'testAdd_InvalidZipcode_LengthShort'    => 1,
+        'testAdd_InvalidState'                  => 1,        
+        'testAdd_EmptyCity'                     => 1,
+        'testAdd_InvalidCountry'                => 1,
+        'testAdd_EmptyCountry'                  => 1,
+    );
+    
     /**
      * Fixtures
      *
@@ -27,6 +41,8 @@ class AddressTest extends CakeTestCase
     {
         parent::setUp();
         $this->Address = ClassRegistry::init('Address');
+        
+        $this->skipTestEvaluator = new SkipTestEvaluator($this->tests);
     }
 
     /**
@@ -46,6 +62,8 @@ class AddressTest extends CakeTestCase
      */
     public function testAdd_InvalidZipcode_NonNumeric()
     {           
+        $this->skipTestEvaluator->shouldSkip(__FUNCTION__);
+        
         $this->validate('zipcode', 'AAAAA');
     }
 
@@ -54,6 +72,8 @@ class AddressTest extends CakeTestCase
      */    
     public function testAdd_InvalidZipcode_LengthLong()
     {
+        $this->skipTestEvaluator->shouldSkip(__FUNCTION__);
+        
         $this->validate('zipcode', '640555');
     }
     
@@ -62,6 +82,8 @@ class AddressTest extends CakeTestCase
      */    
     public function testAdd_InvalidZipcode_LengthShort()
     {
+        $this->skipTestEvaluator->shouldSkip(__FUNCTION__);
+        
         $this->validate('zipcode', '6405');
     }    
 
@@ -70,6 +92,8 @@ class AddressTest extends CakeTestCase
      */    
     public function testAdd_InvalidState()
     {
+        $this->skipTestEvaluator->shouldSkip(__FUNCTION__);
+        
         $this->validate('state', 'invalid');
     }    
     
@@ -78,6 +102,8 @@ class AddressTest extends CakeTestCase
      */        
     public function testAdd_EmptyCity()
     {
+        $this->skipTestEvaluator->shouldSkip(__FUNCTION__);
+        
         $this->validate('city', '');     
     }
     
@@ -86,6 +112,8 @@ class AddressTest extends CakeTestCase
      */        
     public function testAdd_InvalidCountry()
     {
+        $this->skipTestEvaluator->shouldSkip(__FUNCTION__);
+        
         $this->validate('country', 'China');              
     }
     
@@ -94,6 +122,8 @@ class AddressTest extends CakeTestCase
      */        
     public function testAdd_EmptyCountry()
     {
+        $this->skipTestEvaluator->shouldSkip(__FUNCTION__);
+        
         $this->validate('country', '');
     }
     

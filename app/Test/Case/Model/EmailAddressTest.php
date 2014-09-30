@@ -1,6 +1,7 @@
 <?php
 
 App::uses('EmailAddress', 'Model');
+App::uses('SkipTestEvaluator', 'Test/Lib');
 
 /**
  * EmailAddress Test Case
@@ -8,7 +9,15 @@ App::uses('EmailAddress', 'Model');
  */
 class EmailAddressTest extends CakeTestCase
 {
-
+    //Add the line below at the beginning of each test
+    //$this->skipTestEvaluator->shouldSkip(__FUNCTION__);
+    //add test name to the array with
+    //1 - run, 0 - do not run
+    protected $tests = array(
+        'testAdd'                       => 1,        
+        'testAdd_InvalidEmailAddress'   => 1,
+    );
+    
     /**
      * Fixtures
      *
@@ -27,6 +36,8 @@ class EmailAddressTest extends CakeTestCase
     {
         parent::setUp();
         $this->EmailAddress = ClassRegistry::init('EmailAddress');
+        
+        $this->skipTestEvaluator = new SkipTestEvaluator($this->tests);        
     }
 
     /**
@@ -46,6 +57,8 @@ class EmailAddressTest extends CakeTestCase
      */
     public function testAdd()
     {
+        $this->skipTestEvaluator->shouldSkip(__FUNCTION__);
+        
         $data = array('email_address' => 'email@email.com');
         
         $this->EmailAddress->create();
@@ -59,6 +72,8 @@ class EmailAddressTest extends CakeTestCase
      */
     public function testAdd_InvalidEmailAddress()
     {
+        $this->skipTestEvaluator->shouldSkip(__FUNCTION__);
+        
         $data = array('email_address' => 'email.com');
         
         $this->EmailAddress->create();

@@ -5,13 +5,26 @@ App::uses('MemberBase', 'Test/Case/Model');
 
 class MemberPhoneTest extends MemberBase
 {
+    //Add the line below at the beginning of each test
+    //$this->skipTestEvaluator->shouldSkip(__FUNCTION__);
+    //add test name to the array with
+    //1 - run, 0 - do not run
+    protected $tests = array(
+        'testAdd'                       => 1,        
+        'testAdd_InvalidPhoneNumber'    => 1,
+        'testDelete'                    => 1,
+        'testDelete_IsInUse'            => 1,
+    );
+    
     /**
      * test adding a phone number to an existing member
      * @covers Member::addPhoneNumber
      * @covers Member::isRelatedModelValid
      */
-    public function testAddPhoneNumber()
+    public function testAdd()
     {
+        $this->skipTestEvaluator->shouldSkip(__FUNCTION__);
+        
         $this->Member->add($this->memberAddData);
         
         $phoneData = array(
@@ -39,8 +52,10 @@ class MemberPhoneTest extends MemberBase
      * @covers Member::addPhoneNumber
      * @covers Member::isRelatedModelValid
      */
-    public function testAddPhoneNumber_InvalidPhoneNumber()
+    public function testAdd_InvalidPhoneNumber()
     {
+        $this->skipTestEvaluator->shouldSkip(__FUNCTION__);
+        
         $this->Member->add($this->memberAddData);
         
         $phoneData = array(
@@ -57,8 +72,10 @@ class MemberPhoneTest extends MemberBase
      * test deleting a phone number for a member
      * @covers Member::deletePhoneNumber
      */
-    public function testDeletePhoneNumber()
+    public function testDelete()
     {
+        $this->skipTestEvaluator->shouldSkip(__FUNCTION__);
+        
         $this->Member->add($this->memberAddData);
         
         $sql = "SELECT members_phones.phone_id, phones.id 
@@ -97,8 +114,10 @@ class MemberPhoneTest extends MemberBase
      * the relationship should be deleted but the phone should not
      * @covers Member::deletePhoneNumber
      */
-    public function testDeletePhoneNumber_IsInUse()
+    public function testDelete_IsInUse()
     {
+        $this->skipTestEvaluator->shouldSkip(__FUNCTION__);
+        
         $this->Member->add($this->memberAddData);                
         
         $secondMemberData = $this->memberAddData;
