@@ -6,7 +6,7 @@
             <th><?php echo $this->Paginator->sort('website'); ?></th>
             <th class="actions"><?php echo __('Actions'); ?></th>
 	</tr>
-	<?php foreach ($congregations as $congregation): ?>
+	<?php foreach ($congregations as $congregation): ?>        
             <tr>
 		<td><?php echo h($congregation['Congregation']['name']); ?>&nbsp;</td>
 		<td><?php echo $this->Html->link($congregation['Congregation']['website'], $congregation['Congregation']['website']); ?>&nbsp;</td>
@@ -14,8 +14,11 @@
                     <?php echo $this->Html->link(__('View'), array('action' => 'view', $congregation['Congregation']['id'])); ?>
                     <?php echo $this->Html->link(__('Edit'), array('action' => 'edit', $congregation['Congregation']['id'])); ?>
                     <?php echo $this->Form->postLink(__('Delete'), array('action' => 'delete', $congregation['Congregation']['id']), null, __('Are you sure you want to delete %s?', $congregation['Congregation']['name'])); ?>
+                    <?php if ($congregation['Congregation']['id'] != $congregationId) { ?>
+                        <?php echo $this->Html->link(__('Follow Congregation'), array('action' => 'requestToFollow', $congregation['Congregation']['id'])); ?>       
+                    <?php } //end if not the congregation that the user(member) belongs to ?>
 		</td>
-            </tr>
+            </tr>        
         <?php endforeach; ?>
     </table>
     <p>

@@ -64,9 +64,9 @@ class Congregation extends ContactableModel
             'finderQuery' => '',
             'counterQuery' => ''
         ),
-        'CongregationFollowRequestLeader' => array(
+        'CongregationFollowRequest' => array(
             'className' => 'CongregationFollowRequest',
-            'foreignKey' => 'leader_id',
+            'foreignKey' => '',
             'dependent' => false,
             'conditions' => '',
             'fields' => '',
@@ -76,10 +76,62 @@ class Congregation extends ContactableModel
             'exclusive' => '',
             'finderQuery' => '',
             'counterQuery' => ''            
-        ),
-        'CongregationFollowRequestRequestingFollower' => array(
-            'className' => 'CongregationFollowRequest',
-            'foreignKey' => 'requesting_follower_id',
+        ),        
+//        'CongregationFollowRequestLeader' => array(
+//            'className' => 'CongregationFollowRequest',
+//            'foreignKey' => 'leader_id',
+//            'dependent' => false,
+//            'conditions' => '',
+//            'fields' => '',
+//            'order' => '',
+//            'limit' => '',
+//            'offset' => '',
+//            'exclusive' => '',
+//            'finderQuery' => '',
+//            'counterQuery' => ''            
+//        ),
+//        'CongregationFollowRequestRequestingFollower' => array(
+//            'className' => 'CongregationFollowRequest',
+//            'foreignKey' => 'requesting_follower_id',
+//            'dependent' => false,
+//            'conditions' => '',
+//            'fields' => '',
+//            'order' => '',
+//            'limit' => '',
+//            'offset' => '',
+//            'exclusive' => '',
+//            'finderQuery' => '',
+//            'counterQuery' => ''
+//        ),
+//        'CongregationFollowLeader' => array(
+//            'className' => 'CongregationFollow',
+//            'foreignKey' => 'leader_id',
+//            'dependent' => false,
+//            'conditions' => '',
+//            'fields' => '',
+//            'order' => '',
+//            'limit' => '',
+//            'offset' => '',
+//            'exclusive' => '',
+//            'finderQuery' => '',
+//            'counterQuery' => ''
+//        ),             
+//        'CongregationFollowFollower' => array(
+//            'className' => 'CongregationFollow',
+//            'foreignKey' => 'follower_id',
+//            'dependent' => false,
+//            'conditions' => '',
+//            'fields' => '',
+//            'order' => '',
+//            'limit' => '',
+//            'offset' => '',
+//            'exclusive' => '',
+//            'finderQuery' => '',
+//            'counterQuery' => ''
+//        )   
+        'CongregationFollow' => array(
+            'className' => 'CongregationFollow',
+            'foreignKey' => '',
             'dependent' => false,
             'conditions' => '',
             'fields' => '',
@@ -89,7 +141,7 @@ class Congregation extends ContactableModel
             'exclusive' => '',
             'finderQuery' => '',
             'counterQuery' => ''
-        )
+        )           
     );    
     
     /**
@@ -212,19 +264,29 @@ class Congregation extends ContactableModel
      */
     public function addFollowRequest($followerId, $leaderId)
     {
-        $this->CongregationFollowRequestRequestingFollower->create();
-        return $this->CongregationFollowRequestRequestingFollower->save(array('requesting_follower_id' => $followerId,
+        $this->CongregationFollowRequest->create();
+        return $this->CongregationFollowRequest->save(array('requesting_follower_id' => $followerId,
             'leader_id' => $leaderId, 'status' => CongregationFollowRequestStatus::PENDING));       
     }
-//
-//    /**
-//     * 
-//     * @param int $followRequestId the id of the followRequest that is pending acceptance
-//     */
-//    public function acceptFollowRequest($followRequestId)
-//    {
-//        
-//    }
+
+    /**
+     * 
+     * @param int $followRequestId the id of the followRequest that is pending acceptance
+     */
+    public function acceptFollowRequest($followRequestId)
+    {
+        $this->CongregationFollowRequest->id = $followRequestId;        
+        if ($this->CongregationFollowRequest->saveField('status', CongregationFollowRequestStatus::ACCEPTED))
+        {
+            $congregationFollowRequest = $this->CongregationFollowRequest->get($followRequestId);
+            $this->CongregationFollow->create();
+            return $this->CongregationFollow->save(array(
+                'follower_id' => $congregationFollowRequest['CongregationFollowRequest']['requesting_follower_id'], 
+                'leader_id' => $congregationFollowRequest['CongregationFollowRequest']['leader_id']));
+        }
+        
+        return false;
+    }
     
     /**
      * 
@@ -232,8 +294,8 @@ class Congregation extends ContactableModel
      */
     public function rejectFollowRequest($followRequestId)
     {
-        $this->CongregationFollowRequestRequestingFollower->id = $followRequestId;
-        $this->CongregationFollowRequestRequestingFollower->saveField('status', 
+        $this->CongregationFollowRequest->id = $followRequestId;
+        return $this->CongregationFollowRequest->saveField('status', 
                 CongregationFollowRequestStatus::REJECTED);
     }
 }

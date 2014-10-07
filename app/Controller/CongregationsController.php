@@ -10,7 +10,20 @@ App::uses('AppController', 'Controller');
  */
 class CongregationsController extends AppController
 {
-
+    //TODO;;remove after login session implementation is added
+    //this for now is to mimic the current congregation id being set
+    //on the session
+    public function __construct($request = null, $response = null)
+    {
+        parent::__construct($request, $response);
+        
+        //set to an existing congregation id in the dev database
+        $this->Session = $this->Components->load('Session');
+        $this->Session->write('Congregation.id', 1);
+    }
+    //END;;TODO
+    
+    
     /**
      * Components
      *
@@ -31,6 +44,7 @@ class CongregationsController extends AppController
 
         $this->Paginator->settings = $paginator;
         $this->set('congregations', $this->Paginator->paginate());
+        $this->set('congregationId', $this->Session->read('Congregation.id'));
     }
 
     /**
@@ -42,7 +56,8 @@ class CongregationsController extends AppController
      */
     public function view($id = null)
     {       
-        $this->set('congregation', $this->Congregation->get($id));    
+        $this->set('congregation', $this->Congregation->get($id));   
+        $this->set('congregationId', $this->Session->read('Congregation.id'));
     }
 
     /**
@@ -311,17 +326,16 @@ class CongregationsController extends AppController
     
     /**
      * 
-     * @param int $followerId the id of the congregation requesting to follow another congregation
      * @param int $leaderId the id of the congregation to be followed
      * @return type
      */
     public function requestToFollow($leaderId)
     {   
-        //TODO get the congregation id off the session
-        //don't want to pass the congregation id in because it would need checked
         //TODO need ACL for this, check if privileged enough to request to follow another congregation 
         //i.e. elder, deacon, admin decides for the congregation what other congregations they want to follow
-        if ($this->Congregation->addFollowRequest($followerId, $leaderId))
+        
+        $requestingFollowerId = $this->Session->read('Congregation.id');
+        if ($this->Congregation->addFollowRequest($requestingFollowerId, $leaderId))
         {
             $this->Session->setFlash(__('A request to follow the congregation has been sent.'));
             return $this->redirect(array('action' => 'index'));

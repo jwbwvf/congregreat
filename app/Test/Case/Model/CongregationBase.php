@@ -44,7 +44,8 @@ class CongregationBase extends CakeTestCase
         'app.addresses_member',
         'app.email_addresses_member',
         'app.members_phone',
-        'app.congregation_follow_request'
+        'app.congregation_follow_request',
+        'app.congregation_follow'
     );
 
     /**

@@ -23,7 +23,8 @@ class CongregationTest extends CongregationBase
         'testDelete'                        => 0,
         'testDelete_ExistingAssociations'   => 0,
         'testAddFollowRequest'              => 0,
-        'testRejectFollowRequest'           => 1,
+        'testRejectFollowRequest'           => 0,
+        'testAcceptFollowRequest'           => 1,
     );
     
     /**
@@ -233,12 +234,7 @@ class CongregationTest extends CongregationBase
         
         $this->assertEquals(1, count($all));
         $this->assertEquals(CongregationFollowRequestStatus::PENDING, $all[0]['congregation_follow_requests']['status']);
-    }
-    
-//    public function testAcceptFollowRequest()
-//    {
-//        
-//    }
+    }    
     
     public function testRejectFollowRequest()
     {
@@ -271,6 +267,47 @@ class CongregationTest extends CongregationBase
         $this->assertEquals(CongregationFollowRequestStatus::REJECTED, 
                 $rowAfterReject['congregation_follow_requests']['status']);        
     }
+    
+    public function testAcceptFollowRequest()
+    {
+        $this->skipTestEvaluator->shouldSkip(__FUNCTION__);
+        
+        $this->Congregation->add($this->congregationAddData);
+        $followerCongregationId = $this->Congregation->id;
+        
+        $congregationAddSecondData = $this->congregationAddData;
+        $congregationAddSecondData['Congregation']['name'] = 'secondCongregation';                
+
+        $this->Congregation->add($congregationAddSecondData);
+        $leadCongregationId = $this->Congregation->id;
+        
+        $this->Congregation->addFollowRequest($followerCongregationId, $leadCongregationId);
+       
+        $dbo = $this->Congregation->getDataSource();
+        $sql = "SELECT id, status FROM congregation_follow_requests WHERE leader_id='" . $leadCongregationId . "' AND "
+                . "requesting_follower_id='" . $followerCongregationId . "'";
+        
+        $dbo->rawQuery($sql);
+        $row = $dbo->fetchRow();
+        $congregationFollowRequestId = $row['congregation_follow_requests']['id'];
+        
+        $this->Congregation->acceptFollowRequest($congregationFollowRequestId);
+        
+        $dbo->rawQuery($sql);        
+        $rowAfterAccept = $dbo->fetchRow();
+        
+        //$this->assertEquals(1, count($allAfterReject));
+        $this->assertEquals(CongregationFollowRequestStatus::ACCEPTED, 
+                $rowAfterAccept['congregation_follow_requests']['status']);      
+        
+        $sqlFollow = "SELECT id FROM congregation_follows WHERE leader_id='" . $leadCongregationId . "' AND "
+                . "follower_id='" . $followerCongregationId . "'";
+        
+        $dbo->rawQuery($sqlFollow);
+        $rowFollow = $dbo->fetchRow();
+        
+        $this->assertTrue(!empty($rowFollow));
+    }    
     
     /**
      * helper method to validate the key value pairs are invalid

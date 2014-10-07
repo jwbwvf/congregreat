@@ -20,7 +20,10 @@
         <li><?php echo $this->Form->postLink(__('Delete Congregation'), array('action' => 'delete', $congregation['Congregation']['id']), null, __('Are you sure you want to delete %s?', $congregation['Congregation']['name'])); ?> </li>
         <li><?php echo $this->Html->link(__('List Congregations'), array('action' => 'index')); ?> </li>
         <li><?php echo $this->Html->link(__('New Congregation'), array('action' => 'add')); ?> </li>
-        <li><?php echo $this->Html->link(__('Follow Congregation'), array('action' => 'requestToFollow', $congregation['Congregation']['id'])); ?> </li>
+        <?php if ($congregation['Congregation']['id'] != $congregationId) { ?>
+            <li><?php echo $this->Html->link(__('Follow Congregation'), array('action' => 'requestToFollow', $congregation['Congregation']['id'])); ?> </li>
+        <?php } //end if not the congregation that the user(member) belongs to ?>
+        
     </ul>
 </div>
 <div class="related">
