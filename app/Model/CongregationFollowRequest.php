@@ -1,6 +1,7 @@
 <?php
 
 App::uses('AppModel', 'Model');
+App::uses('CongregationFollowRequestStatus', 'Model');
 
 /**
  * CongregationFollowRequest Model
@@ -77,12 +78,23 @@ class CongregationFollowRequest extends AppModel
     {
         if (!$this->exists($id))
         {
-            throw new NotFoundException(__('Invalid congregation'));
+            throw new NotFoundException(__('Invalid congregation follow request'));
         }
         $options = array('conditions' => array('CongregationFollowRequest.' . $this->primaryKey => $id),
             'fields' => array('leader_id', 'requesting_follower_id')
         ); 
         
         return $this->find('first', $options);
+    }
+    
+    public function getFollowRequests($leaderId)
+    {
+        $options = array(
+            'conditions' => array('CongregationFollowRequest.leader_id' => $leaderId,
+                'status' => CongregationFollowRequestStatus::PENDING),
+            'fields' => array('id', 'RequestingFollower.id', 'RequestingFollower.name')
+        ); 
+        
+        return $this->find('all', $options);        
     }
 }

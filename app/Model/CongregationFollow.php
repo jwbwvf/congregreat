@@ -63,4 +63,13 @@ class CongregationFollow extends AppModel
         )
     );
 
+    public function getFollows($followerId)
+    {
+        $options = array(
+            'conditions' => array('CongregationFollow.follower_id' => $followerId),
+            'fields' => array('id', 'Leader.id', 'Leader.name')
+        ); 
+        
+        return $this->find('all', $options);             
+    }
 }

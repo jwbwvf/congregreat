@@ -44,6 +44,7 @@ class CongregationsController extends AppController
 
         $this->Paginator->settings = $paginator;
         $this->set('congregations', $this->Paginator->paginate());
+        $this->set('congregationFollowMap', $this->Congregation->getCongregationFollowMap($this->Session->read('Congregation.id')));
         $this->set('congregationId', $this->Session->read('Congregation.id'));
     }
 
@@ -345,4 +346,56 @@ class CongregationsController extends AppController
             $this->Session->setFlash(__('Unable to send a request to follow the congregation. Please, try again.'));
         }     
     }        
+    
+    public function followRequests()
+    {
+        $congregationId = $this->Session->read('Congregation.id');
+        $this->set('followRequests', $this->Congregation->getFollowRequests($congregationId));
+    }    
+    
+    public function acceptFollowRequest($followRequestId)
+    {
+        if ($this->Congregation->acceptFollowRequest($followRequestId))
+        {
+            $this->Session->setFlash(__('The follow request has been accepted.'));
+            return $this->redirect(array('action' => 'followRequests'));
+        }
+        else
+        {
+            $this->Session->setFlash(__('Unable to accept the follow request. Please, try again.'));
+        }
+    }
+    
+    public function rejectFollowRequest($followRequestId)
+    {
+        if ($this->Congregation->rejectFollowRequest($followRequestId))
+        {
+            $this->Session->setFlash(__('The follow request has been rejected.'));
+            return $this->redirect(array('action' => 'followRequests'));
+        }
+        else
+        {
+            $this->Session->setFlash(__('Unable to reject the follow request. Please, try again.'));
+        }
+    }
+    
+    public function follows()
+    {
+        $congregationId = $this->Session->read('Congregation.id');
+        $this->set('follows', $this->Congregation->getFollows($congregationId));
+    }
+    
+    public function stopFollowing($followId)
+    {
+        $this->request->onlyAllow('post', 'delete');
+        if ($this->Congregation->stopFollowing($followId))
+        {
+            $this->Session->setFlash(__('No longer following the congregation.'));
+            return $this->redirect(array('action' => 'follows'));
+        }
+        else
+        {
+            $this->Session->setFlash(__('Unable to stop following the congregation. Please, try again.'));
+        }
+    }
 }

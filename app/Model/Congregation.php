@@ -298,4 +298,32 @@ class Congregation extends ContactableModel
         return $this->CongregationFollowRequest->saveField('status', 
                 CongregationFollowRequestStatus::REJECTED);
     }
+    
+    public function getFollowRequests($leaderId)
+    {                       
+        return $this->CongregationFollowRequest->getFollowRequests($leaderId);
+    }
+    
+    public function getFollows($followerId)
+    {
+        return $this->CongregationFollow->getFollows($followerId);
+    }
+    
+    public function getCongregationFollowMap($followerId)
+    {
+        $congregationFollowMap = array();
+        $follows = $this->CongregationFollow->getFollows($followerId);
+        foreach ($follows as $follow)
+        {
+            $congregationFollowMap[$follow['Leader']['id']] = $follow['CongregationFollow']['id'];
+        }
+        
+        return $congregationFollowMap;        
+    }
+    
+    public function stopFollowing($followId)
+    {
+        $this->CongregationFollow->id = $followId;
+        return $this->CongregationFollow->delete();
+    }
 }

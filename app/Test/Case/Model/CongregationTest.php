@@ -24,7 +24,10 @@ class CongregationTest extends CongregationBase
         'testDelete_ExistingAssociations'   => 0,
         'testAddFollowRequest'              => 0,
         'testRejectFollowRequest'           => 0,
-        'testAcceptFollowRequest'           => 1,
+        'testAcceptFollowRequest'           => 0,
+        'testGetFollowRequests'             => 0,
+        'testGetFollows'                    => 0,
+        'testStopFollowing'                 => 1,
     );
     
     /**
@@ -296,7 +299,6 @@ class CongregationTest extends CongregationBase
         $dbo->rawQuery($sql);        
         $rowAfterAccept = $dbo->fetchRow();
         
-        //$this->assertEquals(1, count($allAfterReject));
         $this->assertEquals(CongregationFollowRequestStatus::ACCEPTED, 
                 $rowAfterAccept['congregation_follow_requests']['status']);      
         
@@ -308,6 +310,102 @@ class CongregationTest extends CongregationBase
         
         $this->assertTrue(!empty($rowFollow));
     }    
+    
+    public function testGetFollowRequests()
+    {
+        $this->skipTestEvaluator->shouldSkip(__FUNCTION__);
+        
+        $this->Congregation->add($this->congregationAddData);
+        $followerCongregationId = $this->Congregation->id;
+        
+        $congregationAddSecondData = $this->congregationAddData;
+        $congregationAddSecondData['Congregation']['name'] = 'secondCongregation';                
+                
+        $this->Congregation->add($congregationAddSecondData);
+        $leadCongregationId = $this->Congregation->id;
+                
+        $this->Congregation->addFollowRequest($followerCongregationId, $leadCongregationId);
+        
+        $congregationAddThirdData = $this->congregationAddData;
+        $congregationAddThirdData['Congregation']['name'] = 'thirdCongregation';                
+                
+        $this->Congregation->add($congregationAddThirdData);
+        $followerCongregationSecondId = $this->Congregation->id;
+        
+        $this->Congregation->addFollowRequest($followerCongregationSecondId, $leadCongregationId);
+        
+        $followRequests  = $this->Congregation->getFollowRequests($leadCongregationId);        
+        $this->assertEqual(2, count($followRequests));        
+    }
+    
+    public function testGetFollows()
+    {
+        $this->skipTestEvaluator->shouldSkip(__FUNCTION__);
+        
+        $this->Congregation->add($this->congregationAddData);
+        $followerCongregationId = $this->Congregation->id;
+        
+        $congregationAddSecondData = $this->congregationAddData;
+        $congregationAddSecondData['Congregation']['name'] = 'secondCongregation';                
+                
+        $this->Congregation->add($congregationAddSecondData);
+        $leadCongregationId = $this->Congregation->id;
+                
+        $this->Congregation->addFollowRequest($followerCongregationId, $leadCongregationId);
+        
+        $congregationAddThirdData = $this->congregationAddData;
+        $congregationAddThirdData['Congregation']['name'] = 'thirdCongregation';                
+                
+        $this->Congregation->add($congregationAddThirdData);
+        $leadCongregationSecondId = $this->Congregation->id;
+        
+        $this->Congregation->addFollowRequest($followerCongregationId, $leadCongregationSecondId);
+        
+        $followRequests  = $this->Congregation->getFollowRequests($leadCongregationId);        
+        foreach ($followRequests as $followRequest)
+        {
+            $this->Congregation->acceptFollowRequest($followRequest['CongregationFollowRequest']['id']);
+        }
+        
+        $followRequestsSecond = $this->Congregation->getFollowRequests($leadCongregationSecondId);
+        foreach ($followRequestsSecond as $followRequest)
+        {
+            $this->Congregation->acceptFollowRequest($followRequest['CongregationFollowRequest']['id']);
+        }
+        
+        $follows = $this->Congregation->getFollows($followerCongregationId);
+        $this->assertEqual(2, count($follows));    
+    }
+    
+    public function testStopFollowing()
+    {
+       $this->skipTestEvaluator->shouldSkip(__FUNCTION__);
+        
+        $this->Congregation->add($this->congregationAddData);
+        $followerCongregationId = $this->Congregation->id;
+        
+        $congregationAddSecondData = $this->congregationAddData;
+        $congregationAddSecondData['Congregation']['name'] = 'secondCongregation';                
+                
+        $this->Congregation->add($congregationAddSecondData);
+        $leadCongregationId = $this->Congregation->id;
+                
+        $this->Congregation->addFollowRequest($followerCongregationId, $leadCongregationId);                
+        
+        $followRequests  = $this->Congregation->getFollowRequests($leadCongregationId);        
+        foreach ($followRequests as $followRequest)
+        {
+            $this->Congregation->acceptFollowRequest($followRequest['CongregationFollowRequest']['id']);
+        }        
+        
+        $follows = $this->Congregation->getFollows($followerCongregationId);
+        $this->assertEqual(1, count($follows));
+        
+        $this->Congregation->stopFollowing($follows[0]['CongregationFollow']['id']);
+        
+        $afterSopFollows = $this->Congregation->getFollows($followerCongregationId);
+        $this->assertEqual(0, count($afterSopFollows));
+    }
     
     /**
      * helper method to validate the key value pairs are invalid
