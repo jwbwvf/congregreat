@@ -10,6 +10,8 @@ App::uses('AppController', 'Controller');
  */
 class CongregationsController extends AppController
 {
+    private $ADMIN_DIRECTORY = 'Admin/';
+    
     //TODO;;remove after login session implementation is added
     //this for now is to mimic the current congregation id being set
     //on the session
@@ -44,8 +46,6 @@ class CongregationsController extends AppController
 
         $this->Paginator->settings = $paginator;
         $this->set('congregations', $this->Paginator->paginate());
-        $this->set('congregationFollowMap', $this->Congregation->getCongregationFollowMap($this->Session->read('Congregation.id')));
-        $this->set('congregationId', $this->Session->read('Congregation.id'));
     }
 
     /**
@@ -59,27 +59,6 @@ class CongregationsController extends AppController
     {       
         $this->set('congregation', $this->Congregation->get($id));   
         $this->set('congregationId', $this->Session->read('Congregation.id'));
-    }
-
-    /**
-     * add method
-     *
-     * @return void
-     */
-    public function add()
-    {
-        if ($this->request->is('post'))
-        {                                                
-            if ($this->Congregation->add($this->request->data))
-            {
-                $this->Session->setFlash(__('The congregation has been saved.'));
-                return $this->redirect(array('action' => 'index'));
-            }
-            else
-            {
-                $this->Session->setFlash(__('The congregation could not be saved. Please, try again.'));
-            }
-        }
     }
     
     /**
@@ -186,26 +165,6 @@ class CongregationsController extends AppController
                 'fields' => array('id', 'name', 'website'));
             $this->request->data = $this->Congregation->find('first', $options);
         }
-    }
-
-    /**
-     * delete method
-     * @throws NotFoundException
-     * @param string $id
-     * @return void
-     */
-    public function delete($id = null)
-    {
-        $this->request->onlyAllow('post', 'delete');
-        if ($this->Congregation->delete($id))
-        {
-            $this->Session->setFlash(__('The congregation has been deleted.'));
-        }
-        else
-        {
-            $this->Session->setFlash(__('The congregation could not be deleted. Please, try again.'));
-        }
-        return $this->redirect(array('action' => 'index'));
     }
 
     /**
@@ -398,4 +357,76 @@ class CongregationsController extends AppController
             $this->Session->setFlash(__('Unable to stop following the congregation. Please, try again.'));
         }
     }
+    
+//Admin methods using Prefix Routing////////////////////////////////////////////////////////////////////////////////////
+//Using subfolder for the admin views so use $this->render($this->ADMIN_DIRECTORY . __FUNCTION__); at the end of 
+//every admin method for rendering the correct view
+//These are the actions that only the superest of users can take ie me, this excludes users that can edit their own
+//congregations info
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    public function admin_index()
+    {
+        $this->Congregation->recursive = 0;
+                
+        $paginator = array('fields' => array('id', 'name', 'website'));
+
+        $this->Paginator->settings = $paginator;
+        $this->set('congregations', $this->Paginator->paginate());
+        $this->set('congregationFollowMap', $this->Congregation->getCongregationFollowMap($this->Session->read('Congregation.id')));
+        $this->set('congregationId', $this->Session->read('Congregation.id'));   
+        
+        $this->render($this->ADMIN_DIRECTORY . __FUNCTION__);
+    }
+    
+    /**
+     * add method
+     *
+     * @return void
+     */
+    public function admin_add()
+    {
+        if ($this->request->is('post'))
+        {                                                
+            if ($this->Congregation->add($this->request->data))
+            {
+                $this->Session->setFlash(__('The congregation has been saved.'));
+                return $this->redirect(array('action' => 'index'));
+            }
+            else
+            {
+                $this->Session->setFlash(__('The congregation could not be saved. Please, try again.'));
+            }
+        }
+        
+        $this->render($this->ADMIN_DIRECTORY . __FUNCTION__);
+    }
+    
+    public function admin_view($id = null)    
+    {       
+        $this->set('congregation', $this->Congregation->get($id));   
+        $this->set('congregationId', $this->Session->read('Congregation.id'));
+        
+        $this->render($this->ADMIN_DIRECTORY . __FUNCTION__);
+    }
+    
+    /**
+     * delete method
+     * @throws NotFoundException
+     * @param string $id
+     * @return void
+     */
+    public function admin_delete($id = null)
+    {
+        $this->request->onlyAllow('post', 'delete');
+        if ($this->Congregation->delete($id))
+        {
+            $this->Session->setFlash(__('The congregation has been deleted.'));
+        }
+        else
+        {
+            $this->Session->setFlash(__('The congregation could not be deleted. Please, try again.'));
+        }
+        return $this->redirect(array('action' => 'index'));
+    }    
+//END Admin methods using Prefix Routing////////////////////////////////////////////////////////////////////////////////
 }

@@ -11,7 +11,11 @@
 		<td><?php echo h($congregation['Congregation']['name']); ?>&nbsp;</td>
 		<td><?php echo $this->Html->link($congregation['Congregation']['website'], $congregation['Congregation']['website']); ?>&nbsp;</td>
 		<td class="actions">
-                    <?php echo $this->Html->link(__('View'), array('action' => 'view', $congregation['Congregation']['id'])); ?>
+                    <?php 
+                        echo $this->Html->link(__('View'), array('action' => 'view', $congregation['Congregation']['id']));
+                        echo $this->Html->link(__('Edit'), array('action' => 'edit', $congregation['Congregation']['id']));
+                        echo $this->Form->postLink(__('Delete'), array('action' => 'delete', $congregation['Congregation']['id']), null, __('Are you sure you want to delete %s?', $congregation['Congregation']['name']));
+                    ?>
 		</td>
             </tr>        
         <?php endforeach; ?>
@@ -31,3 +35,11 @@
 	?>
     </div>
 </div>
+<div class="actions">
+    <h3><?php echo __('Actions'); ?></h3>
+    <ul>
+        <li><?php echo $this->Html->link(__('New Congregation'), array('action' => 'add')); ?></li>
+    </ul>
+</div>
+
+
