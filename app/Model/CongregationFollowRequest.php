@@ -97,4 +97,15 @@ class CongregationFollowRequest extends AppModel
         
         return $this->find('all', $options);        
     }
+    
+    public function getMyPendingRequests($requesting_follower_id)
+    {
+        $options = array(
+            'conditions' => array('CongregationFollowRequest.requesting_follower_id' => $requesting_follower_id,
+                'status' => CongregationFollowRequestStatus::PENDING),
+            'fields' => array('id', 'RequestedLeader.id', 'RequestedLeader.name')
+        );         
+        
+        return $this->find('all', $options);
+    }
 }

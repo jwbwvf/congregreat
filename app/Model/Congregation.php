@@ -77,32 +77,6 @@ class Congregation extends ContactableModel
             'finderQuery' => '',
             'counterQuery' => ''            
         ),        
-//        'CongregationFollowRequestLeader' => array(
-//            'className' => 'CongregationFollowRequest',
-//            'foreignKey' => 'leader_id',
-//            'dependent' => false,
-//            'conditions' => '',
-//            'fields' => '',
-//            'order' => '',
-//            'limit' => '',
-//            'offset' => '',
-//            'exclusive' => '',
-//            'finderQuery' => '',
-//            'counterQuery' => ''            
-//        ),
-//        'CongregationFollowRequestRequestingFollower' => array(
-//            'className' => 'CongregationFollowRequest',
-//            'foreignKey' => 'requesting_follower_id',
-//            'dependent' => false,
-//            'conditions' => '',
-//            'fields' => '',
-//            'order' => '',
-//            'limit' => '',
-//            'offset' => '',
-//            'exclusive' => '',
-//            'finderQuery' => '',
-//            'counterQuery' => ''
-//        ),
 //        'CongregationFollowLeader' => array(
 //            'className' => 'CongregationFollow',
 //            'foreignKey' => 'leader_id',
@@ -304,9 +278,19 @@ class Congregation extends ContactableModel
         return $this->CongregationFollowRequest->getFollowRequests($leaderId);
     }
     
+    public function getMyPendingRequests($requesting_follower_id)
+    {
+        return $this->CongregationFollowRequest->getMyPendingRequests($requesting_follower_id);
+    }
+    
     public function getFollows($followerId)
     {
         return $this->CongregationFollow->getFollows($followerId);
+    }
+    
+    public function getFollowers($leaderId)
+    {
+        return $this->CongregationFollow->getFollowers($leaderId);
     }
     
     public function getCongregationFollowMap($followerId)

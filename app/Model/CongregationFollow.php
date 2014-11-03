@@ -19,23 +19,23 @@ class CongregationFollow extends AppModel
     public $validate = array(
         'follower_id' => array(
             'numeric' => array(
-                'rule' => array('numeric'),
+                'rule' => array('numeric')
             //'message' => 'Your custom message here',
             //'allowEmpty' => false,
             //'required' => false,
             //'last' => false, // Stop validation after this rule
             //'on' => 'create', // Limit validation to 'create' or 'update' operations
-            ),
+            )
         ),
         'leader_id' => array(
             'numeric' => array(
-                'rule' => array('numeric'),
+                'rule' => array('numeric')
             //'message' => 'Your custom message here',
             //'allowEmpty' => false,
             //'required' => false,
             //'last' => false, // Stop validation after this rule
             //'on' => 'create', // Limit validation to 'create' or 'update' operations
-            ),
+            )
         )        
     );
 
@@ -47,16 +47,16 @@ class CongregationFollow extends AppModel
      * @var array
      */
     public $belongsTo = array(
-        'Follower' => array(
+        'Leader' => array(
             'className' => 'Congregation',
-            'foreignKey' => 'follower_id',
+            'foreignKey' => 'leader_id',
             'conditions' => '',
             'fields' => '',
             'order' => ''
         ),
-        'Leader' => array(
+        'Follower' => array(
             'className' => 'Congregation',
-            'foreignKey' => 'leader_id',
+            'foreignKey' => 'follower_id',
             'conditions' => '',
             'fields' => '',
             'order' => ''
@@ -67,9 +67,19 @@ class CongregationFollow extends AppModel
     {
         $options = array(
             'conditions' => array('CongregationFollow.follower_id' => $followerId),
-            'fields' => array('id', 'Leader.id', 'Leader.name')
+            //'fields' => array('id', 'Leader.id', 'Leader.name')
         ); 
         
         return $this->find('all', $options);             
+    }
+    
+    public function getFollowers($leaderId)
+    {        
+        $options = array(
+            'conditions' => array('CongregationFollow.leader_id' => $leaderId),
+//            'fields' => array('id', 'Follower.id', 'Follower.name')
+        );         
+        
+        return $this->find('all', $options);
     }
 }

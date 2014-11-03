@@ -312,6 +312,12 @@ class CongregationsController extends AppController
         $this->set('followRequests', $this->Congregation->getFollowRequests($congregationId));
     }    
     
+    public function myPendingRequests()
+    {
+        $congregationId = $this->Session->read('Congregation.id');
+        $this->set('followRequests', $this->Congregation->getMyPendingRequests($congregationId));        
+    }
+    
     public function acceptFollowRequest($followRequestId)
     {
         if ($this->Congregation->acceptFollowRequest($followRequestId))
@@ -342,6 +348,12 @@ class CongregationsController extends AppController
     {
         $congregationId = $this->Session->read('Congregation.id');
         $this->set('follows', $this->Congregation->getFollows($congregationId));
+    }
+    
+    public function followers()
+    {
+        $congregationId = $this->Session->read('Congregation.id');
+        $this->set('followers', $this->Congregation->getFollowers($congregationId));        
     }
     
     public function stopFollowing($followId)

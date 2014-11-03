@@ -27,7 +27,8 @@ class CongregationTest extends CongregationBase
         'testAcceptFollowRequest'           => 0,
         'testGetFollowRequests'             => 0,
         'testGetFollows'                    => 0,
-        'testStopFollowing'                 => 1,
+        'testGetFollowers'                  => 1,        
+        'testStopFollowing'                 => 0,
     );
     
     /**
@@ -376,6 +377,40 @@ class CongregationTest extends CongregationBase
         $follows = $this->Congregation->getFollows($followerCongregationId);
         $this->assertEqual(2, count($follows));    
     }
+    
+    
+    public function testGetFollowers()
+    {
+        $this->skipTestEvaluator->shouldSkip(__FUNCTION__);
+        
+        $this->Congregation->add($this->congregationAddData);
+        $leaderCongregationId = $this->Congregation->id;
+        
+        $congregationAddSecondData = $this->congregationAddData;
+        $congregationAddSecondData['Congregation']['name'] = 'followCongregationOne';                
+                
+        $this->Congregation->add($congregationAddSecondData);
+        $followingCongregationIdOne = $this->Congregation->id;
+                
+        $this->Congregation->addFollowRequest($followingCongregationIdOne, $leaderCongregationId);
+        
+        $congregationAddThirdData = $this->congregationAddData;
+        $congregationAddThirdData['Congregation']['name'] = 'followCongregationTwo';                
+                
+        $this->Congregation->add($congregationAddThirdData);
+        $followingCongregationIdTwo = $this->Congregation->id;
+        
+        $this->Congregation->addFollowRequest($followingCongregationIdTwo, $leaderCongregationId);
+        
+        $followRequests  = $this->Congregation->getFollowRequests($leaderCongregationId);        
+        foreach ($followRequests as $followRequest)
+        {
+            $this->Congregation->acceptFollowRequest($followRequest['CongregationFollowRequest']['id']);
+        }
+        
+        $followers = $this->Congregation->getFollowers($leaderCongregationId);
+        $this->assertEqual(2, count($followers));
+    }    
     
     public function testStopFollowing()
     {
