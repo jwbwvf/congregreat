@@ -9,7 +9,7 @@
 	<?php foreach ($congregations as $congregation): ?>        
             <tr>
 		<td><?php echo h($congregation['Congregation']['name']); ?>&nbsp;</td>
-		<td><?php echo $this->Html->link($congregation['Congregation']['website'], $congregation['Congregation']['website']); ?>&nbsp;</td>
+		<td><?php echo $this->Html->link($congregation['Congregation']['website']); ?>&nbsp;</td>
 		<td class="actions">
                     <?php echo $this->Html->link(__('View'), array('action' => 'view', $congregation['Congregation']['id'])); ?>
 		</td>

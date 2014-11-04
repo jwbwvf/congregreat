@@ -21,7 +21,7 @@ class CongregationsController extends AppController
         
         //set to an existing congregation id in the dev database
         $this->Session = $this->Components->load('Session');
-        $this->Session->write('Congregation.id', 1);
+        $this->Session->write('Congregation.id', '1');
     }
     //END;;TODO
     
@@ -57,8 +57,8 @@ class CongregationsController extends AppController
      */
     public function view($id = null)
     {       
-        $this->set('congregation', $this->Congregation->get($id));   
-        $this->set('congregationId', $this->Session->read('Congregation.id'));
+        $this->set('congregation', $this->Congregation->get($id));
+        $this->set('followAction', $this->Congregation->getFollowAction($this->Session->read('Congregation.id'), $id));
     }
     
     /**
@@ -289,16 +289,16 @@ class CongregationsController extends AppController
      * @param int $leaderId the id of the congregation to be followed
      * @return type
      */
-    public function requestToFollow($leaderId)
+    public function requestToFollow($leaderId, $viewId)
     {   
         //TODO need ACL for this, check if privileged enough to request to follow another congregation 
         //i.e. elder, deacon, admin decides for the congregation what other congregations they want to follow
-        
+        $this->request->onlyAllow('post', 'delete');
         $requestingFollowerId = $this->Session->read('Congregation.id');
         if ($this->Congregation->addFollowRequest($requestingFollowerId, $leaderId))
         {
             $this->Session->setFlash(__('A request to follow the congregation has been sent.'));
-            return $this->redirect(array('action' => 'index'));
+            return $this->redirect(array('action' => 'view', $viewId));
         }
         else
         {
@@ -344,7 +344,21 @@ class CongregationsController extends AppController
         }
     }
     
-    public function follows()
+    public function cancelFollowRequest($followRequestId, $viewId)
+    {
+        $this->request->onlyAllow('post', 'delete');
+        if ($this->Congregation->cancelFollowRequest($followRequestId))
+        {
+            $this->Session->setFlash(__('The follow request has been cancelled.'));
+            return $this->redirect(array('action' => 'view', $viewId));
+        }
+        else
+        {
+            $this->Session->setFlash(__('Unable to cancel the follow request. Please, try again.'));
+        }        
+    }
+    
+    public function following()
     {
         $congregationId = $this->Session->read('Congregation.id');
         $this->set('follows', $this->Congregation->getFollows($congregationId));
@@ -356,13 +370,13 @@ class CongregationsController extends AppController
         $this->set('followers', $this->Congregation->getFollowers($congregationId));        
     }
     
-    public function stopFollowing($followId)
+    public function stopFollowing($followId, $viewId)
     {
         $this->request->onlyAllow('post', 'delete');
         if ($this->Congregation->stopFollowing($followId))
         {
             $this->Session->setFlash(__('No longer following the congregation.'));
-            return $this->redirect(array('action' => 'follows'));
+            return $this->redirect(array('action' => 'view', $viewId));
         }
         else
         {
@@ -416,7 +430,7 @@ class CongregationsController extends AppController
     public function admin_view($id = null)    
     {       
         $this->set('congregation', $this->Congregation->get($id));   
-        $this->set('congregationId', $this->Session->read('Congregation.id'));
+        $this->set('followAction', $this->Congregation->getFollowAction($this->Session->read('Congregation.id'), $id));
         
         $this->render($this->ADMIN_DIRECTORY . __FUNCTION__);
     }

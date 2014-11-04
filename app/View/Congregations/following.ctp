@@ -9,8 +9,7 @@
             <tr>
 		<td><?php echo h($follow['Leader']['name']); ?>&nbsp;</td>
 		<td class="actions">
-                    <?php echo $this->Html->link(__('View'), array('action' => 'view', $follow['Leader']['id'])); ?>                    
-                    <?php echo $this->Form->postLink(__('Stop Following'), array('action' => 'stopFollowing', $follow['CongregationFollow']['id']), null, __('Are you sure you want to stop following %s?', $follow['Leader']['name'])); ?>
+                    <?php echo $this->Html->link(__('View'), array('action' => 'view', $follow['Leader']['id'])); ?>
 		</td>
             </tr>        
         <?php endforeach; ?>

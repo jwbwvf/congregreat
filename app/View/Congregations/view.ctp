@@ -18,9 +18,9 @@
     <ul>
         <li><?php echo $this->Html->link(__('Edit Congregation'), array('action' => 'edit', $congregation['Congregation']['id'])); ?> </li>
         <li><?php echo $this->Html->link(__('List Congregations'), array('action' => 'index')); ?> </li>
-        <?php if ($congregation['Congregation']['id'] != $congregationId) { ?>
-            <li><?php echo $this->Html->link(__('Follow Congregation'), array('action' => 'requestToFollow', $congregation['Congregation']['id'])); ?> </li>
-        <?php } //end if not the congregation that the user(member) belongs to ?>
+        <?php if (empty($followAction) ===  false) { ?>
+            <li><?php echo $this->Form->postLink(__($followAction['label']), array('action' => $followAction['action'], $followAction['param'], $followAction['viewId'])); ?> </li>
+        <?php } //end if ?>
         
     </ul>
 </div>

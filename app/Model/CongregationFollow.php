@@ -67,7 +67,7 @@ class CongregationFollow extends AppModel
     {
         $options = array(
             'conditions' => array('CongregationFollow.follower_id' => $followerId),
-            //'fields' => array('id', 'Leader.id', 'Leader.name')
+            'fields' => array('id', 'Leader.id', 'Leader.name')
         ); 
         
         return $this->find('all', $options);             
@@ -77,9 +77,23 @@ class CongregationFollow extends AppModel
     {        
         $options = array(
             'conditions' => array('CongregationFollow.leader_id' => $leaderId),
-//            'fields' => array('id', 'Follower.id', 'Follower.name')
+            'fields' => array('id', 'Follower.id', 'Follower.name')
         );         
         
         return $this->find('all', $options);
+    }
+    
+    public function getFollowId($followerId, $leaderId)
+    {
+        $options = array(
+            'conditions' => array(
+                'CongregationFollow.follower_id' => $followerId, 
+                'CongregationFollow.leader_id' => $leaderId
+            ),
+            'fields' => array('id')
+        );
+        
+        $follow = $this->find('first', $options);
+        return empty($follow) ? 0 : $follow['CongregationFollow']['id'];
     }
 }

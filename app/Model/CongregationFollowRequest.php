@@ -91,7 +91,8 @@ class CongregationFollowRequest extends AppModel
     {
         $options = array(
             'conditions' => array('CongregationFollowRequest.leader_id' => $leaderId,
-                'status' => CongregationFollowRequestStatus::PENDING),
+                'status' => CongregationFollowRequestStatus::PENDING
+            ),
             'fields' => array('id', 'RequestingFollower.id', 'RequestingFollower.name')
         ); 
         
@@ -102,10 +103,26 @@ class CongregationFollowRequest extends AppModel
     {
         $options = array(
             'conditions' => array('CongregationFollowRequest.requesting_follower_id' => $requesting_follower_id,
-                'status' => CongregationFollowRequestStatus::PENDING),
+                'status' => CongregationFollowRequestStatus::PENDING
+            ),
             'fields' => array('id', 'RequestedLeader.id', 'RequestedLeader.name')
         );         
         
         return $this->find('all', $options);
+    }
+    
+    public function getPendingFollowRequestId($leaderId, $requestingFollowerId)
+    {
+        $options = array(
+            'conditions' => array(
+                'CongregationFollowRequest.leader_id'=> $leaderId,
+                'CongregationFollowRequest.requesting_follower_id' => $requestingFollowerId,
+                'status' => CongregationFollowRequestStatus::PENDING
+            ),
+            'fields' => array('id')
+        );
+        
+        $followRequest = $this->find('first', $options);
+        return empty($followRequest) ? 0 : $followRequest['CongregationFollowRequest']['id'];
     }
 }
