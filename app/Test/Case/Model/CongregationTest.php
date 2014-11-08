@@ -25,10 +25,16 @@ class CongregationTest extends CongregationBase
         'testAddFollowRequest'              => 0,
         'testRejectFollowRequest'           => 0,
         'testAcceptFollowRequest'           => 0,
+        'testCancelFollowRequest'           => 0,
         'testGetFollowRequests'             => 0,
         'testGetFollows'                    => 0,
-        'testGetFollowers'                  => 1,        
+        'testGetFollowers'                  => 0,        
         'testStopFollowing'                 => 0,
+        'testGetFollowAction'               => 0,
+        'testGetFollowAction_SameCongregationId'                    => 1,
+        'testGetFollowAction_Following'                             => 1,
+        'testGetFollowAction_PendingFollowRequest'                  => 1,
+        'testGetFollowAction_NotFollowing_NoPendingFollowRequest'   => 1,
     );
     
     /**
@@ -312,6 +318,38 @@ class CongregationTest extends CongregationBase
         $this->assertTrue(!empty($rowFollow));
     }    
     
+    public function testCancelFollowRequest()
+    {
+        $this->skipTestEvaluator->shouldSkip(__FUNCTION__);
+        
+        $this->Congregation->add($this->congregationAddData);
+        $followerCongregationId = $this->Congregation->id;
+        
+        $congregationAddSecondData = $this->congregationAddData;
+        $congregationAddSecondData['Congregation']['name'] = 'secondCongregation';                
+
+        $this->Congregation->add($congregationAddSecondData);
+        $leadCongregationId = $this->Congregation->id;
+        
+        $this->Congregation->addFollowRequest($followerCongregationId, $leadCongregationId);
+       
+        $dbo = $this->Congregation->getDataSource();
+        $sql = "SELECT id, status FROM congregation_follow_requests WHERE leader_id='" . $leadCongregationId . "' AND "
+                . "requesting_follower_id='" . $followerCongregationId . "'";
+        
+        $dbo->rawQuery($sql);
+        $row = $dbo->fetchRow();
+        $congregationFollowRequestId = $row['congregation_follow_requests']['id'];
+        
+        $this->Congregation->cancelFollowRequest($congregationFollowRequestId);
+        
+        $dbo->rawQuery($sql);        
+        $rowAfterAccept = $dbo->fetchRow();
+        
+        $this->assertEquals(CongregationFollowRequestStatus::CANCELLED, 
+                $rowAfterAccept['congregation_follow_requests']['status']);
+    }
+    
     public function testGetFollowRequests()
     {
         $this->skipTestEvaluator->shouldSkip(__FUNCTION__);
@@ -414,33 +452,121 @@ class CongregationTest extends CongregationBase
     
     public function testStopFollowing()
     {
-       $this->skipTestEvaluator->shouldSkip(__FUNCTION__);
-        
+        $this->skipTestEvaluator->shouldSkip(__FUNCTION__);
+
         $this->Congregation->add($this->congregationAddData);
         $followerCongregationId = $this->Congregation->id;
-        
+
         $congregationAddSecondData = $this->congregationAddData;
         $congregationAddSecondData['Congregation']['name'] = 'secondCongregation';                
-                
+
         $this->Congregation->add($congregationAddSecondData);
         $leadCongregationId = $this->Congregation->id;
-                
+
         $this->Congregation->addFollowRequest($followerCongregationId, $leadCongregationId);                
-        
+
         $followRequests  = $this->Congregation->getFollowRequests($leadCongregationId);        
         foreach ($followRequests as $followRequest)
         {
             $this->Congregation->acceptFollowRequest($followRequest['CongregationFollowRequest']['id']);
         }        
-        
+
         $follows = $this->Congregation->getFollows($followerCongregationId);
         $this->assertEqual(1, count($follows));
-        
+
         $this->Congregation->stopFollowing($follows[0]['CongregationFollow']['id']);
-        
+
         $afterSopFollows = $this->Congregation->getFollows($followerCongregationId);
         $this->assertEqual(0, count($afterSopFollows));
     }
+    
+    public function testGetFollowAction_SameCongregationId()
+    {
+        $this->skipTestEvaluator->shouldSkip(__FUNCTION__); 
+        
+        $this->Congregation->add($this->congregationAddData);
+        $congregationId = $this->Congregation->id;
+
+        $followAction = $this->Congregation->getFollowAction($congregationId, $congregationId);
+        
+        $this->assertEmpty($followAction);        
+    }
+    
+    public function testGetFollowAction_Following()
+    {
+        $this->skipTestEvaluator->shouldSkip(__FUNCTION__);
+
+        $this->Congregation->add($this->congregationAddData);
+        $followerCongregationId = $this->Congregation->id;
+
+        $congregationAddSecondData = $this->congregationAddData;
+        $congregationAddSecondData['Congregation']['name'] = 'secondCongregation';                
+
+        $this->Congregation->add($congregationAddSecondData);
+        $leadCongregationId = $this->Congregation->id;
+
+        $this->Congregation->addFollowRequest($followerCongregationId, $leadCongregationId);  
+        
+        $followRequests  = $this->Congregation->getFollowRequests($leadCongregationId);        
+        foreach ($followRequests as $followRequest)
+        {
+            $this->Congregation->acceptFollowRequest($followRequest['CongregationFollowRequest']['id']);
+        }   
+        
+        $followAction = $this->Congregation->getFollowAction($followerCongregationId, $leadCongregationId);     
+        $followId = $this->Congregation->CongregationFollow->getFollowId($followerCongregationId, $leadCongregationId);
+       
+        $this->assertEquals($followAction['action'], CongregationFollowActions::STOP);
+        $this->assertEquals($followAction['label'], CongregationFollowActionLabels::STOP);
+        $this->assertEquals($followAction['param'], $followId);
+        $this->assertEquals($followAction['viewId'], $leadCongregationId);
+    }
+    
+    public function testGetFollowAction_PendingFollowRequest()
+    {
+        $this->skipTestEvaluator->shouldSkip(__FUNCTION__);
+        
+        $this->Congregation->add($this->congregationAddData);
+        $followerCongregationId = $this->Congregation->id;
+
+        $congregationAddSecondData = $this->congregationAddData;
+        $congregationAddSecondData['Congregation']['name'] = 'secondCongregation';                
+
+        $this->Congregation->add($congregationAddSecondData);
+        $leadCongregationId = $this->Congregation->id;
+
+        $this->Congregation->addFollowRequest($followerCongregationId, $leadCongregationId);  
+        
+        $followAction = $this->Congregation->getFollowAction($followerCongregationId, $leadCongregationId);     
+        $pendingFollowRequestId = $this->Congregation->CongregationFollowRequest->getPendingFollowRequestId($leadCongregationId, $followerCongregationId);
+                                               
+        $this->assertEquals($followAction['action'], CongregationFollowActions::CANCEL);
+        $this->assertEquals($followAction['label'], CongregationFollowActionLabels::CANCEL);
+        $this->assertEquals($followAction['param'], $pendingFollowRequestId);
+        $this->assertEquals($followAction['viewId'], $leadCongregationId);        
+    }
+    
+    public function testGetFollowAction_NotFollowing_NoPendingFollowRequest()
+    {
+        $this->skipTestEvaluator->shouldSkip(__FUNCTION__);
+        
+        $this->Congregation->add($this->congregationAddData);
+        $followerCongregationId = $this->Congregation->id;
+
+        $congregationAddSecondData = $this->congregationAddData;
+        $congregationAddSecondData['Congregation']['name'] = 'secondCongregation';                
+
+        $this->Congregation->add($congregationAddSecondData);
+        $leadCongregationId = $this->Congregation->id;        
+        
+        $followAction = $this->Congregation->getFollowAction($followerCongregationId, $leadCongregationId); 
+        
+        $this->assertEquals($followAction['action'], CongregationFollowActions::REQUEST);
+        $this->assertEquals($followAction['label'], CongregationFollowActionLabels::REQUEST);
+        $this->assertEquals($followAction['param'], $leadCongregationId);
+        $this->assertEquals($followAction['viewId'], $leadCongregationId);        
+    }
+    
     
     /**
      * helper method to validate the key value pairs are invalid

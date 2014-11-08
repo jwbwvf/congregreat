@@ -2,6 +2,8 @@
 
 App::uses('ContactableModel', 'Model');
 App::uses('CongregationFollowRequestStatus', 'Model');
+App::uses('CongregationFollowActions', 'Model');
+App::uses('CongregationFollowActionLabels', 'Model');
 
 /**
  * Congregation Model
@@ -338,8 +340,8 @@ class Congregation extends ContactableModel
         $followId = $this->CongregationFollow->getFollowId($currentCongregationId, $viewCongregationId);
         if ($followId > 0)
         {
-            $followAction['action'] = 'stopFollowing';
-            $followAction['label'] = 'Stop Following';
+            $followAction['action'] = CongregationFollowActions::STOP;
+            $followAction['label'] = CongregationFollowActionLabels::STOP;
             $followAction['param'] = $followId;
             $followAction['viewId'] = $viewCongregationId;
             
@@ -349,18 +351,18 @@ class Congregation extends ContactableModel
         $followRequestId = $this->CongregationFollowRequest->getPendingFollowRequestId($viewCongregationId, $currentCongregationId);
         if ($followRequestId > 0)
         {
-            $followAction['action'] = 'cancelFollowRequest';
-            $followAction['label'] = 'Cancel Follow Request';
+            $followAction['action'] = CongregationFollowActions::CANCEL;
+            $followAction['label'] = CongregationFollowActionLabels::CANCEL;
             $followAction['param'] = $followRequestId;
             $followAction['viewId'] = $viewCongregationId;
             
             return $followAction;
         }
         
-        $followAction['action'] = 'requestToFollow';
-        $followAction['label'] = 'Follow Congregation';
+        $followAction['action'] = CongregationFollowActions::REQUEST;
+        $followAction['label'] = CongregationFollowActionLabels::REQUEST;
         $followAction['param'] = $viewCongregationId;
-        $followAction['viewId'] = $viewCongregationId;
+        $followAction['viewId'] = $viewCongregationId;        
         
         return $followAction;
     }
