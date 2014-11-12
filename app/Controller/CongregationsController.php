@@ -293,7 +293,7 @@ class CongregationsController extends AppController
     {   
         //TODO need ACL for this, check if privileged enough to request to follow another congregation 
         //i.e. elder, deacon, admin decides for the congregation what other congregations they want to follow
-        $this->request->onlyAllow('post', 'delete');
+        $this->request->onlyAllow('post');
         $requestingFollowerId = $this->Session->read('Congregation.id');
         if ($this->Congregation->addFollowRequest($requestingFollowerId, $leaderId))
         {
@@ -320,6 +320,7 @@ class CongregationsController extends AppController
     
     public function acceptFollowRequest($followRequestId)
     {
+        $this->request->onlyAllow('post');
         if ($this->Congregation->acceptFollowRequest($followRequestId))
         {
             $this->Session->setFlash(__('The follow request has been accepted.'));
@@ -333,6 +334,7 @@ class CongregationsController extends AppController
     
     public function rejectFollowRequest($followRequestId)
     {
+        $this->request->onlyAllow('post');
         if ($this->Congregation->rejectFollowRequest($followRequestId))
         {
             $this->Session->setFlash(__('The follow request has been rejected.'));
@@ -346,7 +348,7 @@ class CongregationsController extends AppController
     
     public function cancelFollowRequest($followRequestId, $viewId)
     {
-        $this->request->onlyAllow('post', 'delete');
+        $this->request->onlyAllow('post');
         if ($this->Congregation->cancelFollowRequest($followRequestId))
         {
             $this->Session->setFlash(__('The follow request has been cancelled.'));
@@ -372,7 +374,7 @@ class CongregationsController extends AppController
     
     public function stopFollowing($followId, $viewId)
     {
-        $this->request->onlyAllow('post', 'delete');
+        $this->request->onlyAllow('post');
         if ($this->Congregation->stopFollowing($followId))
         {
             $this->Session->setFlash(__('No longer following the congregation.'));

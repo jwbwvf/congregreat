@@ -10,8 +10,8 @@
 		<td><?php echo h($followRequest['RequestingFollower']['name']); ?>&nbsp;</td>
 		<td class="actions">
                     <?php echo $this->Html->link(__('View'), array('action' => 'view', $followRequest['RequestingFollower']['id'])); ?>
-                    <?php echo $this->Html->link(__('Accept'), array('action' => 'acceptFollowRequest', $followRequest['CongregationFollowRequest']['id'])); ?>
-                    <?php echo $this->Html->link(__('Reject'), array('action' => 'rejectFollowRequest', $followRequest['CongregationFollowRequest']['id'])); ?>
+                    <?php echo $this->Form->postLink(__('Accept'), array('action' => 'acceptFollowRequest', $followRequest['CongregationFollowRequest']['id'])); ?>
+                    <?php echo $this->Form->postLink(__('Reject'), array('action' => 'rejectFollowRequest', $followRequest['CongregationFollowRequest']['id'])); ?>
 		</td>
             </tr>        
         <?php endforeach; ?>
