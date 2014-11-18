@@ -79,32 +79,6 @@ class Congregation extends ContactableModel
             'finderQuery' => '',
             'counterQuery' => ''            
         ),        
-//        'CongregationFollowLeader' => array(
-//            'className' => 'CongregationFollow',
-//            'foreignKey' => 'leader_id',
-//            'dependent' => false,
-//            'conditions' => '',
-//            'fields' => '',
-//            'order' => '',
-//            'limit' => '',
-//            'offset' => '',
-//            'exclusive' => '',
-//            'finderQuery' => '',
-//            'counterQuery' => ''
-//        ),             
-//        'CongregationFollowFollower' => array(
-//            'className' => 'CongregationFollow',
-//            'foreignKey' => 'follower_id',
-//            'dependent' => false,
-//            'conditions' => '',
-//            'fields' => '',
-//            'order' => '',
-//            'limit' => '',
-//            'offset' => '',
-//            'exclusive' => '',
-//            'finderQuery' => '',
-//            'counterQuery' => ''
-//        )   
         'CongregationFollow' => array(
             'className' => 'CongregationFollow',
             'foreignKey' => '',
@@ -117,7 +91,20 @@ class Congregation extends ContactableModel
             'exclusive' => '',
             'finderQuery' => '',
             'counterQuery' => ''
-        )           
+        ),
+        'Task' => array(
+            'className' => 'Task',
+            'foreignKey' => '',
+            'dependent' => false,
+            'conditions' => '',
+            'fields' => '',
+            'order' => '',
+            'limit' => '',
+            'offset' => '',
+            'exclusive' => '',
+            'finderQuery' => '',
+            'counterQuery' => ''
+        )                   
     );    
     
     /**
@@ -365,5 +352,10 @@ class Congregation extends ContactableModel
         $followAction['viewId'] = $viewCongregationId;        
         
         return $followAction;
+    }
+    
+    public function getTasks($id)
+    {
+        return $this->Task->getAllForCongregation($id);
     }
 }

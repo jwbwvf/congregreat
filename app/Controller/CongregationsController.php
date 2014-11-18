@@ -11,6 +11,7 @@ App::uses('AppController', 'Controller');
 class CongregationsController extends AppController
 {
     private $ADMIN_DIRECTORY = 'Admin/';
+    private $TASK_DIRECTORY = 'Task/';
     
     //TODO;;remove after login session implementation is added
     //this for now is to mimic the current congregation id being set
@@ -385,6 +386,21 @@ class CongregationsController extends AppController
             $this->Session->setFlash(__('Unable to stop following the congregation. Please, try again.'));
         }
     }
+
+//Task methods//////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+//        
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////    
+    public function task_index() 
+    {
+        $congregationId = $this->Session->read('Congregation.id');        
+        $this->set('tasks', $this->Congregation->getTasks($congregationId));
+        
+        $this->render($this->TASK_DIRECTORY . __FUNCTION__);
+    }
+    
+    
+//END Task methods using Prefix Routing/////////////////////////////////////////////////////////////////////////////////
     
 //Admin methods using Prefix Routing////////////////////////////////////////////////////////////////////////////////////
 //Using subfolder for the admin views so use $this->render($this->ADMIN_DIRECTORY . __FUNCTION__); at the end of 
