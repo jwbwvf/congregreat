@@ -392,7 +392,7 @@ class CongregationsController extends AppController
 //        
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////    
     public function task_index() 
-    {
+    {        
         $congregationId = $this->Session->read('Congregation.id');        
         $this->set('tasks', $this->Congregation->getTasks($congregationId));
         
