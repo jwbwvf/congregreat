@@ -399,6 +399,25 @@ class CongregationsController extends AppController
         $this->render($this->TASK_DIRECTORY . __FUNCTION__);
     }
     
+    public function task_add()
+    {
+        if ($this->request->is('post'))
+        {            
+            if ($this->Congregation->addTask($this->request->data))
+            {
+                $this->Session->setFlash(__('The task has been saved for the congregation.'));
+                return $this->render($this->TASK_DIRECTORY . 'task_index');
+            }
+            else
+            {
+                $this->Session->setFlash(__('The task could not be saved. Please, try again.'));
+            }
+        }
+                
+        //$this->set('congregation', $this->Congregation->get($id));       
+        $this->render($this->TASK_DIRECTORY . __FUNCTION__);
+    }    
+    
     
 //END Task methods using Prefix Routing/////////////////////////////////////////////////////////////////////////////////
     
