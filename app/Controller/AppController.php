@@ -37,8 +37,10 @@ class AppController extends Controller {
         'Auth' => array(
             'loginRedirect' => array('controller' => 'users', 'action' => 'index'),
             'logoutRedirect' => array('controller' => 'pages', 'action' => 'display', 'home'),
-            'authorize' => array('Controller'),
-            'userFields' => array('id', 'Member.id')
+            'authorize' => array('Controller')//,
+//            'authenticate' => array(
+//                'userFields' => array('id')
+//            )
         )        
     );
     

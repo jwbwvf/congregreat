@@ -116,9 +116,6 @@ class CakeSocket {
  */
 	public function __construct($config = array()) {
 		$this->config = array_merge($this->_baseConfig, $config);
-		if (!is_numeric($this->config['protocol'])) {
-			$this->config['protocol'] = getprotobyname($this->config['protocol']);
-		}
 	}
 
 /**
@@ -133,8 +130,8 @@ class CakeSocket {
 		}
 
 		$scheme = null;
-		if (isset($this->config['request']['uri']) && $this->config['request']['uri']['scheme'] === 'https') {
-			$scheme = 'ssl://';
+		if (!empty($this->config['protocol']) && strpos($this->config['host'], '://') === false) {
+			$scheme = $this->config['protocol'] . '://';
 		}
 
 		if (!empty($this->config['context'])) {
@@ -241,7 +238,7 @@ class CakeSocket {
 /**
  * Get the last error as a string.
  *
- * @return string Last error
+ * @return string|null Last error
  */
 	public function lastError() {
 		if (!empty($this->lastError)) {
@@ -387,3 +384,4 @@ class CakeSocket {
 	}
 
 }
+
