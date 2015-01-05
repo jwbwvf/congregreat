@@ -12,6 +12,16 @@ App::uses('ContactableModel', 'Model');
  */
 class Member extends ContactableModel
 {
+    public $virtualFields = array('full_name' => "CONCAT(Member.first_name, ' ', Member.last_name)");
+    
+    /**
+     * Display field
+     *
+     * @var string
+     */    
+    public $displayField = 'full_name';
+    
+    
     /**
      * Validation rules
      *

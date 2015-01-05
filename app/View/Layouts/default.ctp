@@ -14,14 +14,14 @@
  * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 
-$cakeDescription = __d('cake_dev', 'Congregreat');
+$description = __d('cake_dev', 'Congregreat');
 ?>
 <!DOCTYPE html>
 <html>
 <head>
 	<?php echo $this->Html->charset(); ?>
 	<title>
-		<?php echo $cakeDescription ?>:
+		<?php echo $description ?>:
 		<?php echo $title_for_layout; ?>
 	</title>
 	<?php
@@ -35,24 +35,17 @@ $cakeDescription = __d('cake_dev', 'Congregreat');
 	?>
 </head>
 <body>
-	<div id="container">
-		<div id="header">
-			<h1><?php //echo $this->Html->link($cakeDescription, 'http://cakephp.org'); ?></h1>
-		</div>
-		<div id="content">
-
-			<?php echo $this->Session->flash(); ?>
-
-			<?php echo $this->fetch('content'); ?>
-		</div>
-		<div id="footer">
-			<?php echo $this->Html->link(
-					$this->Html->image('cake.power.gif', array('alt' => $cakeDescription, 'border' => '0')),
-					'http://www.cakephp.org/',
-					array('target' => '_blank', 'escape' => false)
-				);
-			?>
-		</div>
-	</div>
+    <div id="container">
+        <div id="header">
+            <?php echo $this->element('user_bar'); ?>                    
+        </div>
+        <div id="content">
+            <?php echo $this->Session->flash(); ?>
+            <?php echo $this->fetch('content'); ?>
+        </div>
+        <div id="footer">
+            <?php echo 'copyright 2012 blah blah blah | contact support | about'; ?>            
+        </div>
+    </div>
 </body>
 </html>
