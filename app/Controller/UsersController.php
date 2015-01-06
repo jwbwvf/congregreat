@@ -20,6 +20,7 @@ class UsersController extends AppController {
         parent::beforeFilter();
         //this sets the allowed without login
         $this->Auth->allow('login', 'logout');
+        $this->Auth->authenticate = array('Form' => array('userFields' => array('id', 'Member.id')));
     }
     
     /**
