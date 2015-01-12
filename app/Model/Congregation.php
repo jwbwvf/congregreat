@@ -188,35 +188,12 @@ class Congregation extends ContactableModel
         {
             return false;
         }
-        $this->save($data['Congregation']);        
-        $data['Congregation']['id'] = $this->id;
-        return parent::add($data);
-    }
-    
-    public function addModel($data, $model)
-    {        
-        //check if this the model already exists and use it if it does
-        $existingModel = $this->$model->getByData($data[$model]);
+
+        $this->save($data['Congregation']);     
         
-        if (empty($existingModel))
-        {
-            $this->$model->create();
-            if ($this->isRelatedModelValid($model, $data) === false) 
-            {
-                return false;
-            }
-                        
-            return $this->$model->save($data, false);
-        }   
-        else
-        {            
-            $foreignKey = $this->hasAndBelongsToMany[$model]['foreignKey'];
-            $associatedForeignKey = $this->hasAndBelongsToMany[$model]['associationForeignKey'];
-            $association = array($foreignKey => $this->id, $associatedForeignKey => $existingModel[$model]['id']);
-            
-            $joinModel = $this->hasAndBelongsToMany[$model]['joinModel'];
-            return $this->$joinModel->save($association, false);
-        }           
+        $data['Congregation'] = array('id' => $this->id);
+
+        return parent::add($data);
     }
     
     /**

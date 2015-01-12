@@ -99,7 +99,7 @@ class EmailAddress extends AppModel
     public function isInUse()
     {
         $memberOptions = array('conditions' => array('EmailAddressesMember.email_address_id' => $this->id));                        
-        $emailAddressMembers = $this->EmailAddressesMember->find('first', $memberOptions);
+        $emailAddressMembers = $this->EmailAddressesMember->find('first', $memberOptions);        
         
         if (!empty($emailAddressMembers))
         {

@@ -60,6 +60,32 @@ class ContactableModel extends AppModel
         return $this->addModel($data, 'Address');
     }  
     
+    public function addModel($data, $model)
+    {        
+        //check if this the model already exists and use it if it does
+        $existingModel = $this->$model->getByData($data[$model]);
+        
+        if (empty($existingModel))
+        {
+            $this->$model->create();
+            if ($this->isRelatedModelValid($model, $data) === false) 
+            {
+                return false;
+            }                        
+
+            return $this->$model->save($data, false);            
+        }   
+        else
+        {            
+            $foreignKey = $this->hasAndBelongsToMany[$model]['foreignKey'];
+            $associatedForeignKey = $this->hasAndBelongsToMany[$model]['associationForeignKey'];
+            $association = array($foreignKey => $this->id, $associatedForeignKey => $existingModel[$model]['id']);
+            
+            $joinModel = $this->hasAndBelongsToMany[$model]['joinModel'];
+            return $this->$joinModel->save($association, false);
+        }           
+    }
+    
     /**
      * removes the relationship with the @Phone if there are no other relationships with the @Phone 
      * the @Phone is deleted.

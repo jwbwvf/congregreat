@@ -304,37 +304,11 @@ class Member extends ContactableModel
             return false;
         }
         $this->save($data['Member']);
-        $data['Member']['id'] = $this->id;
+        
+        $data['Member'] = array('id' => $this->id);
+        
         return parent::add($data);
-    }
-    
-    public function addModel($data, $model)
-    {
-        $this->id = $data['Member']['id'];
-        
-        //check if this the model already exists and use it if it does
-        $existingModel = $this->$model->getByData($data[$model]);
-        
-        if (empty($existingModel))
-        {
-            $this->$model->create();
-            if (parent::isRelatedModelValid($model, $data) === false) 
-            {
-                return false;
-            }
-            
-            return $this->$model->save($data, false);            
-        }   
-        else
-        {            
-            $foreignKey = $this->hasAndBelongsToMany[$model]['foreignKey'];
-            $associatedForeignKey = $this->hasAndBelongsToMany[$model]['associationForeignKey'];
-            $association = array($foreignKey => $this->id, $associatedForeignKey => $existingModel[$model]['id']);
-            
-            $joinModel = $this->hasAndBelongsToMany[$model]['joinModel'];
-            return $this->$joinModel->save($association, false);
-        }           
-    }         
+    }        
     
     public function storeProfilePicture($data)
     {
