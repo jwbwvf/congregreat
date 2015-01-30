@@ -1,61 +1,96 @@
 <?php
 
 App::uses('CongregationFollowRequest', 'Model');
+App::uses('CongregationBase', 'Test/Case/Model');
 
 /**
  * CongregationFollowRequest Test Case
  *
  */
-class CongregationFollowRequestTest extends CakeTestCase
+class CongregationFollowRequestTest extends CongregationBase
 {
-
-    /**
-     * Fixtures
-     *
-     * @var array
-     */
-    public $fixtures = array(
-        'app.congregation_follow_request',
-        'app.congregation',
-        'app.member',
-        'app.address',
-        'app.addresses_congregation',
-        'app.addresses_member',
-        'app.email_address',
-        'app.congregations_email_address',
-        'app.email_addresses_member',
-        'app.phone',
-        'app.congregations_phone',
-        'app.members_phone'//,
-        //'app.requesting_congregation'
+    //Add the line below at the beginning of each test
+    //$this->skipTestEvaluator->shouldSkip(__FUNCTION__);
+    //add test name to the array with
+    //1 - run, 0 - do not run
+    protected $tests = array(
+        'testGetFollowRequests'             => 1,      
+        'testGetMyPendingRequests'          => 1,
+        'testGetPendingFollowRequestId'     => 1,
     );
 
-    /**
-     * setUp method
-     *
-     * @return void
-     */
-    public function setUp()
+    public function testGetFollowRequests()
     {
-        parent::setUp();
-        $this->CongregationFollowRequest = ClassRegistry::init('CongregationFollowRequest');
+        $this->skipTestEvaluator->shouldSkip(__FUNCTION__);
+        
+        $this->Congregation->add($this->congregationAddData);
+        $followerCongregationId = $this->Congregation->id;
+        
+        $congregationAddSecondData = $this->congregationAddData;
+        $congregationAddSecondData['Congregation']['name'] = 'secondCongregation';                
+                
+        $this->Congregation->add($congregationAddSecondData);
+        $leadCongregationId = $this->Congregation->id;
+                
+        $this->Congregation->addFollowRequest($followerCongregationId, $leadCongregationId);
+        
+        $congregationAddThirdData = $this->congregationAddData;
+        $congregationAddThirdData['Congregation']['name'] = 'thirdCongregation';                
+                
+        $this->Congregation->add($congregationAddThirdData);
+        $followerCongregationSecondId = $this->Congregation->id;
+        
+        $this->Congregation->addFollowRequest($followerCongregationSecondId, $leadCongregationId);
+        
+        $followRequests  = $this->Congregation->getFollowRequests($leadCongregationId);        
+        $this->assertEqual(2, count($followRequests));        
     }
-
-    /**
-     * tearDown method
-     *
-     * @return void
-     */
-    public function tearDown()
+    
+    public function testGetMyPendingRequests()
     {
-        unset($this->CongregationFollowRequest);
-
-        parent::tearDown();
+        $this->skipTestEvaluator->shouldSkip(__FUNCTION__);
+        
+        $this->skipTestEvaluator->shouldSkip(__FUNCTION__);
+        
+        $this->Congregation->add($this->congregationAddData);
+        $followerCongregationId = $this->Congregation->id;
+        
+        $congregationAddSecondData = $this->congregationAddData;
+        $congregationAddSecondData['Congregation']['name'] = 'secondCongregation';                
+                
+        $this->Congregation->add($congregationAddSecondData);
+        $leadCongregationId = $this->Congregation->id;
+                
+        $this->Congregation->addFollowRequest($followerCongregationId, $leadCongregationId);
+        
+        $congregationAddThirdData = $this->congregationAddData;
+        $congregationAddThirdData['Congregation']['name'] = 'thirdCongregation';                
+                
+        $this->Congregation->add($congregationAddThirdData);
+        $leadCongregationSecondId = $this->Congregation->id;
+        
+        $this->Congregation->addFollowRequest($followerCongregationId, $leadCongregationSecondId);
+        
+        $followRequests  = $this->Congregation->getMyPendingRequests($followerCongregationId);        
+        $this->assertEqual(2, count($followRequests));           
     }
-
-    public function test()
+    
+    public function testGetPendingFollowRequestId()
     {
-        //prevent test failure for not having a test
-        $this->markTestSkipped('fake test to prevent failure for base class not having a test.');
+        $this->skipTestEvaluator->shouldSkip(__FUNCTION__);
+        
+        $this->Congregation->add($this->congregationAddData);
+        $followerCongregationId = $this->Congregation->id;
+        
+        $congregationAddSecondData = $this->congregationAddData;
+        $congregationAddSecondData['Congregation']['name'] = 'secondCongregation';                
+                
+        $this->Congregation->add($congregationAddSecondData);
+        $leadCongregationId = $this->Congregation->id;
+                
+        $this->Congregation->addFollowRequest($followerCongregationId, $leadCongregationId);
+        
+        $followRequestId = $this->Congregation->CongregationFollowRequest->getPendingFollowRequestId($leadCongregationId, $followerCongregationId);
+        $this->assertTrue($followRequestId != 0);
     }    
 }

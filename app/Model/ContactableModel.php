@@ -25,7 +25,12 @@ class ContactableModel extends AppModel
     protected function isRelatedModelValid($model, $data)
     {
         return $this->$model->saveAll($data[$model], array('validate' => 'only'));
-    }   
+    }
+    
+    protected function isValid($data)
+    {        
+        return $this->saveAll($data[get_class($this)], array('validate' => 'only'));
+    }     
     
     /**
      * adds a new @Phone to the ContactableModel

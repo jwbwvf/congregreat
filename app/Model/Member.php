@@ -269,11 +269,6 @@ class Member extends ContactableModel
 //        )
     );  
 
-    protected function isValid($data)
-    {        
-        return $this->saveAll($data['Member'], array('validate' => 'only'));
-    }    
-    
     /**
      * retrievs the @Member for the given id
      * @param int $id @Member identifier

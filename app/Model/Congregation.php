@@ -157,11 +157,6 @@ class Congregation extends ContactableModel
         )
     );   
     
-    protected function isValid($data)
-    {
-        return $this->saveAll($data['Congregation'], array('validate' => 'only'));
-    }
-    
     /**
      * retrievs the @Congregation for the given id
      * @param int $id @Congregation identifier
