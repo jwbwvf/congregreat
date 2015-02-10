@@ -7,7 +7,7 @@ App::uses('AppController', 'Controller');
  * @property PaginatorComponent $Paginator
  */
 class UsersController extends AppController {
-
+    
     /**
      * Components
      *
@@ -20,7 +20,11 @@ class UsersController extends AppController {
         parent::beforeFilter();
         //this sets the allowed without login
         $this->Auth->allow('login', 'logout');
-        $this->Auth->authenticate = array('Form' => array('userFields' => array('id', 'Member.id')));
+        
+        $this->Auth->authenticate = array('Form' => array(
+                'userFields' => array('id', 'Member.id', 'Member.congregation_id')
+            )
+        );
     }
     
     /**
@@ -142,8 +146,6 @@ class UsersController extends AppController {
     public function login() {
         if ($this->request->is('post')) {
             if ($this->Auth->login()) {
-//                $memberId = $this->User->getMemberId(AuthComponent::user('id'));
-//                $this->Session->write('Member.id', $memberId);
                 $this->redirect($this->Auth->redirect());
             } else {
                 $this->Session->setFlash(__('Invalid username or password.'));

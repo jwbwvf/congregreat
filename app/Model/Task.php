@@ -136,4 +136,23 @@ class Task extends AppModel
         
         return $this->find('all', $options);          
     }
+    
+    /**
+     * retrievs the @Task for the given id
+     * @param int $id @Task identifier
+     * @return @Task
+     * @throws NotFoundException
+     */
+    public function get($id)
+    {
+        if (!$this->exists($id))
+        {
+            throw new NotFoundException(__('Invalid task'));
+        }
+        $options = array(
+            'conditions' => array('Task.' . $this->primaryKey => $id),
+            'fields' => array('id', 'name', 'description')
+            ); 
+        return $this->find('first', $options);
+    }    
 }

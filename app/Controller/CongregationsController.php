@@ -11,21 +11,7 @@ App::uses('AppController', 'Controller');
 class CongregationsController extends AppController
 {
     private $ADMIN_DIRECTORY = 'Admin/';
-    private $TASK_DIRECTORY = 'Task/';
-    
-    //TODO;;remove after login session implementation is added
-    //this for now is to mimic the current congregation id being set
-    //on the session
-    public function __construct($request = null, $response = null)
-    {
-        parent::__construct($request, $response);
-        
-        //set to an existing congregation id in the dev database
-        $this->Session = $this->Components->load('Session');
-        $this->Session->write('Congregation.id', '1');
-    }
-    //END;;TODO
-    
+    private $TASK_DIRECTORY = 'Task/';       
     
     /**
      * Components
@@ -58,8 +44,10 @@ class CongregationsController extends AppController
      */
     public function view($id = null)
     {       
+        $membersCongregationId = $this->Auth->user('Member.congregation_id');
         $this->set('congregation', $this->Congregation->get($id));
-        $this->set('followAction', $this->Congregation->getFollowAction($this->Session->read('Congregation.id'), $id));
+        $this->set('followAction', $this->Congregation->getFollowAction($membersCongregationId, $id));
+        $this->set('canModify', $id === $membersCongregationId);
     }
     
     /**
@@ -295,7 +283,7 @@ class CongregationsController extends AppController
         //TODO need ACL for this, check if privileged enough to request to follow another congregation 
         //i.e. elder, deacon, admin decides for the congregation what other congregations they want to follow
         $this->request->onlyAllow('post');
-        $requestingFollowerId = $this->Session->read('Congregation.id');
+        $requestingFollowerId = $this->Auth->user('Member.congregation_id');
         if ($this->Congregation->addFollowRequest($requestingFollowerId, $leaderId))
         {
             $this->Session->setFlash(__('A request to follow the congregation has been sent.'));
@@ -309,13 +297,13 @@ class CongregationsController extends AppController
     
     public function followRequests()
     {
-        $congregationId = $this->Session->read('Congregation.id');
+        $congregationId = $this->Auth->user('Member.congregation_id');
         $this->set('followRequests', $this->Congregation->getFollowRequests($congregationId));
     }    
     
     public function myPendingRequests()
     {
-        $congregationId = $this->Session->read('Congregation.id');
+        $congregationId = $this->Auth->user('Member.congregation_id');
         $this->set('followRequests', $this->Congregation->getMyPendingRequests($congregationId));        
     }
     
@@ -363,13 +351,13 @@ class CongregationsController extends AppController
     
     public function following()
     {
-        $congregationId = $this->Session->read('Congregation.id');
+        $congregationId = $this->Auth->user('Member.congregation_id');
         $this->set('follows', $this->Congregation->getFollows($congregationId));
     }
     
     public function followers()
     {
-        $congregationId = $this->Session->read('Congregation.id');
+        $congregationId = $this->Auth->user('Member.congregation_id');
         $this->set('followers', $this->Congregation->getFollowers($congregationId));        
     }
     
@@ -393,7 +381,7 @@ class CongregationsController extends AppController
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////    
     public function task_index() 
     {        
-        $congregationId = $this->Session->read('Congregation.id');        
+        $congregationId = $this->Auth->user('Member.congregation_id');
         $this->set('tasks', $this->Congregation->getTasks($congregationId));
         
         $this->render($this->TASK_DIRECTORY . __FUNCTION__);
@@ -403,20 +391,28 @@ class CongregationsController extends AppController
     {
         if ($this->request->is('post'))
         {            
-            if ($this->Congregation->addTask($this->request->data))
+            $congregationId = $this->Auth->user('Member.congregation_id');
+            $this->request->data['Task']['congregation_id'] = $congregationId;
+            if ($this->Congregation->Task->save($this->request->data))
             {
                 $this->Session->setFlash(__('The task has been saved for the congregation.'));
-                return $this->render($this->TASK_DIRECTORY . 'task_index');
+                return $this->redirect(array('action' => 'index'));
             }
             else
             {
                 $this->Session->setFlash(__('The task could not be saved. Please, try again.'));
             }
         }
-                
-        //$this->set('congregation', $this->Congregation->get($id));       
+        
         $this->render($this->TASK_DIRECTORY . __FUNCTION__);
-    }    
+    }
+    
+    public function task_view($id = null)
+    {
+        $this->set('task', $this->Congregation->Task->get($id));
+        
+        $this->render($this->TASK_DIRECTORY . __FUNCTION__);
+    }
     
     
 //END Task methods using Prefix Routing/////////////////////////////////////////////////////////////////////////////////
@@ -435,8 +431,9 @@ class CongregationsController extends AppController
 
         $this->Paginator->settings = $paginator;
         $this->set('congregations', $this->Paginator->paginate());
-        $this->set('congregationFollowMap', $this->Congregation->getCongregationFollowMap($this->Session->read('Congregation.id')));
-        $this->set('congregationId', $this->Session->read('Congregation.id'));   
+        $membersCongregationId = $this->Auth->user('Member.congregation_id');
+        $this->set('congregationFollowMap', $this->Congregation->getCongregationFollowMap($membersCongregationId));
+        $this->set('congregationId', $membersCongregationId);   
         
         $this->render($this->ADMIN_DIRECTORY . __FUNCTION__);
     }
@@ -467,7 +464,7 @@ class CongregationsController extends AppController
     public function admin_view($id = null)    
     {       
         $this->set('congregation', $this->Congregation->get($id));   
-        $this->set('followAction', $this->Congregation->getFollowAction($this->Session->read('Congregation.id'), $id));
+        $this->set('followAction', $this->Congregation->getFollowAction($this->Auth->user('Member.congregation_id'), $id));
         
         $this->render($this->ADMIN_DIRECTORY . __FUNCTION__);
     }

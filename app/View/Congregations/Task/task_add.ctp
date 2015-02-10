@@ -3,7 +3,6 @@
     <fieldset>
         <legend><?php echo __('Add Task'); ?></legend>
 	<?php
-            echo $this->Form->input('congregation_id');
             echo $this->Form->input('name');
             echo $this->Form->input('description');
 	?>

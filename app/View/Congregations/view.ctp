@@ -16,7 +16,7 @@
 <div class="actions">
     <h3><?php echo __('Actions'); ?></h3>
     <ul>
-        <li><?php echo $this->Html->link(__('Edit Congregation'), array('action' => 'edit', $congregation['Congregation']['id'])); ?> </li>
+        <li><?php if ($canModify) {echo $this->Html->link(__('Edit Congregation'), array('action' => 'edit', $congregation['Congregation']['id']));} ?> </li>
         <li><?php echo $this->Html->link(__('List Congregations'), array('action' => 'index')); ?> </li>
         <?php if (empty($followAction) ===  false) { ?>
             <li><?php echo $this->Form->postLink(__($followAction['label']), array('action' => $followAction['action'], $followAction['param'], $followAction['viewId'])); ?> </li>
