@@ -5,7 +5,7 @@
 	<?php
             echo $this->Form->Hidden('Congregation.id', array('value' => $congregationId));
             echo $this->Form->input('id');
-            echo $this->element('phone');
+            echo $this->element('input_phone');
 	?>
     </fieldset>
     <?php echo $this->Form->end(__('Submit')); ?>

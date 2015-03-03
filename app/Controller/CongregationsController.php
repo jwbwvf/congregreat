@@ -47,6 +47,7 @@ class CongregationsController extends AppController
         $membersCongregationId = $this->Auth->user('Member.congregation_id');
         $this->set('congregation', $this->Congregation->get($id));
         $this->set('followAction', $this->Congregation->getFollowAction($membersCongregationId, $id));
+        //todo this should be checking if they are an authorized user to make changes ie admin
         $this->set('canModify', $id === $membersCongregationId);
     }
     

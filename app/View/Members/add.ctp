@@ -16,8 +16,8 @@
         ));
         echo $this->Form->input('baptized', array('type' => 'checkbox'));                
         echo $this->Form->input('EmailAddress.email_address', array('type' => 'email', 'maxlength' => 254));        
-        echo $this->element('phone');        
-        echo $this->element('address');        
+        echo $this->element('input_phone');        
+        echo $this->element('input_address');        
         echo $this->Form->input('profile_picture', array('type' => 'file'));
         ?>
     </fieldset>

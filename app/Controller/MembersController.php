@@ -44,6 +44,8 @@ class MembersController extends AppController
     public function view($id = null)
     {
         $this->set('member', $this->Member->get($id));
+        //todo check session member.id to see if the user is viewing their own profile so they can edit it
+        $this->set('canModify', true);
     }
 
     /**
