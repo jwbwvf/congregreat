@@ -11,8 +11,8 @@ App::uses('AppController', 'Controller');
 class CongregationsController extends AppController
 {
     private $ADMIN_DIRECTORY = 'Admin/';
-    private $TASK_DIRECTORY = 'Task/';       
-    
+    private $TASK_DIRECTORY = 'Task/';
+
     /**
      * Components
      *
@@ -28,7 +28,7 @@ class CongregationsController extends AppController
     public function index()
     {
         $this->Congregation->recursive = 0;
-                
+
         $paginator = array('fields' => array('id', 'name', 'website'));
 
         $this->Paginator->settings = $paginator;
@@ -43,14 +43,14 @@ class CongregationsController extends AppController
      * @return void
      */
     public function view($id = null)
-    {       
+    {
         $membersCongregationId = $this->Auth->user('Member.congregation_id');
         $this->set('congregation', $this->Congregation->get($id));
         $this->set('followAction', $this->Congregation->getFollowAction($membersCongregationId, $id));
         //todo this should be checking if they are an authorized user to make changes ie admin
         $this->set('canModify', $id === $membersCongregationId);
     }
-    
+
     /**
      * Adds a phone number to an existing congregation
      * @param string $id congregation identifier
@@ -58,9 +58,9 @@ class CongregationsController extends AppController
      * @throws NotFoundException
      */
     public function addPhoneNumber($id)
-    {        
+    {
         if ($this->request->is('post'))
-        {            
+        {
             if ($this->Congregation->addPhoneNumber($this->request->data))
             {
                 $this->Session->setFlash(__('The congregation\'s phone number has been saved.'));
@@ -71,8 +71,8 @@ class CongregationsController extends AppController
                 $this->Session->setFlash(__('The congregation\'s phone number could not be saved. Please, try again.'));
             }
         }
-                
-        $this->set('congregation', $this->Congregation->get($id));        
+
+        $this->set('congregation', $this->Congregation->get($id));
     }
 
     /**
@@ -80,11 +80,11 @@ class CongregationsController extends AppController
      * @param string $id congregation identifier
      * @return void
      * @throws NotFoundException
-     */    
+     */
     public function addEmailAddress($id)
     {
         if ($this->request->is('post'))
-        {            
+        {
             if ($this->Congregation->addEmailAddress($this->request->data))
             {
                 $this->Session->setFlash(__('The congregation\'s email address has been saved.'));
@@ -95,8 +95,8 @@ class CongregationsController extends AppController
                 $this->Session->setFlash(__('The congregation\'s email address could not be saved. Please, try again.'));
             }
         }
-                
-        $this->set('congregation', $this->Congregation->get($id));          
+
+        $this->set('congregation', $this->Congregation->get($id));
     }
 
     /**
@@ -104,11 +104,11 @@ class CongregationsController extends AppController
      * @param string $id congregation identifier
      * @return void
      * @throws NotFoundException
-     */    
+     */
     public function addAddress($id)
     {
         if ($this->request->is('post'))
-        {            
+        {
             if ($this->Congregation->addAddress($this->request->data))
             {
                 $this->Session->setFlash(__('The congregation\'s address has been saved.'));
@@ -119,10 +119,10 @@ class CongregationsController extends AppController
                 $this->Session->setFlash(__('The congregation\'s address could not be saved. Please, try again.'));
             }
         }
-                
-        $this->set('congregation', $this->Congregation->get($id));          
+
+        $this->set('congregation', $this->Congregation->get($id));
     }
-    
+
     /**
      * edit method
      *
@@ -149,7 +149,7 @@ class CongregationsController extends AppController
             }
         }
         else
-        {            
+        {
             $this->Congregation->recursive = -1;
             $options = array('conditions' => array('Congregation.' . $this->Congregation->primaryKey => $id),
                 'fields' => array('id', 'name', 'website'));
@@ -170,7 +170,7 @@ class CongregationsController extends AppController
         if (!$this->Congregation->exists())
         {
             throw new NotFoundException(__('Invalid congregation'));
-        }    
+        }
         $this->request->onlyAllow('post', 'delete');
         if ($this->Congregation->deletePhoneNumber($phoneNumberId))
         {
@@ -182,22 +182,22 @@ class CongregationsController extends AppController
         }
         return $this->redirect($this->referer());
     }
-    
+
     public function editPhone($id, $phoneId)
     {
         $this->editModel($id, $phoneId, 'Phone', 'phone');
     }
-    
+
     public function editEmailAddress($id, $emailAddressId)
     {
         $this->editModel($id, $emailAddressId, 'EmailAddress', 'email address');
     }
-    
+
     public function editAddress($id, $addressId)
     {
         $this->editModel($id, $addressId, 'Address', 'address');
     }
-        
+
     /**
      * deletes the congregation's email address relationship and deletes
      * the email address if it's not in use by anything else
@@ -212,7 +212,7 @@ class CongregationsController extends AppController
         if (!$this->Congregation->exists())
         {
             throw new NotFoundException(__('Invalid congregation'));
-        }    
+        }
         $this->request->onlyAllow('post', 'delete');
         if ($this->Congregation->deleteEmailAddress($emailAddressId))
         {
@@ -222,9 +222,9 @@ class CongregationsController extends AppController
         {
             $this->Session->setFlash(__('The email address could not be deleted. Please, try again.'));
         }
-        return $this->redirect($this->referer());        
+        return $this->redirect($this->referer());
     }
-    
+
     /**
      * deletes the congregation's address relationship and deletes the address if it's not in use by anything else
      * @param int $id identifier of the @Congregation the @Address belongs to
@@ -238,7 +238,7 @@ class CongregationsController extends AppController
         if (!$this->Congregation->exists())
         {
             throw new NotFoundException(__('Invalid congregation'));
-        }    
+        }
         $this->request->onlyAllow('post', 'delete');
         if ($this->Congregation->deleteAddress($addressId))
         {
@@ -248,15 +248,15 @@ class CongregationsController extends AppController
         {
             $this->Session->setFlash(__('The address could not be deleted. Please, try again.'));
         }
-        return $this->redirect($this->referer());        
-    }        
-    
+        return $this->redirect($this->referer());
+    }
+
     private function editModel($id, $modelId, $model, $modelLabel)
     {
         if ($this->request->is(array('post', 'put')))
         {
             if ($this->Congregation->$model->save($this->request->data))
-            {                
+            {
                 $this->Session->setFlash(__('The ' . $modelLabel . ' has been saved.'));
                 return $this->redirect(array('action' => 'view', $id));
             }
@@ -266,22 +266,22 @@ class CongregationsController extends AppController
             }
         }
         else
-        {            
-            $this->Congregation->$model->recursive = -1;            
+        {
+            $this->Congregation->$model->recursive = -1;
             $this->request->data = $this->Congregation->$model->get($modelId);
         }
-    
-        $this->set('congregationId', $id);        
+
+        $this->set('congregationId', $id);
     }
-    
+
     /**
-     * 
+     *
      * @param int $leaderId the id of the congregation to be followed
      * @return type
      */
     public function requestToFollow($leaderId, $viewId)
-    {   
-        //TODO need ACL for this, check if privileged enough to request to follow another congregation 
+    {
+        //TODO need ACL for this, check if privileged enough to request to follow another congregation
         //i.e. elder, deacon, admin decides for the congregation what other congregations they want to follow
         $this->request->onlyAllow('post');
         $requestingFollowerId = $this->Auth->user('Member.congregation_id');
@@ -293,21 +293,21 @@ class CongregationsController extends AppController
         else
         {
             $this->Session->setFlash(__('Unable to send a request to follow the congregation. Please, try again.'));
-        }     
-    }        
-    
+        }
+    }
+
     public function followRequests()
     {
         $congregationId = $this->Auth->user('Member.congregation_id');
         $this->set('followRequests', $this->Congregation->getFollowRequests($congregationId));
-    }    
-    
+    }
+
     public function myPendingRequests()
     {
         $congregationId = $this->Auth->user('Member.congregation_id');
-        $this->set('followRequests', $this->Congregation->getMyPendingRequests($congregationId));        
+        $this->set('followRequests', $this->Congregation->getMyPendingRequests($congregationId));
     }
-    
+
     public function acceptFollowRequest($followRequestId)
     {
         $this->request->onlyAllow('post');
@@ -321,7 +321,7 @@ class CongregationsController extends AppController
             $this->Session->setFlash(__('Unable to accept the follow request. Please, try again.'));
         }
     }
-    
+
     public function rejectFollowRequest($followRequestId)
     {
         $this->request->onlyAllow('post');
@@ -335,7 +335,7 @@ class CongregationsController extends AppController
             $this->Session->setFlash(__('Unable to reject the follow request. Please, try again.'));
         }
     }
-    
+
     public function cancelFollowRequest($followRequestId, $viewId)
     {
         $this->request->onlyAllow('post');
@@ -347,21 +347,21 @@ class CongregationsController extends AppController
         else
         {
             $this->Session->setFlash(__('Unable to cancel the follow request. Please, try again.'));
-        }        
+        }
     }
-    
+
     public function following()
     {
         $congregationId = $this->Auth->user('Member.congregation_id');
         $this->set('follows', $this->Congregation->getFollows($congregationId));
     }
-    
+
     public function followers()
     {
         $congregationId = $this->Auth->user('Member.congregation_id');
-        $this->set('followers', $this->Congregation->getFollowers($congregationId));        
+        $this->set('followers', $this->Congregation->getFollowers($congregationId));
     }
-    
+
     public function stopFollowing($followId, $viewId)
     {
         $this->request->onlyAllow('post');
@@ -378,20 +378,20 @@ class CongregationsController extends AppController
 
 //Task methods//////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
-//        
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////    
-    public function task_index() 
-    {        
+//
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    public function task_index()
+    {
         $congregationId = $this->Auth->user('Member.congregation_id');
         $this->set('tasks', $this->Congregation->getTasks($congregationId));
-        
+
         $this->render($this->TASK_DIRECTORY . __FUNCTION__);
     }
-    
+
     public function task_add()
     {
         if ($this->request->is('post'))
-        {            
+        {
             $congregationId = $this->Auth->user('Member.congregation_id');
             $this->request->data['Task']['congregation_id'] = $congregationId;
             if ($this->Congregation->Task->save($this->request->data))
@@ -404,22 +404,43 @@ class CongregationsController extends AppController
                 $this->Session->setFlash(__('The task could not be saved. Please, try again.'));
             }
         }
-        
+
         $this->render($this->TASK_DIRECTORY . __FUNCTION__);
     }
-    
+
     public function task_view($id = null)
     {
         $this->set('task', $this->Congregation->Task->get($id));
-        
+
         $this->render($this->TASK_DIRECTORY . __FUNCTION__);
     }
-    
-    
+
+    /**
+     * delete method
+     * @throws NotFoundException
+     * @param string $id task identifier
+     * @return void
+     */
+    public function task_delete($id = null)
+    {
+        $this->request->onlyAllow('post', 'delete');
+        if ($this->Congregation->Task->delete($id))
+        {
+            $this->Session->setFlash(__('The task has been deleted.'));
+        }
+        else
+        {
+            $this->Session->setFlash(__('The task could not be deleted. Please, try again.'));
+        }
+        
+       $this->redirect(array('action' => 'task_index'));
+    }
+
+
 //END Task methods using Prefix Routing/////////////////////////////////////////////////////////////////////////////////
-    
+
 //Admin methods using Prefix Routing////////////////////////////////////////////////////////////////////////////////////
-//Using subfolder for the admin views so use $this->render($this->ADMIN_DIRECTORY . __FUNCTION__); at the end of 
+//Using subfolder for the admin views so use $this->render($this->ADMIN_DIRECTORY . __FUNCTION__); at the end of
 //every admin method for rendering the correct view
 //These are the actions that only the superest of users can take ie me, this excludes users that can edit their own
 //congregations info
@@ -427,18 +448,18 @@ class CongregationsController extends AppController
     public function admin_index()
     {
         $this->Congregation->recursive = 0;
-                
+
         $paginator = array('fields' => array('id', 'name', 'website'));
 
         $this->Paginator->settings = $paginator;
         $this->set('congregations', $this->Paginator->paginate());
         $membersCongregationId = $this->Auth->user('Member.congregation_id');
         $this->set('congregationFollowMap', $this->Congregation->getCongregationFollowMap($membersCongregationId));
-        $this->set('congregationId', $membersCongregationId);   
-        
+        $this->set('congregationId', $membersCongregationId);
+
         $this->render($this->ADMIN_DIRECTORY . __FUNCTION__);
     }
-    
+
     /**
      * add method
      *
@@ -447,7 +468,7 @@ class CongregationsController extends AppController
     public function admin_add()
     {
         if ($this->request->is('post'))
-        {                                                
+        {
             if ($this->Congregation->add($this->request->data))
             {
                 $this->Session->setFlash(__('The congregation has been saved.'));
@@ -458,18 +479,18 @@ class CongregationsController extends AppController
                 $this->Session->setFlash(__('The congregation could not be saved. Please, try again.'));
             }
         }
-        
+
         $this->render($this->ADMIN_DIRECTORY . __FUNCTION__);
     }
-    
-    public function admin_view($id = null)    
-    {       
-        $this->set('congregation', $this->Congregation->get($id));   
+
+    public function admin_view($id = null)
+    {
+        $this->set('congregation', $this->Congregation->get($id));
         $this->set('followAction', $this->Congregation->getFollowAction($this->Auth->user('Member.congregation_id'), $id));
-        
+
         $this->render($this->ADMIN_DIRECTORY . __FUNCTION__);
     }
-    
+
     /**
      * delete method
      * @throws NotFoundException
@@ -488,6 +509,6 @@ class CongregationsController extends AppController
             $this->Session->setFlash(__('The congregation could not be deleted. Please, try again.'));
         }
         return $this->redirect(array('action' => 'index'));
-    }    
+    }
 //END Admin methods using Prefix Routing////////////////////////////////////////////////////////////////////////////////
 }
