@@ -28,13 +28,13 @@ class EmailAddressFixture extends CakeTestFixture
      *
      * @var array
      */
-//    public $records = array(
-//        array(
-//            'id' => 1,
-//            'email_address' => 'Lorem ipsum dolor sit amet',
-//            'created' => '2014-05-13 17:36:50',
-//            'modified' => '2014-05-13 17:36:50'
-//        ),
-//    );
+    public $records = array(
+        array(
+            'id' => 1,
+            'email_address' => 'emailAddress1@test.com',
+            'created' => '2014-05-13 17:36:50',
+            'modified' => '2014-05-13 17:36:50'
+        ),
+    );
 
 }

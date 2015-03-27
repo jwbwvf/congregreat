@@ -13,15 +13,15 @@ App::uses('ContactableModel', 'Model');
 class Member extends ContactableModel
 {
     public $virtualFields = array('full_name' => "CONCAT(Member.first_name, ' ', Member.last_name)");
-    
+
     /**
      * Display field
      *
      * @var string
-     */    
+     */
     public $displayField = 'full_name';
-    
-    
+
+
     /**
      * Validation rules
      *
@@ -34,14 +34,12 @@ class Member extends ContactableModel
             )
         ),
         'congregation_id' => array(
-            'numeric' => array(
-                'rule' => array('numeric'),
-            //'message' => 'Your custom message here',
+            'rule' => array('numeric'),
+            'message' => 'A congregation is required',
             'allowEmpty' => false,
             'required' => true,
             //'last' => false, // Stop validation after this rule
-            'on' => 'create', // Limit validation to 'create' or 'update' operations
-            ),
+            'on' => 'create' // Limit validation to 'create' or 'update' operations
         ),
         'first_name' => array(
             'rule' => 'notEmpty',
@@ -50,7 +48,7 @@ class Member extends ContactableModel
             'required' => true,
             //'last' => false, // Stop validation after this rule
             'on' => 'create' // Limit validation to 'create' or 'update' operations
-        ),        
+        ),
         'last_name' => array(
             'rule' => 'notEmpty',
             'message' => 'Member last name is required',
@@ -58,7 +56,7 @@ class Member extends ContactableModel
             'required' => true,
             //'last' => false, // Stop validation after this rule
             'on' => 'create' // Limit validation to 'create' or 'update' operations
-        ),        
+        ),
         'birth_date' => array(
             'date' => array(
                 'rule' => array('date'),
@@ -267,7 +265,7 @@ class Member extends ContactableModel
 //            'offset' => '',
 //            'finderQuery' => '',
 //        )
-    );  
+    );
 
     /**
      * retrievs the @Member for the given id
@@ -280,41 +278,41 @@ class Member extends ContactableModel
         if (!$this->exists($id))
         {
             throw new NotFoundException(__('Invalid member'));
-        }       
-        
+        }
+
         $options = array(
             'conditions' => array('Member.' . $this->primaryKey => $id),
             'fields' => array('id', 'first_name', 'last_name', 'middle_name', 'birth_date',
                 'profile_picture', 'baptized',
-                'Congregation.id', 'Congregation.name')            
-            ); 
+                'Congregation.id', 'Congregation.name')
+            );
         return $this->find('first', $options);
-    }      
-    
+    }
+
     public function add($data)
     {
-        $this->create();     
+        $this->create();
         if ($this->isValid($data) === false)
         {
             return false;
         }
         $this->save($data['Member']);
-        
+
         $data['Member'] = array('id' => $this->id);
-        
+
         return parent::add($data);
-    }        
-    
+    }
+
     public function storeProfilePicture($data)
     {
         if (is_uploaded_file($data['Member']['profile_picture']['tmp_name']))
         {
-            move_uploaded_file($data['Member']['profile_picture']['tmp_name'], 
+            move_uploaded_file($data['Member']['profile_picture']['tmp_name'],
                     '../webroot/img/members/' . $data['Member']['profile_picture']['name']);
-            
+
             return $data['Member']['profile_picture']['name'];
-        }        
-        
+        }
+
         return "";
     }
 }

@@ -29,14 +29,14 @@ class PhoneFixture extends CakeTestFixture
      *
      * @var array
      */
-//    public $records = array(
-//        array(
-//            'id' => 1,
-//            'number' => 'Lorem ipsum d',
-//            'type' => 'Lorem ipsum dolor ',
-//            'created' => '2014-05-13 17:37:23',
-//            'modified' => '2014-05-13 17:37:23'
-//        ),
-//    );
+    public $records = array(
+        array(
+            'id' => 1,
+            'number' => '555-555-5555',
+            'type' => 'test',
+            'created' => '2014-05-13 17:37:23',
+            'modified' => '2014-05-13 17:37:23'
+        ),
+    );
 
 }

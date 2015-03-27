@@ -31,26 +31,40 @@ class MemberFixture extends CakeTestFixture
         'tableParameters' => array('charset' => 'utf8', 'collate' => 'utf8_unicode_ci', 'engine' => 'InnoDB')
     );
 
-//    /**
-//     * Records
-//     *
-//     * @var array
-//     */
-//    public $records = array(
-//        array(
-//            'id' => 1,
-//            'congregation_id' => 1,
-//            'first_name' => 'Lorem ipsum dolor sit amet',
-//            'last_name' => 'Lorem ipsum dolor sit amet',
-//            'middle_name' => 'Lorem ipsum dolor sit amet',
-//            'gender' => 'Lore',
-//            'birth_date' => '2014-08-06',
-//            'baptized' => 1,
-//            'profile_picture' => 'Lorem ipsum dolor sit amet',
-//            'anniversary_id' => 1,
-//            'created' => '2014-08-06 13:08:07',
-//            'modified' => '2014-08-06 13:08:07'
-//        ),
-//    );
+    /**
+     * Records
+     *
+     * @var array
+     */
+    public $records = array(
+        array(
+            'id' => 1,
+            'congregation_id' => 1,
+            'first_name' => 'first name 1',
+            'last_name' => 'last name 1',
+            'middle_name' => 'middle name 1',
+            'gender' => 'Lore',
+            'birth_date' => '2014-08-06',
+            'baptized' => 1,
+            'profile_picture' => 'Lorem ipsum dolor sit amet',
+            'anniversary_id' => 1,
+            'created' => '2014-08-06 13:08:07',
+            'modified' => '2014-08-06 13:08:07'
+        ),
+        array(
+            'id' => 2,
+            'congregation_id' => 1,
+            'first_name' => 'first name 2',
+            'last_name' => 'last name 2',
+            'middle_name' => 'last name 2',
+            'gender' => 'Lore',
+            'birth_date' => '2014-08-06',
+            'baptized' => 1,
+            'profile_picture' => 'Lorem ipsum dolor sit amet',
+            'anniversary_id' => 1,
+            'created' => '2014-08-06 13:08:07',
+            'modified' => '2014-08-06 13:08:07'
+        ),
+    );
 
 }

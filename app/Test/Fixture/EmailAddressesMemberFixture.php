@@ -24,19 +24,19 @@ class EmailAddressesMemberFixture extends CakeTestFixture
         'tableParameters' => array('charset' => 'utf8', 'collate' => 'utf8_unicode_ci', 'engine' => 'InnoDB')
     );
 
-//    /**
-//     * Records
-//     *
-//     * @var array
-//     */
-//    public $records = array(
-//        array(
-//            'id' => 1,
-//            'member_id' => 1,
-//            'email_address_id' => 1,
-//            'created' => '2014-08-19 19:29:40',
-//            'modified' => '2014-08-19 19:29:40'
-//        ),
-//    );
+    /**
+     * Records
+     *
+     * @var array
+     */
+    public $records = array(
+        array(
+            'id' => 1,
+            'member_id' => 1,
+            'email_address_id' => 1,
+            'created' => '2014-08-19 19:29:40',
+            'modified' => '2014-08-19 19:29:40'
+        ),
+    );
 
 }

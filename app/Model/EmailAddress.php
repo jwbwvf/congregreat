@@ -27,8 +27,8 @@ class EmailAddress extends AppModel
         'email_address' => array(
         'rule' => 'email',
         'message' => 'Enter a valid email address.',
-            //'allowEmpty' => false,
-            //'required' => false,
+        'allowEmpty' => false,
+        'required' => true,
             //'last' => false, // Stop validation after this rule
             //'on' => 'create', // Limit validation to 'create' or 'update' operations
         )
@@ -66,10 +66,10 @@ class EmailAddress extends AppModel
             'order' => '',
             'limit' => '',
             'offset' => '',
-            'finderQuery' => '',        
+            'finderQuery' => '',
         )
     );
-    
+
     public function get($id)
     {
         if (!$this->exists($id))
@@ -78,9 +78,9 @@ class EmailAddress extends AppModel
         }
         $options = array('conditions' => array('EmailAddress.' . $this->primaryKey => $id),
             'fields' => array('id', 'email_address'));
-        return $this->find('first', $options);        
+        return $this->find('first', $options);
     }
-    
+
     /**
      * finds an email address by the given email address
      * @param string @EmailAddress
@@ -89,24 +89,24 @@ class EmailAddress extends AppModel
     public function getByData($data)
     {
         $options = array('conditions' => array('EmailAddress.email_address' => $data['email_address']));
-        return $this->find('first', $options);      
+        return $this->find('first', $options);
     }
-    
+
     /**
      * checks if the email address is being used by a member or congregation
      * @return boolean
      */
     public function isInUse()
     {
-        $memberOptions = array('conditions' => array('EmailAddressesMember.email_address_id' => $this->id));                        
-        $emailAddressMembers = $this->EmailAddressesMember->find('first', $memberOptions);        
-        
+        $memberOptions = array('conditions' => array('EmailAddressesMember.email_address_id' => $this->id));
+        $emailAddressMembers = $this->EmailAddressesMember->find('first', $memberOptions);
+
         if (!empty($emailAddressMembers))
         {
             return true;
         }
-        
-        $congregationOptions = array('conditions' => array('CongregationsEmailAddress.email_address_id' => $this->id));                        
+
+        $congregationOptions = array('conditions' => array('CongregationsEmailAddress.email_address_id' => $this->id));
         $congregationsEmailAddress = $this->CongregationsEmailAddress->find('first', $congregationOptions);
         return !empty($congregationsEmailAddress);
     }

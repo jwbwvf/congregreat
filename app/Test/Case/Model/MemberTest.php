@@ -8,39 +8,39 @@ App::uses('MemberBase', 'Test/Case/Model');
  *
  */
 class MemberTest extends MemberBase
-{   
+{
     //Add the line below at the beginning of each test
     //$this->skipTestEvaluator->shouldSkip(__FUNCTION__);
     //add test name to the array with
     //1 - run, 0 - do not run
     protected $tests = array(
-        'testAdd'                           => 1,        
+        'testAdd'                           => 1,
         'testAdd_MissingCongregationId'     => 1,
         'testAdd_MissingFirstName'          => 1,
         'testAdd_MissingLastName'           => 1,
-        'testAdd_InvalidEmail'              => 1, 
+        'testAdd_InvalidEmail'              => 1,
         'testAdd_InvalidAddress'            => 1,
         'testAdd_InvalidPhoneNumber'        => 1,
         'testDelete'                        => 1,
         'testDelete_ExistingAssociations'   => 1,
     );
-    
+
     /**
      * test adding a member with all it's related data: phone, email, address
-     * 
+     *
      */
     public function testAdd()
     {
         $this->skipTestEvaluator->shouldSkip(__FUNCTION__);
-        
+
         $return = $this->Member->add($this->memberAddData);
         $this->assertTrue($return);
-        
+
         $dbo = $this->Member->getDataSource();
-        $sql = $this->buildMembersAddDataQuery();        
+        $sql = $this->buildMembersAddDataQuery();
         $dbo->rawQuery($sql);
         $row = $dbo->fetchRow();
-        
+
         $this->assertEqual($this->memberAddData['Member']['congregation_id'], $row['members']['congregation_id']);
         $this->assertEqual($this->memberAddData['Member']['first_name'], $row['members']['first_name']);
         $this->assertEqual($this->memberAddData['Member']['last_name'], $row['members']['last_name']);
@@ -57,30 +57,30 @@ class MemberTest extends MemberBase
         $this->assertEqual($this->memberAddData['Address']['city'], $row['addresses']['city']);
         $this->assertEqual($this->memberAddData['Address']['state'], $row['addresses']['state']);
         $this->assertEqual($this->memberAddData['Address']['zipcode'], $row['addresses']['zipcode']);
-        $this->assertEqual($this->memberAddData['Address']['country'], $row['addresses']['country']);        
+        $this->assertEqual($this->memberAddData['Address']['country'], $row['addresses']['country']);
     }
-    
+
     public function testAdd_MissingCongregationId()
     {
         $this->skipTestEvaluator->shouldSkip(__FUNCTION__);
-        
+
         $this->validate('Member', 'congregation_id', '');
     }
-    
+
     public function testAdd_MissingFirstName()
     {
         $this->skipTestEvaluator->shouldSkip(__FUNCTION__);
-        
-        $this->validate('Member', 'first_name', '');                
+
+        $this->validate('Member', 'first_name', '');
     }
-    
+
     public function testAdd_MissingLastName()
     {
         $this->skipTestEvaluator->shouldSkip(__FUNCTION__);
-        
-        $this->validate('Member', 'last_name', '');        
-    }    
-    
+
+        $this->validate('Member', 'last_name', '');
+    }
+
     /**
      * test adding a member that has an invalid email address
      * @covers Member::add
@@ -90,10 +90,10 @@ class MemberTest extends MemberBase
     public function testAdd_InvalidEmail()
     {
         $this->skipTestEvaluator->shouldSkip(__FUNCTION__);
-        
-        $this->validate('EmailAddress', 'email_address', 'invalidEmail@nowhere');      
-    } 
-    
+
+        $this->validate('EmailAddress', 'email_address', 'invalidEmail@nowhere');
+    }
+
     /**
      * test adding a member that has an invalid address
      * @covers Member::add
@@ -103,23 +103,23 @@ class MemberTest extends MemberBase
     public function testAdd_InvalidAddress()
     {
         $this->skipTestEvaluator->shouldSkip(__FUNCTION__);
-        
+
         $this->validate('Address', 'zipcode', '6405A');
-    }        
-    
+    }
+
     /**
      * test adding a member that has an invalid phone number
      * @covers Member::add
      * @covers Member::createModels
      * @covers Member::areModelsValid
-     */    
+     */
     public function testAdd_InvalidPhoneNumber()
     {
         $this->skipTestEvaluator->shouldSkip(__FUNCTION__);
-        
-        $this->validate('Phone', 'number', '5555-555-5555');       
-    } 
-    
+
+        $this->validate('Phone', 'number', '5555-555-5555');
+    }
+
     /**
      * test deleting a member and all it's
      * associated models
@@ -132,40 +132,40 @@ class MemberTest extends MemberBase
     public function testDelete()
     {
         $this->skipTestEvaluator->shouldSkip(__FUNCTION__);
-        
-        $this->Member->add($this->memberAddData);      
-        
+
+        $this->Member->add($this->memberAddData);
+
         $dbo = $this->Member->getDataSource();
-        $sql = $this->buildMembersAddDataQuery();        
+        $sql = $this->buildMembersAddDataQuery();
         $dbo->rawQuery($sql);
         $row = $dbo->fetchRow();
-        
+
         $this->Member->delete($row['members']['id']);
-        
+
         $sqlAfterDeleteMember = "SELECT * FROM members WHERE id='" . $row['members']['id'] . "'";
         $sqlAfterDeleteAddress = "SELECT * FROM addresses WHERE id='" . $row['addresses']['id'] . "'";
         $sqlAfterDeletePhone = "SELECT * FROM phones WHERE id='" . $row['phones']['id'] . "'";
         $sqlAfterDeleteEmailAddress = "SELECT * FROM email_addresses WHERE id='" . $row['email_addresses']['id'] . "'";
-        
+
         $dbo->rawQuery($sqlAfterDeleteMember);
-        $rowAfterDeleteMember = $dbo->fetchRow();        
+        $rowAfterDeleteMember = $dbo->fetchRow();
         $this->assertFalse($rowAfterDeleteMember);
-        
+
         $dbo->rawQuery($sqlAfterDeleteAddress);
-        $rowAfterDeleteAddress = $dbo->fetchRow();        
+        $rowAfterDeleteAddress = $dbo->fetchRow();
         $this->assertFalse($rowAfterDeleteAddress);
-        
+
         $dbo->rawQuery($sqlAfterDeletePhone);
-        $rowAfterDeletePhone = $dbo->fetchRow();        
+        $rowAfterDeletePhone = $dbo->fetchRow();
         $this->assertFalse($rowAfterDeletePhone);
-        
+
         $dbo->rawQuery($sqlAfterDeleteEmailAddress);
-        $rowAfterDeleteEmailAddress = $dbo->fetchRow();        
-        $this->assertFalse($rowAfterDeleteEmailAddress);        
-    }    
-    
+        $rowAfterDeleteEmailAddress = $dbo->fetchRow();
+        $this->assertFalse($rowAfterDeleteEmailAddress);
+    }
+
     /**
-     * test deleting a member that has the same 
+     * test deleting a member that has the same
      * address, email address, phone number associated
      * to another member
      * @covers Member::delete
@@ -177,45 +177,45 @@ class MemberTest extends MemberBase
     public function testDelete_ExistingAssociations()
     {
         $this->skipTestEvaluator->shouldSkip(__FUNCTION__);
-        
+
         $return = $this->Member->add($this->memberAddData);
-        $this->assertTrue($return);        
-        
+        $this->assertTrue($return);
+
         $secondMemberData = $this->memberAddData;
         $secondMemberData['Member']['name'] = 'secondName';
-        
+
         $member = ClassRegistry::init('Member');
-        $member->add($secondMemberData);        
-        
+        $member->add($secondMemberData);
+
         $dbo = $this->Member->getDataSource();
-        $sql = $this->buildMembersAddDataQuery();        
+        $sql = $this->buildMembersAddDataQuery();
         $dbo->rawQuery($sql);
         $row = $dbo->fetchRow();
-        
+
         $this->Member->delete($row['members']['id']);
-        
+
         $sqlAfterDeleteMember = "SELECT * FROM members WHERE id='" . $row['members']['id'] . "'";
         $sqlAfterDeleteAddress = "SELECT * FROM addresses WHERE id='" . $row['addresses']['id'] . "'";
         $sqlAfterDeletePhone = "SELECT * FROM phones WHERE id='" . $row['phones']['id'] . "'";
         $sqlAfterDeleteEmailAddress = "SELECT * FROM email_addresses WHERE id='" . $row['email_addresses']['id'] . "'";
-        
+
         $dbo->rawQuery($sqlAfterDeleteMember);
-        $rowAfterDeleteMember = $dbo->fetchRow();        
+        $rowAfterDeleteMember = $dbo->fetchRow();
         $this->assertFalse($rowAfterDeleteMember);
-        
+
         $dbo->rawQuery($sqlAfterDeleteAddress);
-        $rowAfterDeleteAddress = $dbo->fetchRow();        
+        $rowAfterDeleteAddress = $dbo->fetchRow();
         $this->assertEquals($rowAfterDeleteAddress['addresses']['id'], $row['addresses']['id']);
-        
+
         $dbo->rawQuery($sqlAfterDeletePhone);
-        $rowAfterDeletePhone = $dbo->fetchRow();        
+        $rowAfterDeletePhone = $dbo->fetchRow();
         $this->assertEquals($rowAfterDeletePhone['phones']['id'], $row['phones']['id']);
-        
+
         $dbo->rawQuery($sqlAfterDeleteEmailAddress);
-        $rowAfterDeleteEmailAddress = $dbo->fetchRow();        
-        $this->assertEquals($rowAfterDeleteEmailAddress['email_addresses']['id'], $row['email_addresses']['id']);         
+        $rowAfterDeleteEmailAddress = $dbo->fetchRow();
+        $this->assertEquals($rowAfterDeleteEmailAddress['email_addresses']['id'], $row['email_addresses']['id']);
     }
-    
+
 //    public function testStoreProfilePicture()
 //    {
 //	$data['Member'] = array('profile_picture' => array(
@@ -226,22 +226,22 @@ class MemberTest extends MemberBase
 //		'size' => 19385
 //            )
 //        );
-        
-//        $return = $this->Member->storeProfilePicture($data);        
+
+//        $return = $this->Member->storeProfilePicture($data);
 //        if (is_uploaded_file($data['Member']['profile_picture']['tmp_name']))
 //        {
-//            move_uploaded_file($data['Member']['profile_picture']['tmp_name'], 
+//            move_uploaded_file($data['Member']['profile_picture']['tmp_name'],
 //                    '../webroot/img/members/' . $data['Member']['profile_picture']['name']);
-//            
+//
 //            return $data['Member']['profile_picture']['name'];
-//        }        
-//        
-//        return "";        
+//        }
+//
+//        return "";
 //    }
-    
+
 //    public function testStoreProfilePicture_NoFile()
 //    {
-//        
+//
 //    }
 
     /**
@@ -253,11 +253,24 @@ class MemberTest extends MemberBase
     {
         $data = $this->memberAddData;
         $data[$model][$key] = $value;
-        
-        $result = $this->Member->add($data);
-        $this->assertFalse($result); 
+
+        if($this->Member->add($data))
+        {
+            //returns the validation rule data
+            $validationMessage = $this->Member->$model->validate[$key]['message'];
+            //returns any validation errors that occurred on save
+            $validationErrors = $this->Member->$model->validationErrors;
+        }
+        else
+        {
+            //returns the validation rule data
+            $validationMessage = $this->Member->validate[$key]['message'];
+            //returns any validation errors that occurred on save
+            $validationErrors = $this->Member->validationErrors;
+        }
+        $this->assertEquals($validationErrors[$key][0], $validationMessage);
     }
-    
+
     /**
      * builds the query to retrieve the member and all it's associated data from an add
      * @return string
@@ -265,7 +278,7 @@ class MemberTest extends MemberBase
     private function buildMembersAddDataQuery()
     {
         return "SELECT
-            members.id, members.congregation_id, members.first_name, members.last_name, members.middle_name, 
+            members.id, members.congregation_id, members.first_name, members.last_name, members.middle_name,
             members.gender, members.birth_date, members.baptized, members.profile_picture, members.anniversary_id,
             addresses.street_address, addresses.city, addresses.state, addresses.zipcode, addresses.country, addresses.id,
             email_addresses.email_address, email_addresses.id,
@@ -277,6 +290,54 @@ class MemberTest extends MemberBase
             JOIN addresses ON am.address_id = addresses.id
             JOIN email_addresses ON eam.email_address_id = email_addresses.id
             JOIN phones ON mp.phone_id = phones.id
-            WHERE members.first_name = 'testFirstName'";        
-    }      
+            WHERE members.first_name = 'testFirstName'";
+    }
+
+    public $memberAddData = array(
+        'Member' => array(
+            'congregation_id' => '1',
+            'first_name' => 'testFirstName',
+            'last_name' => 'testLastName',
+            'middle_name' => 'testMiddleName',
+            'gender' => 'Male',
+            'birth_date' => '1980-06-01',
+            'baptized' => '1',
+            'profile_picture' => 'testFirstName testLastName.jpg',
+            'anniversary_id' => '1'
+        ),
+        'EmailAddress' => array(
+            'email_address' => 'test@test.com'
+        ),
+        'Phone' => array(
+            'number' => '555-555-5555',
+            'type' => 'home'
+        ),
+        'Address' => array(
+            'street_address' => '123 elm st.',
+            'city' => 'kc',
+            'state' => 'Missouri',
+            'zipcode' => '66066',
+            'country' => 'United States'
+        )
+    );
+
+    /**
+     * Fixtures
+     *
+     * @var array
+     */
+    public $fixtures = array(
+        'app.member',
+        'app.congregation',
+        'app.address',
+        'app.addresses_congregation',
+        'app.email_address',
+        'app.congregations_email_address',
+        'app.phone',
+        'app.congregations_phone',
+        'app.anniversary',
+        'app.addresses_member',
+        'app.email_addresses_member',
+        'app.members_phone',
+    );
 }

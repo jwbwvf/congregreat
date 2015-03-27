@@ -32,17 +32,17 @@ class AddressFixture extends CakeTestFixture
      *
      * @var array
      */
-//    public $records = array(
-//        array(
-//            'id' => 1,
-//            'address' => 'Lorem ipsum dolor sit amet',
-//            'city' => 'Lorem ipsum dolor sit amet',
-//            'state' => 'Lorem ipsum dolor sit amet',
-//            'zipcode' => '66066',
-//            'country' => 'Lorem ipsum dolor sit amet',
-//            'created' => '2014-05-13 17:35:55',
-//            'modified' => '2014-05-13 17:35:55'
-//        ),
-//    );
+    public $records = array(
+        array(
+            'id' => 1,
+            'street_address' => 'test street address',
+            'city' => 'test city',
+            'state' => 'test state',
+            'zipcode' => '66066',
+            'country' => 'test country',
+            'created' => '2014-05-13 17:35:55',
+            'modified' => '2014-05-13 17:35:55'
+        ),
+    );
 
 }
