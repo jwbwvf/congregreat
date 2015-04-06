@@ -181,7 +181,7 @@ class MemberPhoneTest extends MemberBase
         'app.member',
         'app.phone',
         'app.members_phone',
-        //needed because the Phone.isInUse checks for member or congregation using the email address
+        //needed because the Phone.isInUse checks for member or congregation using the phone number
         'app.congregation',
         'app.congregations_phone'
     );

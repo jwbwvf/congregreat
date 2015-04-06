@@ -31,14 +31,14 @@ class CongregationsPhoneFixture extends CakeTestFixture
      *
      * @var array
      */
-//    public $records = array(
-//        array(
-//            'id' => 1,
-//            'congregation_id' => 1,
-//            'phone_id' => 1,
-//            'created' => '2014-05-22 20:50:59',
-//            'modified' => '2014-05-22 20:50:59'
-//        ),
-//    );
+    public $records = array(
+        array(
+            'id' => 1,
+            'congregation_id' => 1,
+            'phone_id' => 1,
+            'created' => '2014-05-22 20:50:59',
+            'modified' => '2014-05-22 20:50:59'
+        ),
+    );
 
 }

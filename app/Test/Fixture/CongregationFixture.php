@@ -30,14 +30,28 @@ class CongregationFixture extends CakeTestFixture
      *
      * @var array
      */
-//    public $records = array(
-//        array(
-//            'id' => 1,
-//            'name' => 'Lorem ipsum dolor sit amet',
-//            'website' => 'Lorem ipsum dolor sit amet',
-//            'created' => '2014-05-13 16:41:14',
-//            'modified' => '2014-05-13 16:41:14'
-//        ),
-//    );
+    public $records = array(
+        array(
+            'id' => 1,
+            'name' => 'congregation name 1',
+            'website' => 'congregation1.com',
+            'created' => '2014-05-13 16:41:14',
+            'modified' => '2014-05-13 16:41:14'
+        ),
+        array(
+            'id' => 2,
+            'name' => 'congregation name 2',
+            'website' => 'congregation2.com',
+            'created' => '2014-05-13 16:41:14',
+            'modified' => '2014-05-13 16:41:14'
+        ),
+        array(
+            'id' => 3,
+            'name' => 'congregation name 3',
+            'website' => 'congregation3.com',
+            'created' => '2014-05-13 16:41:14',
+            'modified' => '2014-05-13 16:41:14'
+        ),
+    );
 
 }

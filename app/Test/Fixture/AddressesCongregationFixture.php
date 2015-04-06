@@ -31,14 +31,14 @@ class AddressesCongregationFixture extends CakeTestFixture
      *
      * @var array
      */
-//    public $records = array(
-//        array(
-//            'id' => 1,
-//            'address_id' => 1,
-//            'congregation_id' => 1,
-//            'created' => '2014-05-22 20:50:35',
-//            'modified' => '2014-05-22 20:50:35'
-//        ),
-//    );
+    public $records = array(
+        array(
+            'id' => 1,
+            'address_id' => 1,
+            'congregation_id' => 1,
+            'created' => '2014-05-22 20:50:35',
+            'modified' => '2014-05-22 20:50:35'
+        ),
+    );
 
 }
