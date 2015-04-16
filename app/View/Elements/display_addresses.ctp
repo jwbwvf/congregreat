@@ -21,7 +21,7 @@
                 <?php if($canModify) { ?>
                 <td class="actions">
                     <?php echo $this->Html->link(__('Edit'), array('action' => 'editAddress', $ownerId, $address['id'])); ?>
-                    <?php echo $this->Form->postLink(__('Delete'), array('action' => 'deleteAddress', $ownerId, $address['id']), null, __('Are you sure you want to delete %s?', $address['street_address'])); ?>
+                    <?php echo $this->Form->postLink(__('Delete'), array('controller' => $belongsToModel . 'Addresses', 'action' => 'delete', $address['id']), null, __('Are you sure you want to delete %s?', $address['street_address'])); ?>
                 </td>
                 <?php }//end can modify ?>
             </tr>

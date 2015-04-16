@@ -62,33 +62,18 @@ class ContactableModel extends AppModel
      */
     public function addAddress($data)
     {
-        return $this->addModel($data, 'Address');
+        return $this->addModel($data, get_called_class() . 'Address');
     }
 
     public function addModel($data, $model)
     {
-        //check if this the model already exists and use it if it does
-        $existingModel = $this->$model->getByData($data[$model]);
-
-        if (empty($existingModel))
+        $this->$model->create();
+        if ($this->isRelatedModelValid($model, $data) === false)
         {
-            $this->$model->create();
-            if ($this->isRelatedModelValid($model, $data) === false)
-            {
-                return false;
-            }
-
-            return $this->$model->save($data, false);
+            return false;
         }
-        else
-        {
-            $foreignKey = $this->hasAndBelongsToMany[$model]['foreignKey'];
-            $associatedForeignKey = $this->hasAndBelongsToMany[$model]['associationForeignKey'];
-            $association = array($foreignKey => $this->id, $associatedForeignKey => $existingModel[$model]['id']);
 
-            $joinModel = $this->hasAndBelongsToMany[$model]['joinModel'];
-            return $this->$joinModel->save($association, false);
-        }
+        return $this->$model->save($data, false);
     }
 
     /**

@@ -1,8 +1,8 @@
 <?php
 
-echo $this->Form->input('Address.street_address');
-echo $this->Form->input('Address.city');
-echo $this->Form->input('Address.state', array(
+echo $this->Form->input($belongsToModel . 'Address.street_address');
+echo $this->Form->input($belongsToModel . 'Address.city');
+echo $this->Form->input($belongsToModel . 'Address.state', array(
     'options' => array(
         'Alabama' => 'Alabama',
         'Alaska' => 'Alaska',
@@ -56,5 +56,5 @@ echo $this->Form->input('Address.state', array(
         'Wyoming' => 'Wyoming'
     )
 ));
-echo $this->Form->input('Address.zipcode', array('type' => 'text', 'maxlength' => '5', 'style' => 'width:65px'));    
-echo $this->Form->input('Address.country', array('options' => array('United States' => 'United States')));
+echo $this->Form->input($belongsToModel . 'Address.zipcode', array('type' => 'text', 'maxlength' => '5', 'style' => 'width:65px'));
+echo $this->Form->input($belongsToModel . 'Address.country', array('options' => array('United States' => 'United States')));

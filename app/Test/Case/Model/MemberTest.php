@@ -329,14 +329,12 @@ class MemberTest extends MemberBase
     public $fixtures = array(
         'app.member',
         'app.congregation',
-        'app.address',
-        'app.addresses_congregation',
         'app.email_address',
         'app.congregations_email_address',
         'app.phone',
         'app.congregations_phone',
         'app.anniversary',
-        'app.addresses_member',
+        'app.member_address',
         'app.email_addresses_member',
         'app.members_phone',
     );

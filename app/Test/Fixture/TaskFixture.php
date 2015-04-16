@@ -34,8 +34,26 @@ class TaskFixture extends CakeTestFixture {
 		array(
 			'id' => 1,
 			'congregation_id' => 1,
-			'name' => 'Lorem ipsum dolor sit amet',
-			'description' => 'Lorem ipsum dolor sit amet',
+			'name' => 'task1 congregation1',
+			'description' => 'task1 description',
+			'due' => '2014-11-18 21:11:57',
+			'created' => '2014-11-18 21:11:57',
+			'modified' => '2014-11-18 21:11:57'
+		),
+		array(
+			'id' => 2,
+			'congregation_id' => 1,
+			'name' => 'task2 congregation1',
+			'description' => 'task2 description',
+			'due' => '2014-11-18 21:11:57',
+			'created' => '2014-11-18 21:11:57',
+			'modified' => '2014-11-18 21:11:57'
+		),
+		array(
+			'id' => 3,
+			'congregation_id' => 2,
+			'name' => 'task3 congregation2',
+			'description' => 'task3 description',
 			'due' => '2014-11-18 21:11:57',
 			'created' => '2014-11-18 21:11:57',
 			'modified' => '2014-11-18 21:11:57'

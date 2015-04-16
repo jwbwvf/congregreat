@@ -132,11 +132,11 @@ class Task extends AppModel
         $options = array(
             'conditions' => array('Task.congregation_id' => $congregationId),
             'fields' => array('id', 'name', 'description')
-        ); 
-        
-        return $this->find('all', $options);          
+        );
+
+        return $this->find('all', $options);
     }
-    
+
     /**
      * retrievs the @Task for the given id
      * @param int $id @Task identifier
@@ -152,7 +152,8 @@ class Task extends AppModel
         $options = array(
             'conditions' => array('Task.' . $this->primaryKey => $id),
             'fields' => array('id', 'name', 'description')
-            ); 
+        );
+
         return $this->find('first', $options);
-    }    
+    }
 }

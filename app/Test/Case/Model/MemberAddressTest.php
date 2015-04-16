@@ -195,9 +195,7 @@ class MemberAddressTest extends MemberBase
      */
     public $fixtures = array(
         'app.member',
-        'app.address',
         'app.addresses_member',
         'app.congregation',
-        'app.addresses_congregation'
     );
 }

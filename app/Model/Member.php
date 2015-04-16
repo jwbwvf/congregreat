@@ -112,15 +112,21 @@ class Member extends ContactableModel
      *
      * @var array
      */
-//    public $hasOne = array(
-//        'User' => array(
-//            'className' => 'User',
-//            'foreignKey' => 'member_id',
-//            'conditions' => '',
-//            'fields' => '',
-//            'order' => ''
-//        )
-//    );
+    public $hasOne = array(
+        'MemberAddress' => array(
+            'className' => 'MemberAddress',
+            'foreignKey' => '',
+            'dependent' => false,
+            'conditions' => '',
+            'fields' => array('id', 'street_address', 'city', 'state', 'zipcode', 'country'),
+            'order' => '',
+            'limit' => '',
+            'offset' => '',
+            'exclusive' => '',
+            'finderQuery' => '',
+            'counterQuery' => ''
+        ),
+    );
 
     /**
      * belongsTo associations

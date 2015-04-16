@@ -109,7 +109,9 @@ class CongregationsController extends AppController
     {
         if ($this->request->is('post'))
         {
-            if ($this->Congregation->addAddress($this->request->data))
+            $congregationId = $this->Auth->user('Member.congregation_id');
+            $this->request->data['CongregationAddress']['congregation_id'] = $congregationId;
+            if ($this->Congregation->CongregationAddress->save($this->request->data))
             {
                 $this->Session->setFlash(__('The congregation\'s address has been saved.'));
                 return $this->redirect(array('action' => 'view', $id));
@@ -195,7 +197,7 @@ class CongregationsController extends AppController
 
     public function editAddress($id, $addressId)
     {
-        $this->editModel($id, $addressId, 'Address', 'address');
+        $this->editModel($id, $addressId, 'CongregationAddress', 'address');
     }
 
     /**
@@ -432,7 +434,7 @@ class CongregationsController extends AppController
         {
             $this->Session->setFlash(__('The task could not be deleted. Please, try again.'));
         }
-        
+
        $this->redirect(array('action' => 'task_index'));
     }
 

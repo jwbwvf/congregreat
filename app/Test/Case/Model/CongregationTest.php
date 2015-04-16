@@ -16,21 +16,21 @@ class CongregationTest extends CongregationBase
     //1 - run, 0 - do not run
     protected $tests = array(
         'testAdd'                           => 1,
-        'testAdd_MissingName'               => 1,
-        'testAdd_InvalidEmail'              => 1,
-        'testAdd_InvalidAddress'            => 1,
-        'testAdd_InvalidPhoneNumber'        => 1,
-        'testDelete'                        => 1,
-        'testAddFollowRequest'              => 1,
-        'testRejectFollowRequest'           => 1,
-        'testAcceptFollowRequest'           => 1,
-        'testCancelFollowRequest'           => 1,
-        'testStopFollowing'                 => 1,
-        'testGetFollowAction'               => 1,
-        'testGetFollowAction_SameCongregationId'                    => 1,
-        'testGetFollowAction_Following'                             => 1,
-        'testGetFollowAction_PendingFollowRequest'                  => 1,
-        'testGetFollowAction_NotFollowing_NoPendingFollowRequest'   => 1,
+        'testAdd_MissingName'               => 0,
+        'testAdd_InvalidEmail'              => 0,
+        'testAdd_InvalidAddress'            => 0,
+        'testAdd_InvalidPhoneNumber'        => 0,
+        'testDelete'                        => 0,
+        'testAddFollowRequest'              => 0,
+        'testRejectFollowRequest'           => 0,
+        'testAcceptFollowRequest'           => 0,
+        'testCancelFollowRequest'           => 0,
+        'testStopFollowing'                 => 0,
+        'testGetFollowAction'               => 0,
+        'testGetFollowAction_SameCongregationId'                    => 0,
+        'testGetFollowAction_Following'                             => 0,
+        'testGetFollowAction_PendingFollowRequest'                  => 0,
+        'testGetFollowAction_NotFollowing_NoPendingFollowRequest'   => 0,
     );
 
     /**
@@ -50,6 +50,7 @@ class CongregationTest extends CongregationBase
 
         $dbo = $this->Congregation->getDataSource();
         $sql = $this->buildCongregationsAddDataQuery();
+die(debug($sql));
         $dbo->rawQuery($sql);
         $row = $dbo->fetchRow();
 
@@ -58,11 +59,11 @@ class CongregationTest extends CongregationBase
         $this->assertEqual($this->congregationAddData['EmailAddress']['email_address'], $row['email_addresses']['email_address']);
         $this->assertEqual($this->congregationAddData['Phone']['number'], $row['phones']['number']);
         $this->assertEqual($this->congregationAddData['Phone']['type'], $row['phones']['type']);
-        $this->assertEqual($this->congregationAddData['Address']['street_address'], $row['addresses']['street_address']);
-        $this->assertEqual($this->congregationAddData['Address']['city'], $row['addresses']['city']);
-        $this->assertEqual($this->congregationAddData['Address']['state'], $row['addresses']['state']);
-        $this->assertEqual($this->congregationAddData['Address']['zipcode'], $row['addresses']['zipcode']);
-        $this->assertEqual($this->congregationAddData['Address']['country'], $row['addresses']['country']);
+        $this->assertEqual($this->congregationAddData['CongregationAddress']['street_address'], $row['congregation_addresses']['street_address']);
+        $this->assertEqual($this->congregationAddData['CongregationAddress']['city'], $row['congregation_addresses']['city']);
+        $this->assertEqual($this->congregationAddData['CongregationAddress']['state'], $row['congregation_addresses']['state']);
+        $this->assertEqual($this->congregationAddData['CongregationAddress']['zipcode'], $row['congregation_addresses']['zipcode']);
+        $this->assertEqual($this->congregationAddData['CongregationAddress']['country'], $row['congregation_addresses']['country']);
     }
 
     /**
@@ -101,7 +102,7 @@ class CongregationTest extends CongregationBase
     {
         $this->skipTestEvaluator->shouldSkip(__FUNCTION__);
 
-        $this->validate('Address', 'zipcode', '6405A');
+        $this->validate('CongregationAddress', 'zipcode', '6405A');
     }
 
     /**
@@ -140,7 +141,7 @@ class CongregationTest extends CongregationBase
         $this->Congregation->delete($row['congregations']['id']);
 
         $sqlAfterDeleteCongregation = "SELECT * FROM congregations WHERE id='" . $row['congregations']['id'] . "'";
-        $sqlAfterDeleteAddress = "SELECT * FROM addresses WHERE id='" . $row['addresses']['id'] . "'";
+        $sqlAfterDeleteAddress = "SELECT * FROM congregation_addresses WHERE id='" . $row['congregation_addresses']['id'] . "'";
         $sqlAfterDeletePhone = "SELECT * FROM phones WHERE id='" . $row['phones']['id'] . "'";
         $sqlAfterDeleteEmailAddress = "SELECT * FROM email_addresses WHERE id='" . $row['email_addresses']['id'] . "'";
 
@@ -398,14 +399,15 @@ class CongregationTest extends CongregationBase
     {
         return "SELECT
             congregations.name, congregations.website, congregations.id,
-            addresses.street_address, addresses.city, addresses.state, addresses.zipcode, addresses.country, addresses.id,
+            congregation_addresses.street_address,
+            congregation_addresses.city, congregation_addresses.state,
+            congregation_addresses.zipcode, congregation_addresses.country, congregation_addresses.id,
             email_addresses.email_address, email_addresses.id,
             phones.number, phones.type, phones.id
             FROM congregations
-            JOIN addresses_congregations ac ON congregations.id = ac.congregation_id
+            JOIN congregation_addresses ca ON congregations.id = ca.congregation_id
             JOIN congregations_phones cp ON congregations.id = cp.congregation_id
             JOIN congregations_email_addresses cea ON congregations.id = cea.congregation_id
-            JOIN addresses ON ac.address_id = addresses.id
             JOIN email_addresses ON cea.email_address_id = email_addresses.id
             JOIN phones ON cp.phone_id = phones.id
             WHERE congregations.name = 'testCongregation'";
@@ -423,7 +425,7 @@ class CongregationTest extends CongregationBase
             'number' => '555-555-5555',
             'type' => 'home'
         ),
-        'Address' => array(
+        'CongregationAddress' => array(
             'street_address' => '123 elm st.',
             'city' => 'kc',
             'state' => 'Missouri',
@@ -440,13 +442,11 @@ class CongregationTest extends CongregationBase
     public $fixtures = array(
         'app.member',
         'app.congregation',
-        'app.address',
-        'app.addresses_congregation',
+        'app.congregation_address',
         'app.email_address',
         'app.congregations_email_address',
         'app.phone',
         'app.congregations_phone',
-        'app.addresses_member',
         'app.email_addresses_member',
         'app.members_phone',
         'app.congregation_follow_request',

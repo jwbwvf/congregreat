@@ -6,23 +6,24 @@
 
 <div class="related">
     <?php echo $this->element('display_addresses', array(
-            'addresses' => $congregation['Address'], 
+            'addresses' => $congregation['CongregationAddress'],
             'ownerId' => $congregation['Congregation']['id'],
-            'canModify' => $canModify)); 
+            'belongsToModel' => 'Congregation',
+            'canModify' => $canModify));
     ?>
 </div>
 <div class="related">
     <?php echo $this->element('display_email_addresses', array(
-            'emailAddresses' => $congregation['EmailAddress'], 
+            'emailAddresses' => $congregation['EmailAddress'],
             'ownerId' => $congregation['Congregation']['id'],
-            'canModify' => $canModify)); 
+            'canModify' => $canModify));
     ?>
 </div>
 <div class="related">
     <?php echo $this->element('display_phones', array(
-            'phones' => $congregation['Phone'], 
+            'phones' => $congregation['Phone'],
             'ownerId' => $congregation['Congregation']['id'],
-            'canModify' => $canModify)); 
+            'canModify' => $canModify));
     ?>
 </div>
 <div class="related">

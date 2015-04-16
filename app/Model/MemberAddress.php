@@ -3,20 +3,12 @@
 App::uses('AppModel', 'Model');
 
 /**
- * Address Model
+ * MemberAddress Model
  *
- * @property Congregation $Congregation
+ * @property Member $Member
  */
-class Address extends AppModel
+class MemberAddress extends AppModel
 {
-
-    /**
-     * Display field
-     *
-     * @var string
-     */
-    public $displayField = 'street_address';
-
     /**
      * Validation rules
      *
@@ -39,7 +31,7 @@ class Address extends AppModel
             //'last' => false, // Stop validation after this rule
             'on' => 'create', // Limit validation to 'create' or 'update' operations
         ),
-        'state' => array(            
+        'state' => array(
             'rule' => array('inList', array(
                 'Alabama',
                 'Alaska',
@@ -98,7 +90,7 @@ class Address extends AppModel
             //'last' => false, // Stop validation after this rule
             'on' => 'create' // Limit validation to 'create' or 'update' operations
         ),
-        'zipcode' => array(            
+        'zipcode' => array(
             'rule' => array('postal', '/^(\d{5})$/', 'us'),
             'message' => 'Enter a valid zipcode.',
             'allowEmpty' => false,
@@ -112,90 +104,23 @@ class Address extends AppModel
             'allowEmpty' => false,
             'required' => true,
             //'last' => false, // Stop validation after this rule
-            'on' => 'create', // Limit validation to 'create' or 'update' operations            
+            'on' => 'create', // Limit validation to 'create' or 'update' operations
         ),
     );
 
-    //The Associations below have been created with all possible keys, those that are not needed can be removed
-
     /**
-     * hasAndBelongsToMany associations
+     * belongsTo associations
      *
      * @var array
      */
-    public $hasAndBelongsToMany = array(
-        'Congregation' => array(
-            'className' => 'Congregation',
-            'joinTable' => 'addresses_congregations',
-            'foreignKey' => 'address_id',
-            'associationForeignKey' => 'congregation_id',
-            'unique' => 'keepExisting',
-            'conditions' => '',
-            'fields' => 'id',
-            'order' => '',
-            'limit' => '',
-            'offset' => '',
-            'finderQuery' => '',
-        ),
+    public $belongsTo = array(
         'Member' => array(
             'className' => 'Member',
-            'joinTable' => 'addresses_members',
-            'foreignKey' => 'address_id',
-            'associationForeignKey' => 'member_id',
-            'unique' => 'keepExisting',
+            'foreignKey' => 'member_id',
             'conditions' => '',
-            'fields' => 'id',
-            'order' => '',
-            'limit' => '',
-            'offset' => '',
-            'finderQuery' => '',
-        )        
+            'fields' => '',
+            'order' => ''
+        )
     );
 
-    public function get($id)
-    {
-        if (!$this->exists($id))
-        {
-            throw new NotFoundException(__('Invalid address'));
-        }
-        $options = array('conditions' => array('Address.' . $this->primaryKey => $id),
-            'fields' => array('id', 'street_address', 'city', 'state', 'zipcode', 'country'));
-        return $this->find('first', $options);        
-    }    
-    
-    /**
-     * finds an address by the given address
-     * @param string $Address
-     * @return array
-     */
-    public function getByData($data)
-    {
-        $options = array('conditions' => array(
-            'Address.street_address' => $data['street_address'], 
-            'Address.city' => $data['city'],
-            'Address.state' => $data['state'],
-            'Address.zipcode' => $data['zipcode'],
-            'Address.country' => $data['country']
-        ));
-        return $this->find('first', $options);      
-    }    
-    
-    /**
-     * checks if the address is being used by a member or congregation
-     * @return boolean
-     */
-    public function isInUse()
-    {
-        $memberOptions = array('conditions' => array('AddressesMember.address_id' => $this->id));
-        $addressesMember = $this->AddressesMember->find('first', $memberOptions);
-        
-        if (!empty($addressesMember))
-        {
-            return true;
-        }
-        
-        $congregationOptions = array('conditions' => array('AddressesCongregation.address_id' => $this->id));
-        $addressesCongregation = $this->AddressesCongregation->find('first', $congregationOptions);
-        return !empty($addressesCongregation);
-    }    
 }
