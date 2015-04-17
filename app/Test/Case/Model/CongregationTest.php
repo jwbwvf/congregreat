@@ -50,7 +50,7 @@ class CongregationTest extends CongregationBase
 
         $dbo = $this->Congregation->getDataSource();
         $sql = $this->buildCongregationsAddDataQuery();
-die(debug($sql));
+
         $dbo->rawQuery($sql);
         $row = $dbo->fetchRow();
 
@@ -405,7 +405,7 @@ die(debug($sql));
             email_addresses.email_address, email_addresses.id,
             phones.number, phones.type, phones.id
             FROM congregations
-            JOIN congregation_addresses ca ON congregations.id = ca.congregation_id
+            JOIN congregation_addresses ON congregations.id = congregation_addresses.congregation_id
             JOIN congregations_phones cp ON congregations.id = cp.congregation_id
             JOIN congregations_email_addresses cea ON congregations.id = cea.congregation_id
             JOIN email_addresses ON cea.email_address_id = email_addresses.id
