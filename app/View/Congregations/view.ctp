@@ -14,8 +14,9 @@
 </div>
 <div class="related">
     <?php echo $this->element('display_email_addresses', array(
-            'emailAddresses' => $congregation['EmailAddress'],
+            'emailAddresses' => $congregation['CongregationEmailAddress'],
             'ownerId' => $congregation['Congregation']['id'],
+            'belongsToModel' => 'Congregation',        
             'canModify' => $canModify));
     ?>
 </div>

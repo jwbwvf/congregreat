@@ -51,7 +51,7 @@ class ContactableModel extends AppModel
      */
     public function addEmailAddress($data)
     {
-        return $this->addModel($data, 'EmailAddress');
+        return $this->addModel($data, get_called_class() . 'EmailAddress');
     }
 
     /**
@@ -85,28 +85,6 @@ class ContactableModel extends AppModel
     public function deletePhoneNumber($phoneId)
     {
         return $this->deleteModel($phoneId, 'Phone');
-    }
-
-    /**
-     * removes the relationship with the @EmailAddress if there are no other relationshiops with the @EmailAddress
-     * the @EmailAddress is deleted
-     * @param int $emailAddressId
-     * @return boolean
-     */
-    public function deleteEmailAddress($emailAddressId)
-    {
-        return $this->deleteModel($emailAddressId, 'EmailAddress');
-    }
-
-    /**
-     * removes the relationship with the @Address if there are no other relationshiops with the @Address
-     * the @Address is deleted
-     * @param int $addressId
-     * @return boolean
-     */
-    public function deleteAddress($addressId)
-    {
-        return $this->deleteModel($addressId, 'Address');
     }
 
     /**

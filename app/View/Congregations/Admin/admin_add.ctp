@@ -6,7 +6,7 @@
             echo $this->Form->input('name');
             echo $this->Form->input('website');
 
-            echo $this->Form->input('EmailAddress.email_address', array('type' => 'email', 'maxlength' => 254));
+            echo $this->Form->input('CongregationEmailAddress.email_address', array('type' => 'email', 'maxlength' => 254));
 
             echo $this->element('input_phone');
 

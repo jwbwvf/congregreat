@@ -8,8 +8,8 @@ App::uses('CongregationFollowActionLabels', 'Model');
 /**
  * Congregation Model
  *
- * @property Address $Address
- * @property EmailAddress $EmailAddress
+ * @property CongregationAddress $CongregationAddress
+ * @property CongregationEmailAddress $CongregationEmailAddress
  * @property Phone $Phone
  */
 class Congregation extends ContactableModel
@@ -77,6 +77,19 @@ class Congregation extends ContactableModel
             'finderQuery' => '',
             'counterQuery' => ''
         ),
+        'CongregationEmailAddress' => array(
+            'className' => 'CongregationEmailAddress',
+            'foreignKey' => 'congregation_id',
+            'dependent' => false,
+            'conditions' => '',
+            'fields' => array('id', 'email_address'),
+            'order' => '',
+            'limit' => '',
+            'offset' => '',
+            'exclusive' => '',
+            'finderQuery' => '',
+            'counterQuery' => ''
+        ),        
         'CongregationFollowRequest' => array(
             'className' => 'CongregationFollowRequest',
             'foreignKey' => '',
@@ -124,20 +137,6 @@ class Congregation extends ContactableModel
      * @var array
      */
     public $hasAndBelongsToMany = array(
-        'EmailAddress' => array(
-            'className' => 'EmailAddress',
-            'joinTable' => 'congregations_email_addresses',
-            'joinModel' => 'CongregationsEmailAddress',
-            'foreignKey' => 'congregation_id',
-            'associationForeignKey' => 'email_address_id',
-            'unique' => 'keepExisting',
-            'conditions' => '',
-            'fields' => array('id', 'email_address'),
-            'order' => '',
-            'limit' => '',
-            'offset' => '',
-            'finderQuery' => '',
-        ),
         'Phone' => array(
             'className' => 'Phone',
             'joinTable' => 'congregations_phones',
@@ -186,6 +185,7 @@ class Congregation extends ContactableModel
 
         $data['Congregation'] = array('id' => $this->id);
         $data['CongregationAddress']['congregation_id'] = $this->id;
+        $data['CongregationEmailAddress']['congregation_id'] = $this->id;
         return parent::add($data);
     }
 
