@@ -44,4 +44,16 @@ class CongregationEmailAddressesController extends AppController {
         $congregationId = $this->Auth->user('Member.congregation_id');
         return $this->redirect(array('controller' => 'Congregations', 'action' => 'view', $congregationId));
     }
+    
+    /**
+     * adimin_delete method
+     *
+     * @throws NotFoundException
+     * @param string $id
+     * @return void
+     */
+    public function admin_delete($id = null)
+    {
+        $this->delete($id);
+    }    
 }
