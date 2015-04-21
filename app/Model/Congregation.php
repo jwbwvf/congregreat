@@ -89,7 +89,20 @@ class Congregation extends ContactableModel
             'exclusive' => '',
             'finderQuery' => '',
             'counterQuery' => ''
-        ),        
+        ),
+        'CongregationPhone' => array(
+            'className' => 'CongregationPhone',
+            'foreignKey' => 'congregation_id',
+            'dependent' => false,
+            'conditions' => '',
+            'fields' => array('id', 'number', 'type'),
+            'order' => '',
+            'limit' => '',
+            'offset' => '',
+            'exclusive' => '',
+            'finderQuery' => '',
+            'counterQuery' => ''
+        ),
         'CongregationFollowRequest' => array(
             'className' => 'CongregationFollowRequest',
             'foreignKey' => '',
@@ -132,28 +145,6 @@ class Congregation extends ContactableModel
     );
 
     /**
-     * hasAndBelongsToMany associations
-     *
-     * @var array
-     */
-    public $hasAndBelongsToMany = array(
-        'Phone' => array(
-            'className' => 'Phone',
-            'joinTable' => 'congregations_phones',
-            'joinModel' => 'CongregationsPhone',
-            'foreignKey' => 'congregation_id',
-            'associationForeignKey' => 'phone_id',
-            'unique' => 'keepExisting',
-            'conditions' => '',
-            'fields' => array('id', 'number', 'type'),
-            'order' => '',
-            'limit' => '',
-            'offset' => '',
-            'finderQuery' => '',
-        )
-    );
-
-    /**
      * retrievs the @Congregation for the given id
      * @param int $id @Congregation identifier
      * @return @Congregation
@@ -186,6 +177,7 @@ class Congregation extends ContactableModel
         $data['Congregation'] = array('id' => $this->id);
         $data['CongregationAddress']['congregation_id'] = $this->id;
         $data['CongregationEmailAddress']['congregation_id'] = $this->id;
+        $data['CongregationPhone']['congregation_id'] = $this->id;
         return parent::add($data);
     }
 

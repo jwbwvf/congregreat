@@ -61,7 +61,9 @@ class CongregationsController extends AppController
     {
         if ($this->request->is('post'))
         {
-            if ($this->Congregation->addPhoneNumber($this->request->data))
+            $congregationId = $this->Auth->user('Member.congregation_id');
+            $this->request->data['CongregationPhone']['congregation_id'] = $congregationId;
+            if ($this->Congregation->CongregationPhone->save($this->request->data))
             {
                 $this->Session->setFlash(__('The congregation\'s phone number has been saved.'));
                 return $this->redirect(array('action' => 'view', $id));
@@ -159,32 +161,6 @@ class CongregationsController extends AppController
                 'fields' => array('id', 'name', 'website'));
             $this->request->data = $this->Congregation->find('first', $options);
         }
-    }
-
-    /**
-     * deletes the congregation's phone relationship and deletes the phone if it's not in use by anything else
-     * @param int $id identifier of the @Congregation the @Phone belongs to
-     * @param int $phoneNumberId identifier of the @Phone to delete
-     * @return void
-     * @throws NotFoundException
-     */
-    public function deletePhoneNumber($id, $phoneNumberId)
-    {
-        $this->Congregation->id = $id;
-        if (!$this->Congregation->exists())
-        {
-            throw new NotFoundException(__('Invalid congregation'));
-        }
-        $this->request->onlyAllow('post', 'delete');
-        if ($this->Congregation->deletePhoneNumber($phoneNumberId))
-        {
-            $this->Session->setFlash(__('The phone number has been deleted.'));
-        }
-        else
-        {
-            $this->Session->setFlash(__('The phone number could not be deleted. Please, try again.'));
-        }
-        return $this->redirect($this->referer());
     }
 
     public function editPhone($id, $phoneId)

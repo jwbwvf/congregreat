@@ -8,7 +8,7 @@
 
             echo $this->Form->input('CongregationEmailAddress.email_address', array('type' => 'email', 'maxlength' => 254));
 
-            echo $this->element('input_phone');
+            echo $this->element('input_phone', array('belongsToModel' => 'Congregation'));
 
             echo $this->element('input_address', array('belongsToModel' => 'Congregation'));
         ?>

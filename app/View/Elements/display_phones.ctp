@@ -15,7 +15,7 @@
                 <?php if($canModify) { ?>
                 <td class="actions">
                     <?php echo $this->Html->link(__('Edit'), array('action' => 'editPhone', $ownerId, $phone['id'])); ?>
-                    <?php echo $this->Form->postLink(__('Delete'), array('action' => 'deletePhoneNumber', $ownerId, $phone['id']), null, __('Are you sure you want to delete # %s?', $phone['number'])); ?>
+                    <?php echo $this->Form->postLink(__('Delete'), array('controller' => $belongsToModel . 'Phones', 'action' => 'delete', $phone['id']), null, __('Are you sure you want to delete # %s?', $phone['number'])); ?>
                 </td>
                 <?php }//end can modify ?>
             </tr>

@@ -1,30 +1,31 @@
 <?php echo $this->element('display_congregation', array(
-        'congregation' => $congregation['Congregation'],
-        'followAction' => $followAction,
-        'canModify' => $canModify));
+    'congregation' => $congregation['Congregation'],
+    'followAction' => $followAction,
+    'canModify' => $canModify));
 ?>
 
 <div class="related">
     <?php echo $this->element('display_addresses', array(
-            'addresses' => $congregation['CongregationAddress'],
-            'ownerId' => $congregation['Congregation']['id'],
-            'belongsToModel' => 'Congregation',
-            'canModify' => $canModify));
+        'addresses' => $congregation['CongregationAddress'],
+        'ownerId' => $congregation['Congregation']['id'],
+        'belongsToModel' => 'Congregation',
+        'canModify' => $canModify));
     ?>
 </div>
 <div class="related">
     <?php echo $this->element('display_email_addresses', array(
-            'emailAddresses' => $congregation['CongregationEmailAddress'],
-            'ownerId' => $congregation['Congregation']['id'],
-            'belongsToModel' => 'Congregation',        
-            'canModify' => $canModify));
+        'emailAddresses' => $congregation['CongregationEmailAddress'],
+        'ownerId' => $congregation['Congregation']['id'],
+        'belongsToModel' => 'Congregation',        
+        'canModify' => $canModify));
     ?>
 </div>
 <div class="related">
     <?php echo $this->element('display_phones', array(
-            'phones' => $congregation['Phone'],
-            'ownerId' => $congregation['Congregation']['id'],
-            'canModify' => $canModify));
+        'phones' => $congregation['CongregationPhone'],
+        'ownerId' => $congregation['Congregation']['id'],
+        'belongsToModel' => 'Congregation',
+        'canModify' => $canModify));
     ?>
 </div>
 <div class="related">

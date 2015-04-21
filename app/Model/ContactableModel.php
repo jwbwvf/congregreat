@@ -40,7 +40,7 @@ class ContactableModel extends AppModel
      */
     public function addPhoneNumber($data)
     {
-        return $this->addModel($data, 'Phone');
+        return $this->addModel($data, get_called_class() . 'Phone');
     }
 
     /**
@@ -74,70 +74,5 @@ class ContactableModel extends AppModel
         }
 
         return $this->$model->save($data, false);
-    }
-
-    /**
-     * removes the relationship with the @Phone if there are no other relationships with the @Phone
-     * the @Phone is deleted.
-     * @param int $phoneId
-     * @return boolean
-     */
-    public function deletePhoneNumber($phoneId)
-    {
-        return $this->deleteModel($phoneId, 'Phone');
-    }
-
-    /**
-     * removes the relationship with the model if there are no other relationshiops with the model the model is deleted.
-     * @param int $modelId
-     * @param string $model name of the model
-     * @return boolean
-     */
-    public function deleteModel($modelId, $model)
-    {
-        $foreignKey = $this->hasAndBelongsToMany[$model]['foreignKey'];
-        $associatedForeignKey = $this->hasAndBelongsToMany[$model]['associationForeignKey'];
-        $joinModel = $this->hasAndBelongsToMany[$model]['joinModel'];
-
-        $this->$joinModel->deleteAll(array($joinModel . '.' . $associatedForeignKey => $modelId,
-            $joinModel . '.' . $foreignKey => $this->id), false);
-
-        //check if any one has this email address and if not delete the email address
-        $this->$model->id = $modelId;
-        if ($this->$model->isInUse() === false)
-        {
-            $this->$model->delete();
-        }
-
-        return true;
-    }
-
-    public function delete($id = NULL, $cascade = true)
-    {
-        $this->id = $id;//todo rework so that id is passed into deletes
-        $contactableModel = $this->get($id);
-
-        //foreach address
-        foreach ($contactableModel['Address'] as $address)
-        {
-            $this->deleteAddress($address['id']);
-        }
-
-        //foreach email address
-        foreach ($contactableModel['EmailAddress'] as $emailAddress)
-        {
-            $this->deleteEmailAddress($emailAddress['id']);
-        }
-
-        //foreach phone number
-        foreach ($contactableModel['Phone'] as $phone)
-        {
-            $this->deletePhoneNumber($phone['id']);
-        }
-
-        //foreach related model
-
-        //delete self
-        return parent::delete($id, $cascade);
     }
 }
