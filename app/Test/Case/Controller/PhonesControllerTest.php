@@ -13,16 +13,7 @@ class PhonesControllerTest extends ControllerTestCase {
  * @var array
  */
 	public $fixtures = array(
-//		'app.phone',
-//		'app.congregation',
-//		'app.address',
-//		'app.addresses_congregation',
-//		'app.email_address',
-//		'app.member',
-//		'app.email_addresses_member',
-//		'app.organization',
-//		'app.congregations_email_address',
-//		'app.congregations_phone'
+
 	);
 
 /**

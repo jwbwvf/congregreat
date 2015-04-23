@@ -1,145 +1,123 @@
 <?php
 
 App::uses('Congregation', 'Model');
-App::uses('CongregationBase', 'Test/Case/Model');
+App::uses('CongregationEmailAddressFixuture', 'Fixture');
+App::uses('SkipTestEvaluator', 'Test/Lib');
+App::uses('TestHelper', 'Test/Lib');
 
-class CongregationEmailAddressTest extends CongregationBase
+class CongregationEmailAddressTest extends CakeTestCase
 {
     //Add the line below at the beginning of each test
     //$this->skipTestEvaluator->shouldSkip(__FUNCTION__);
     //add test name to the array with
     //1 - run, 0 - do not run
     protected $tests = array(
-        'testAdd'                       => 1,
-        'testAdd_InvalidEmailAddress'   => 1,
-        'testDelete'                    => 1,
-        'testDelete_IsInUse'            => 1,
+        'testGet'                       => 1,
+        'testGet_NotFound'              => 1,
+        'testSave'                      => 1,
+        'testSave_InvalidEmailAddress'  => 1,
     );
 
+    protected $skipTestEvaluator;
+
+
     /**
-     * test adding an email address to an existing congregation
-     * @covers Congregation::addEmailAddress
-     * @covers Congregation::isRelatedModelValid
+     * setUp method
+     *
+     * @return void
      */
-    public function testAdd()
+    public function setUp()
+    {
+        parent::setUp();
+
+        $this->CongregationEmailAddress = ClassRegistry::init('CongregationEmailAddress');
+
+        $congregationEmailAddressFixture = new CongregationEmailAddressFixture();
+        $this->congregationEmailAddressRecords = $congregationEmailAddressFixture->records;
+
+        $this->skipTestEvaluator = new SkipTestEvaluator($this->tests);
+    }
+
+    /**
+     * tearDown method
+     *
+     * @return void
+     */
+    public function tearDown()
+    {
+        unset($this->CongregationEmailAddress);
+
+        parent::tearDown();
+    }
+
+    public function testGet()
     {
         $this->skipTestEvaluator->shouldSkip(__FUNCTION__);
 
+        $congregationEmailAddressRecord = $this->congregationEmailAddressRecords[0];
+        $congregationEmailAddress = $this->CongregationEmailAddress->get($congregationEmailAddressRecord['id']);
+
+
+        $this->assertEquals($congregationEmailAddressRecord['id'], $congregationEmailAddress['CongregationEmailAddress']['id']);
+        $this->assertEquals($congregationEmailAddressRecord['email_address'], $congregationEmailAddress['CongregationEmailAddress']['email_address']);
+    }
+
+    /**
+     * Test getting a CongregationEmailAddress that doesn't exist will throw an exception
+     * @expectedException NotFoundException
+     */
+    public function testGet_NotFound()
+    {
+        $this->skipTestEvaluator->shouldSkip(__FUNCTION__);
+
+        $congregationEmailAddressId = TestHelper::getNonFixtureId($this->congregationEmailAddressRecords);
+
+        $this->CongregationEmailAddress->get($congregationEmailAddressId);
+    }
+
+    /**
+     * test adding an email address to an existing congregation
+     */
+    public function testSave()
+    {
+        $this->skipTestEvaluator->shouldSkip(__FUNCTION__);
+
+        $congregationId = 1; //id from congregation fixture record
+        $emailAddress = 'emailAddress@emails.com';
         $emailAddressData = array(
-            'Congregation' => array('id' => 1), //id from congregation fixture record
-            'EmailAddress' => array('email_address' => 'emailAddress@emails.com')
+            'CongregationEmailAddress' => array('congregation_id' => $congregationId, 'email_address' => $emailAddress)
         );
 
-        $return = $this->Congregation->addEmailAddress($emailAddressData);
+        $this->CongregationEmailAddress->save($emailAddressData);
 
-        $this->assertNotEqual(false, $return);
+        $this->assertGreaterThan(0, $this->CongregationEmailAddress->id);
 
-        $sql  = $this->buildCongregationsEmailAddressQuery($return['EmailAddress']['id']);
+        $sql  = $this->buildCongregationsEmailAddressQuery($emailAddress);
 
-        $dbo = $this->Congregation->getDataSource();
+        $dbo = $this->CongregationEmailAddress->getDataSource();
         $dbo->rawQuery($sql);
         $row = $dbo->fetchRow();
 
-        $this->assertEqual($emailAddressData['EmailAddress']['email_address'], $row['email_addresses']['email_address']);
-        $this->assertEqual($emailAddressData['Congregation']['id'], $row['congregations']['id']);
+        $this->assertEqual($emailAddress, $row['congregation_email_addresses']['email_address']);
+        $this->assertEqual($congregationId, $row['congregation_email_addresses']['congregation_id']);
     }
 
     /**
      * tests adding an invalid email address to an existing congregation
-     * @covers Congregation::addEmailAddress
-     * @covers Congregation::isRelatedModelValid
      */
-    public function testAdd_InvalidEmailAddress()
+    public function testSave_InvalidEmailAddress()
     {
         $this->skipTestEvaluator->shouldSkip(__FUNCTION__);
 
+        $congregationId = 1; //id from congregation fixture record
+        $invalidEmailAddress = 'emailAddressemails.com';
         $emailAddressData = array(
-            'Congregation' => array('id' => 1),
-            'EmailAddress' => array('email_address' => 'emailAddressemails.com')
+            'CongregationEmailAddress' => array('congregation_id' => $congregationId, 'email_address' => $invalidEmailAddress)
         );
 
-        $return = $this->Congregation->addEmailAddress($emailAddressData);
+        $return = $this->CongregationEmailAddress->save($emailAddressData);
 
         $this->assertFalse($return);
-    }
-
-    public function testDelete()
-    {
-        $this->skipTestEvaluator->shouldSkip(__FUNCTION__);
-
-        $this->Congregation->id = 1; //id from congregation fixture record
-
-        $sql = "SELECT congregations_email_addresses.email_address_id, email_addresses.id
-                FROM congregations_email_addresses
-                JOIN email_addresses ON congregations_email_addresses.email_address_id = email_addresses.id
-                WHERE congregation_id= '" . $this->Congregation->id . "'";
-
-        $dbo = $this->Congregation->getDataSource();
-        $dbo->rawQuery($sql);
-        $row = $dbo->fetchRow();
-
-        $this->assertNotNull($row['congregations_email_addresses']['email_address_id']);
-        $emailAddressId = $row['email_addresses']['id'];
-        $this->assertNotNull($emailAddressId);
-
-        $this->Congregation->deleteEmailAddress($emailAddressId);
-
-        $dbo->rawQuery($sql);
-        $rowAfter = $dbo->fetchRow();
-
-        $this->assertNull($rowAfter['congregations_email_addresses']['email_address_id']);
-        $this->assertNull($rowAfter['email_addresses']['id']);
-
-        $sqlEmailAddress = "SELECT id
-                     FROM email_addresses where email_addresses.id= '" . $emailAddressId . "'";
-
-        $dbo->rawQuery($sqlEmailAddress);
-        $rowEmailAddress = $dbo->fetchRow();
-
-        $this->assertNull($rowEmailAddress['email_addresses']['id']);
-    }
-
-    public function testDelete_IsInUse()
-    {
-        $this->skipTestEvaluator->shouldSkip(__FUNCTION__);
-
-        $emailAddressData = array(
-            'Congregation' => array('id' => 2), //id from congregation fixture record
-            'EmailAddress' => array('email_address' => 'emailAddress@emails.com')
-        );
-
-        $this->Congregation->addEmailAddress($emailAddressData);
-
-        $this->Congregation->id = 1; //id from congregation fixture record
-
-        $sql = "SELECT congregations_email_addresses.email_address_id, email_addresses.id
-                FROM congregations_email_addresses
-                JOIN email_addresses ON congregations_email_addresses.email_address_id = email_addresses.id
-                WHERE congregation_id= '" . $this->Congregation->id . "'";
-
-        $dbo = $this->Congregation->getDataSource();
-        $dbo->rawQuery($sql);
-        $row = $dbo->fetchRow();
-
-        $this->assertNotNull($row['congregations_email_addresses']['email_address_id']);
-        $emailAddressId = $row['email_addresses']['id'];
-        $this->assertNotNull($emailAddressId);
-
-        $this->Congregation->deleteEmailAddress($emailAddressId);
-
-        $dbo->rawQuery($sql);
-        $rowAfter = $dbo->fetchRow();
-
-        $this->assertNull($rowAfter['congregations_email_addresses']['email_address_id']);
-        $this->assertNull($rowAfter['email_addresses']['id']);
-
-        $sqlEmailAddress = "SELECT id
-                     FROM email_addresses where email_addresses.id= '" . $emailAddressId . "'";
-
-        $dbo->rawQuery($sqlEmailAddress);
-        $rowEmailAddress = $dbo->fetchRow();
-
-        $this->assertNotNull($rowEmailAddress['email_addresses']['id']);
     }
 
     /**
@@ -148,15 +126,12 @@ class CongregationEmailAddressTest extends CongregationBase
      * @param int $emailAddressId
      * @return string
      */
-    private function buildCongregationsEmailAddressQuery($emailAddressId)
+    private function buildCongregationsEmailAddressQuery($emailAddress)
     {
         return "SELECT
-                congregations.id,
-                email_addresses.email_address
-                FROM email_addresses
-                JOIN congregations_email_addresses cea ON email_addresses.id = cea.email_address_id
-                JOIN congregations ON cea.congregation_id = congregations.id
-                WHERE email_addresses.id = '" . $emailAddressId . "'";
+                congregation_id, email_address
+                FROM congregation_email_addresses
+                WHERE congregation_email_addresses.email_address = '" . $emailAddress . "'";
     }
 
      /**
@@ -166,10 +141,6 @@ class CongregationEmailAddressTest extends CongregationBase
      */
     public $fixtures = array(
         'app.congregation',
-        'app.email_address',
-        'app.congregations_email_address',
-        //needed because the Phone.isInUse checks for member or congregation using the phone number
-        'app.member',
-        'app.email_addresses_member'
+        'app.congregation_email_address'
     );
 }

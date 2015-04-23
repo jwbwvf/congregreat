@@ -3,6 +3,7 @@
 App::uses('CongregationAddress', 'Model');
 App::uses('CongregationAddressFixture', 'Fixture');
 App::uses('SkipTestEvaluator', 'Test/Lib');
+App::uses('TestHelper', 'Test/Lib');
 
 /**
  * @covers CongregationAddress
@@ -36,10 +37,11 @@ class CongregationAddressTest extends CakeTestCase
     public function setUp()
     {
         parent::setUp();
+
         $this->CongregationAddress = ClassRegistry::init('CongregationAddress');
 
         $congregationAddressFixture = new CongregationAddressFixture();
-        $this->congregationAddresses = $congregationAddressFixture->records;
+        $this->congregationAddressRecords = $congregationAddressFixture->records;
 
         $this->skipTestEvaluator = new SkipTestEvaluator($this->tests);
     }
@@ -63,15 +65,15 @@ class CongregationAddressTest extends CakeTestCase
     {
         $this->skipTestEvaluator->shouldSkip(__FUNCTION__);
 
-        $congregationAddressId = $this->congregationAddresses[0]['id'];
-        $congregationAddress = $this->CongregationAddress->get($congregationAddressId);
+        $congregationAddressRecord = $this->congregationAddressRecords[0];
+        $congregationAddress = $this->CongregationAddress->get($congregationAddressRecord['id']);
 
-        $this->assertEquals($this->congregationAddresses[0]['id'], $congregationAddress['CongregationAddress']['id']);
-        $this->assertEquals($this->congregationAddresses[0]['street_address'], $congregationAddress['CongregationAddress']['street_address']);
-        $this->assertEquals($this->congregationAddresses[0]['city'], $congregationAddress['CongregationAddress']['city']);
-        $this->assertEquals($this->congregationAddresses[0]['state'], $congregationAddress['CongregationAddress']['state']);
-        $this->assertEquals($this->congregationAddresses[0]['zipcode'], $congregationAddress['CongregationAddress']['zipcode']);
-        $this->assertEquals($this->congregationAddresses[0]['country'], $congregationAddress['CongregationAddress']['country']);
+        $this->assertEquals($congregationAddressRecord['id'], $congregationAddress['CongregationAddress']['id']);
+        $this->assertEquals($congregationAddressRecord['street_address'], $congregationAddress['CongregationAddress']['street_address']);
+        $this->assertEquals($congregationAddressRecord['city'], $congregationAddress['CongregationAddress']['city']);
+        $this->assertEquals($congregationAddressRecord['state'], $congregationAddress['CongregationAddress']['state']);
+        $this->assertEquals($congregationAddressRecord['zipcode'], $congregationAddress['CongregationAddress']['zipcode']);
+        $this->assertEquals($congregationAddressRecord['country'], $congregationAddress['CongregationAddress']['country']);
     }
 
     /**
@@ -82,27 +84,8 @@ class CongregationAddressTest extends CakeTestCase
     {
         $this->skipTestEvaluator->shouldSkip(__FUNCTION__);
 
-        $congregationAddressId = $this->getNonFixtureId();
+        $congregationAddressId = TestHelper::getNonFixtureId($this->congregationAddressRecords);
 
         $this->CongregationAddress->get($congregationAddressId);
-    }
-
-    /**
-     * Finds an id that will not exist in the database at the start of a test
-     * @return int
-     */
-    public function getNonFixtureId()
-    {
-        $congregationAddressIds = array();
-
-        foreach($this->congregationAddresses as $congregationAddress)
-        {
-            $congregationAddressIds[] = $congregationAddress['id'];
-        }
-
-        for($count = 1; $count < count($congregationAddressIds); $count++)
-        {
-            if(!in_array($count, $congregationAddressIds)) {return $count;}
-        }
     }
 }

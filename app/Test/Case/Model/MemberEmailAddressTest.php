@@ -168,11 +168,9 @@ class MemberEmailAddressTest extends MemberBase
      */
     public $fixtures = array(
         'app.member',
-        'app.email_address',
-        'app.email_addresses_member',
+        'app.member_email_address',
         //needed because the EmailAddress.isInUse checks for member or congregation using the email address
-        'app.congregation',
-        'app.congregations_email_address'
+        'app.congregation'
     );
 }
 

@@ -56,7 +56,7 @@ class CongregationTest extends CongregationBase
 
         $this->assertEqual($this->congregationAddData['Congregation']['name'], $row['congregations']['name']);
         $this->assertEqual($this->congregationAddData['Congregation']['website'], $row['congregations']['website']);
-        $this->assertEqual($this->congregationAddData['EmailAddress']['email_address'], $row['email_addresses']['email_address']);
+        $this->assertEqual($this->congregationAddData['CongregationEmailAddress']['email_address'], $row['congregation_email_addresses']['email_address']);
         $this->assertEqual($this->congregationAddData['Phone']['number'], $row['phones']['number']);
         $this->assertEqual($this->congregationAddData['Phone']['type'], $row['phones']['type']);
         $this->assertEqual($this->congregationAddData['CongregationAddress']['street_address'], $row['congregation_addresses']['street_address']);
@@ -89,7 +89,7 @@ class CongregationTest extends CongregationBase
     {
         $this->skipTestEvaluator->shouldSkip(__FUNCTION__);
 
-        $this->validate('EmailAddress', 'email_address', 'invalidEmail@nowhere');
+        $this->validate('CongregationEmailAddress', 'email_address', 'invalidEmail@nowhere');
     }
 
     /**
@@ -143,7 +143,7 @@ class CongregationTest extends CongregationBase
         $sqlAfterDeleteCongregation = "SELECT * FROM congregations WHERE id='" . $row['congregations']['id'] . "'";
         $sqlAfterDeleteAddress = "SELECT * FROM congregation_addresses WHERE id='" . $row['congregation_addresses']['id'] . "'";
         $sqlAfterDeletePhone = "SELECT * FROM phones WHERE id='" . $row['phones']['id'] . "'";
-        $sqlAfterDeleteEmailAddress = "SELECT * FROM email_addresses WHERE id='" . $row['email_addresses']['id'] . "'";
+        $sqlAfterDeleteEmailAddress = "SELECT * FROM congregation_email_addresses WHERE id='" . $row['congregation_email_addresses']['id'] . "'";
 
         $dbo->rawQuery($sqlAfterDeleteCongregation);
         $rowAfterDeleteCongregation = $dbo->fetchRow();
@@ -402,12 +402,12 @@ class CongregationTest extends CongregationBase
             congregation_addresses.street_address,
             congregation_addresses.city, congregation_addresses.state,
             congregation_addresses.zipcode, congregation_addresses.country, congregation_addresses.id,
-            email_addresses.email_address, email_addresses.id,
+            congregation_email_addresses.email_address, congregation_email_addresses.id,
             phones.number, phones.type, phones.id
             FROM congregations
             JOIN congregation_addresses ON congregations.id = congregation_addresses.congregation_id
             JOIN congregations_phones cp ON congregations.id = cp.congregation_id
-            JOIN congregations_email_addresses cea ON congregations.id = cea.congregation_id
+            JOIN congregation_email_addresses ON congregations.id = congregation_email_addresses.congregation_id
             JOIN email_addresses ON cea.email_address_id = email_addresses.id
             JOIN phones ON cp.phone_id = phones.id
             WHERE congregations.name = 'testCongregation'";
@@ -418,7 +418,7 @@ class CongregationTest extends CongregationBase
             'name' => 'testCongregation',
             'website' => 'testCongregation.org'
         ),
-        'EmailAddress' => array(
+        'CongregationEmailAddress' => array(
             'email_address' => 'test@test.com'
         ),
         'Phone' => array(
@@ -443,11 +443,9 @@ class CongregationTest extends CongregationBase
         'app.member',
         'app.congregation',
         'app.congregation_address',
-        'app.email_address',
-        'app.congregations_email_address',
+        'app.congregation_email_address',
         'app.phone',
         'app.congregations_phone',
-        'app.email_addresses_member',
         'app.members_phone',
         'app.congregation_follow_request',
         'app.congregation_follow',
