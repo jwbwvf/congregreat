@@ -155,7 +155,46 @@ class Member extends ContactableModel
      *
      * @var array
      */
-//    public $hasMany = array(
+    public $hasMany = array(
+        'MemberAddress' => array(
+            'className' => 'MemberAddress',
+            'foreignKey' => 'member_id',
+            'dependent' => false,
+            'conditions' => '',
+            'fields' => array('id', 'street_address', 'city', 'state', 'zipcode', 'country'),
+            'order' => '',
+            'limit' => '',
+            'offset' => '',
+            'exclusive' => '',
+            'finderQuery' => '',
+            'counterQuery' => ''
+        ),
+        'MemberEmailAddress' => array(
+            'className' => 'MemberEmailAddress',
+            'foreignKey' => 'member_id',
+            'dependent' => false,
+            'conditions' => '',
+            'fields' => array('id', 'email_address'),
+            'order' => '',
+            'limit' => '',
+            'offset' => '',
+            'exclusive' => '',
+            'finderQuery' => '',
+            'counterQuery' => ''
+        ),
+        'MemberPhone' => array(
+            'className' => 'MemberPhone',
+            'foreignKey' => 'member_id',
+            'dependent' => false,
+            'conditions' => '',
+            'fields' => array('id', 'number', 'type'),
+            'order' => '',
+            'limit' => '',
+            'offset' => '',
+            'exclusive' => '',
+            'finderQuery' => '',
+            'counterQuery' => ''
+        )
 //        'Absence' => array(
 //            'className' => 'Absence',
 //            'foreignKey' => 'member_id',
@@ -195,42 +234,14 @@ class Member extends ContactableModel
 //            'finderQuery' => '',
 //            'counterQuery' => ''
 //        )
-//    );
+    );
 
     /**
      * hasAndBelongsToMany associations
      *
      * @var array
      */
-    public $hasAndBelongsToMany = array(
-        'Address' => array(
-            'className' => 'Address',
-            'joinTable' => 'addresses_members',
-            'joinModel' => 'AddressesMember',
-            'foreignKey' => 'member_id',
-            'associationForeignKey' => 'address_id',
-            'unique' => 'keepExisting',
-            'conditions' => '',
-            'fields' => array('id', 'street_address', 'city', 'state', 'zipcode', 'country'),
-            'order' => '',
-            'limit' => '',
-            'offset' => '',
-            'finderQuery' => '',
-        ),
-        'EmailAddress' => array(
-            'className' => 'EmailAddress',
-            'joinTable' => 'email_addresses_members',
-            'joinModel' => 'EmailAddressesMember',
-            'foreignKey' => 'member_id',
-            'associationForeignKey' => 'email_address_id',
-            'unique' => 'keepExisting',
-            'conditions' => '',
-            'fields' => array('id', 'email_address'),
-            'order' => '',
-            'limit' => '',
-            'offset' => '',
-            'finderQuery' => '',
-        ),
+//    public $hasAndBelongsToMany = array(
 //        'Group' => array(
 //            'className' => 'Group',
 //            'joinTable' => 'groups_members',
@@ -244,20 +255,6 @@ class Member extends ContactableModel
 //            'offset' => '',
 //            'finderQuery' => '',
 //        ),
-        'Phone' => array(
-            'className' => 'Phone',
-            'joinTable' => 'members_phones',
-            'joinModel' => 'MembersPhone',
-            'foreignKey' => 'member_id',
-            'associationForeignKey' => 'phone_id',
-            'unique' => 'keepExisting',
-            'conditions' => '',
-            'fields' => array('id', 'number', 'type'),
-            'order' => '',
-            'limit' => '',
-            'offset' => '',
-            'finderQuery' => '',
-        )//,
 //        'Task' => array(
 //            'className' => 'Task',
 //            'joinTable' => 'members_tasks',
@@ -271,7 +268,7 @@ class Member extends ContactableModel
 //            'offset' => '',
 //            'finderQuery' => '',
 //        )
-    );
+//    );
 
     /**
      * retrievs the @Member for the given id

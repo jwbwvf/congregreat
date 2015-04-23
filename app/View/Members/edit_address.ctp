@@ -5,7 +5,7 @@
 	<?php
             echo $this->Form->Hidden('Member.id', array('value' => $memberId));
             echo $this->Form->input('id');
-            echo $this->element('input_address');
+            echo $this->element('input_address', array('belongsToModel' => 'Member')););
 	?>
     </fieldset>
     <?php echo $this->Form->end(__('Submit')); ?>

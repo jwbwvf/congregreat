@@ -44,8 +44,9 @@ class MembersController extends AppController
     public function view($id = null)
     {
         $this->set('member', $this->Member->get($id));
-        //todo check session member.id to see if the user is viewing their own profile so they can edit it
-        $this->set('canModify', true);
+
+        $canModify = $this->Auth->user('Member.id') === $id;
+        $this->set('canModify', $canModify);
     }
 
     /**
@@ -132,8 +133,9 @@ class MembersController extends AppController
     public function addAddress($id)
     {
         if ($this->request->is('post'))
-        {            
-            if ($this->Member->addAddress($this->request->data))
+        {
+            $this->request->data['MemberAddress']['member_id'] = $id;
+            if ($this->Member->MemberAddress->save($this->request->data))
             {
                 $this->Session->setFlash(__('The member\'s address has been saved.'));
                 return $this->redirect(array('action' => 'view', $id));
@@ -199,7 +201,7 @@ class MembersController extends AppController
     
     public function editAddress($id, $addressId)
     {
-        $this->editModel($id, $addressId, 'Address', 'address');
+        $this->editModel($id, $addressId, 'MemberAddress', 'address');
     }
     
     private function editModel($id, $modelId, $model, $modelLabel)
@@ -297,33 +299,7 @@ class MembersController extends AppController
             $this->Session->setFlash(__('The email address could not be deleted. Please, try again.'));
         }
         return $this->redirect($this->referer());        
-    }
-    
-    /**
-     * deletes the member's address relationship and deletes the address if it's not in use by anything else
-     * @param int $id identifier of the @Member the @Address belongs to
-     * @param int $addressId identifier of the @Address to delete
-     * @return void
-     * @throws NotFoundException
-     */
-    public function deleteAddress($id, $addressId)
-    {
-        $this->Member->id = $id;
-        if (!$this->Member->exists())
-        {
-            throw new NotFoundException(__('Invalid member'));
-        }    
-        $this->request->onlyAllow('post', 'delete');
-        if ($this->Member->deleteAddress($addressId))
-        {
-            $this->Session->setFlash(__('The address has been deleted.'));
-        }
-        else
-        {
-            $this->Session->setFlash(__('The address could not be deleted. Please, try again.'));
-        }
-        return $this->redirect($this->referer());        
-    }    
+    }   
     
     public function addImage()
     {
