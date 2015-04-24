@@ -86,7 +86,7 @@ class MembersController extends AppController
     {        
         if ($this->request->is('post'))
         {            
-            if ($this->Member->addPhoneNumber($this->request->data))
+            if ($this->Member->MemberPhone->save($this->request->data))
             {
                 $this->Session->setFlash(__('The member\'s phone number has been saved.'));
                 return $this->redirect(array('action' => 'view', $id));
@@ -190,12 +190,12 @@ class MembersController extends AppController
     
     public function editPhone($id, $phoneId)
     {
-        $this->editModel($id, $phoneId, 'Phone', 'phone');
+        $this->editModel($id, $phoneId, 'MemberPhone', 'phone');
     }
     
     public function editEmailAddress($id, $emailAddressId)
     {
-        $this->editModel($id, $emailAddressId, 'EmailAddress', 'email address');
+        $this->editModel($id, $emailAddressId, 'MemberEmailAddress', 'email address');
     }
     
     public function editAddress($id, $addressId)
@@ -247,59 +247,6 @@ class MembersController extends AppController
         return $this->redirect(array('action' => 'index'));
     }
 
-    /**
-     * deletes the member's phone relationship and deletes the phone if it's not in use by anything else
-     * @param int $id identifier of the @Member the @Phone belongs to
-     * @param int $phoneNumberId identifier of the @Phone to delete
-     * @return void
-     * @throws NotFoundException
-     */
-    public function deletePhoneNumber($id, $phoneNumberId)
-    {
-        $this->Member->id = $id;
-        if (!$this->Member->exists())
-        {
-            throw new NotFoundException(__('Invalid member'));
-        }    
-        $this->request->onlyAllow('post', 'delete');
-        if ($this->Member->deletePhoneNumber($phoneNumberId))
-        {
-            $this->Session->setFlash(__('The phone number has been deleted.'));
-        }
-        else
-        {
-            $this->Session->setFlash(__('The phone number could not be deleted. Please, try again.'));
-        }
-        return $this->redirect($this->referer());
-    }
-    
-    /**
-     * deletes the member's email address relationship and deletes
-     * the email address if it's not in use by anything else
-     * @param int $id identifier of the @Member the @EmailAddress belongs to
-     * @param int $emailAddressId identifier of the @EmailAddress to delete
-     * @return void
-     * @throws NotFoundException
-     */
-    public function deleteEmailAddress($id, $emailAddressId)
-    {
-        $this->Member->id = $id;
-        if (!$this->Member->exists())
-        {
-            throw new NotFoundException(__('Invalid member'));
-        }    
-        $this->request->onlyAllow('post', 'delete');
-        if ($this->Member->deleteEmailAddress($emailAddressId))
-        {
-            $this->Session->setFlash(__('The email address has been deleted.'));
-        }
-        else
-        {
-            $this->Session->setFlash(__('The email address could not be deleted. Please, try again.'));
-        }
-        return $this->redirect($this->referer());        
-    }   
-    
     public function addImage()
     {
         if ($this->request->is('post'))

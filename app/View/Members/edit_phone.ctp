@@ -1,11 +1,11 @@
 <div class="phones form">
-    <?php echo $this->Form->create('Phone'); ?>
+    <?php echo $this->Form->create('MemberPhone'); ?>
     <fieldset>
         <legend><?php echo __('Edit Phone'); ?></legend>
 	<?php
-            echo $this->Form->Hidden('Member.id', array('value' => $memberId));
+            echo $this->Form->Hidden('member_id', array('value' => $memberId));
             echo $this->Form->input('id');
-            echo $this->element('input_phone');
+            echo $this->element('input_phone', array('belongsToModel' => 'Member'));
 	?>
     </fieldset>
     <?php echo $this->Form->end(__('Submit')); ?>

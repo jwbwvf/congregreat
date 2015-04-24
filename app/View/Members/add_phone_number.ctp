@@ -3,7 +3,7 @@
     <fieldset>
         <legend><?php echo __('Add Phone'); ?></legend>
         <?php 
-            echo $this->Form->hidden('Member.id', array('value' => $member['Member']['id']));
+            echo $this->Form->hidden('member_id', array('value' => $member['Member']['id']));
             echo $this->element('input_phone', array('belongsToModel' => 'Member'));
             ?>
     </fieldset>
