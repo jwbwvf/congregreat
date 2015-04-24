@@ -109,8 +109,8 @@ class MembersController extends AppController
     public function addEmailAddress($id)
     {
         if ($this->request->is('post'))
-        {            
-            if ($this->Member->addEmailAddress($this->request->data))
+        {
+            if ($this->Member->MemberEmailAddress->save($this->request->data))
             {
                 $this->Session->setFlash(__('The member\'s email address has been saved.'));
                 return $this->redirect(array('action' => 'view', $id));
@@ -134,7 +134,6 @@ class MembersController extends AppController
     {
         if ($this->request->is('post'))
         {
-            $this->request->data['MemberAddress']['member_id'] = $id;
             if ($this->Member->MemberAddress->save($this->request->data))
             {
                 $this->Session->setFlash(__('The member\'s address has been saved.'));

@@ -105,29 +105,6 @@ class Member extends ContactableModel
         ),
     );
 
-    //The Associations below have been created with all possible keys, those that are not needed can be removed
-
-    /**
-     * hasOne associations
-     *
-     * @var array
-     */
-    public $hasOne = array(
-        'MemberAddress' => array(
-            'className' => 'MemberAddress',
-            'foreignKey' => 'member_id',
-            'dependent' => false,
-            'conditions' => '',
-            'fields' => array('id', 'street_address', 'city', 'state', 'zipcode', 'country'),
-            'order' => '',
-            'limit' => '',
-            'offset' => '',
-            'exclusive' => '',
-            'finderQuery' => '',
-            'counterQuery' => ''
-        ),
-    );
-
     /**
      * belongsTo associations
      *
@@ -302,7 +279,9 @@ class Member extends ContactableModel
         $this->save($data['Member']);
 
         $data['Member'] = array('id' => $this->id);
-
+        $data['MemberAddress']['member_id'] = $this->id;
+        $data['MemberEmailAddress']['member_id'] = $this->id;
+        $data['MemberPhone']['member_id'] = $this->id;
         return parent::add($data);
     }
 
