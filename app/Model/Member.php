@@ -115,7 +115,7 @@ class Member extends ContactableModel
     public $hasOne = array(
         'MemberAddress' => array(
             'className' => 'MemberAddress',
-            'foreignKey' => '',
+            'foreignKey' => 'member_id',
             'dependent' => false,
             'conditions' => '',
             'fields' => array('id', 'street_address', 'city', 'state', 'zipcode', 'country'),
