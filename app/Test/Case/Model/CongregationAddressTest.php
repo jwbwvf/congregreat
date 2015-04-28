@@ -15,8 +15,16 @@ class CongregationAddressTest extends CakeTestCase
     //add test name to the array with
     //1 - run, 0 - do not run
     protected $tests = array(
-        'testGet'           => 1,
-        'testGet_NotFound'  => 1,
+        'testGet'                               => 1,
+        'testGet_NotFound'                      => 1,
+        'testSave'                              => 1,
+        'testSave_InvalidZipcode_NonNumeric'    => 1,
+        'testSave_InvalidZipcode_LengthLong'    => 1,
+        'testSave_InvalidZipcode_LengthShort'   => 1,
+        'testSave_InvalidState'                 => 1,
+        'testSave_EmptyCity'                    => 1,
+        'testSave_InvalidCountry'               => 1,
+        'testSave_EmptyCountry'                 => 1,
     );
 
     /**
