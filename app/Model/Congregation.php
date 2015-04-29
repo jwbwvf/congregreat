@@ -67,7 +67,7 @@ class Congregation extends ContactableModel
         'CongregationAddress' => array(
             'className' => 'CongregationAddress',
             'foreignKey' => 'congregation_id',
-            'dependent' => false,
+            'dependent' => true,
             'conditions' => '',
             'fields' => array('id', 'street_address', 'city', 'state', 'zipcode', 'country'),
             'order' => '',
@@ -80,7 +80,7 @@ class Congregation extends ContactableModel
         'CongregationEmailAddress' => array(
             'className' => 'CongregationEmailAddress',
             'foreignKey' => 'congregation_id',
-            'dependent' => false,
+            'dependent' => true,
             'conditions' => '',
             'fields' => array('id', 'email_address'),
             'order' => '',
@@ -93,7 +93,7 @@ class Congregation extends ContactableModel
         'CongregationPhone' => array(
             'className' => 'CongregationPhone',
             'foreignKey' => 'congregation_id',
-            'dependent' => false,
+            'dependent' => true,
             'conditions' => '',
             'fields' => array('id', 'number', 'type'),
             'order' => '',
