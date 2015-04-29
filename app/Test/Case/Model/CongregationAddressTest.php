@@ -96,4 +96,106 @@ class CongregationAddressTest extends CakeTestCase
 
         $this->CongregationAddress->get($congregationAddressId);
     }
+
+
+    /**
+     * @covers Address::add
+     */
+    public function testSave_InvalidZipcode_NonNumeric()
+    {
+        $this->skipTestEvaluator->shouldSkip(__FUNCTION__);
+
+        $this->validate('zipcode', 'AAAAA');
+    }
+
+    /**
+     * @covers Address::add
+     */
+    public function testSave_InvalidZipcode_LengthLong()
+    {
+        $this->skipTestEvaluator->shouldSkip(__FUNCTION__);
+
+        $this->validate('zipcode', '640555');
+    }
+
+    /**
+     * @covers Address::add
+     */
+    public function testSave_InvalidZipcode_LengthShort()
+    {
+        $this->skipTestEvaluator->shouldSkip(__FUNCTION__);
+
+        $this->validate('zipcode', '6405');
+    }
+
+    /**
+     * @covers Address::add
+     */
+    public function testSave_InvalidState()
+    {
+        $this->skipTestEvaluator->shouldSkip(__FUNCTION__);
+
+        $this->validate('state', 'invalid');
+    }
+
+    /**
+     * @covers Address::add
+     */
+    public function testSave_EmptyCity()
+    {
+        $this->skipTestEvaluator->shouldSkip(__FUNCTION__);
+
+        $this->validate('city', '');
+    }
+
+    /**
+     * @covers Address::add
+     */
+    public function testSave_InvalidCountry()
+    {
+        $this->skipTestEvaluator->shouldSkip(__FUNCTION__);
+
+        $this->validate('country', 'China');
+    }
+
+    /**
+     * @covers Address::add
+     */
+    public function testSave_EmptyCountry()
+    {
+        $this->skipTestEvaluator->shouldSkip(__FUNCTION__);
+
+        $this->validate('country', '');
+    }
+
+    /**
+     * helper method to validate the key value pairs are invalid
+     * @param string $key field to be saved
+     * @param string $value value of the field to be saved
+     */
+    private function validate($key, $value)
+    {
+        $data = $this->createAddress();
+        $data[$key] = $value;
+
+        $this->CongregationAddress->create();
+        $result = $this->CongregationAddress->save($data);
+        $this->assertFalse($result);
+    }
+
+    /**
+     * helper method to create a valid address data array
+     * @return array with the address properties
+     */
+    private function createAddress()
+    {
+        return array(
+            'congregation_id' => 1, //id from fixture
+            'street_address' => '7 e elm st',
+            'city' => 'gotham city',
+            'state' => 'Missouri',
+            'zipcode' => '64055',
+            'country' => 'United States'
+        );
+    }
 }
