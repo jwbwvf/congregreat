@@ -1,191 +1,224 @@
 <?php
 
-App::uses('Member', 'Model');
-App::uses('MemberBase', 'Test/Case/Model');
+App::uses('MemberAddress', 'Model');
+App::uses('SkipTestEvaluator', 'Test/Lib');
+App::uses('TestHelper', 'Test/Lib');
 
-class MemberAddressTest extends MemberBase
+class MemberAddressTest extends CakeTestCase
 {
     //Add the line below at the beginning of each test
     //$this->skipTestEvaluator->shouldSkip(__FUNCTION__);
     //add test name to the array with
     //1 - run, 0 - do not run
     protected $tests = array(
-        'testAdd'               => 1,
-        'testAdd_InvalidState'  => 1,
-        'testAdd_InvalidZipcode'=> 1,
-        'testDelete'            => 1,
-        'testDelete_IsInUse'    => 1,
+        'testGet'                               => 1,
+        'testGet_NotFound'                      => 1,
+        'testSave'                              => 1,
+        'testSave_InvalidZipcode_NonNumeric'    => 1,
+        'testSave_InvalidZipcode_LengthLong'    => 1,
+        'testSave_InvalidZipcode_LengthShort'   => 1,
+        'testSave_InvalidState'                 => 1,
+        'testSave_EmptyCity'                    => 1,
+        'testSave_InvalidCountry'               => 1,
+        'testSave_EmptyCountry'                 => 1,
     );
 
-    public function testAdd()
+    protected $skipTestEvaluator;
+
+    /**
+     * setUp method
+     *
+     * @return void
+     */
+    public function setUp()
+    {
+        parent::setUp();
+        $this->MemberAddress = ClassRegistry::init('MemberAddress');
+
+        $memberAddressFixture = new MemberAddressFixture();
+        $this->memberAddressRecords = $memberAddressFixture->records;
+
+        $this->skipTestEvaluator = new SkipTestEvaluator($this->tests);
+    }
+
+    /**
+     * tearDown method
+     *
+     * @return void
+     */
+    public function tearDown()
+    {
+        unset($this->MemberAddress);
+
+        parent::tearDown();
+    }
+
+    /**
+     * Test getting a MemberAddress by id will return the correct information
+     * @covers MemberAddress::get
+     */
+    public function testGet()
     {
         $this->skipTestEvaluator->shouldSkip(__FUNCTION__);
 
-        $addressData = array(
-            'Member' => array('id' => 1), //id from member fixture record
-            'Address' => array(
-                'street_address' => '555 elm grove',
-                'city' => 'stl',
-                'state' => 'Florida',
-                'zipcode' => '66000',
-                'country' => 'United States'
-            )
-        );
+        $memberAddressRecord = $this->memberAddressRecords[0];
+        $memberAddress = $this->MemberAddress->get($memberAddressRecord['id']);
 
-        $return = $this->Member->addAddress($addressData);
+        $this->assertEquals($memberAddressRecord['id'], $memberAddress['MemberAddress']['id']);
+        $this->assertEquals($memberAddressRecord['street_address'], $memberAddress['MemberAddress']['street_address']);
+        $this->assertEquals($memberAddressRecord['city'], $memberAddress['MemberAddress']['city']);
+        $this->assertEquals($memberAddressRecord['state'], $memberAddress['MemberAddress']['state']);
+        $this->assertEquals($memberAddressRecord['zipcode'], $memberAddress['MemberAddress']['zipcode']);
+        $this->assertEquals($memberAddressRecord['country'], $memberAddress['MemberAddress']['country']);
+    }
+
+    /**
+     * Test getting a MemberAddress that doesn't exist will throw an exception
+     * @covers MemberAddress::get
+     * @expectedException NotFoundException
+     */
+    public function testGet_NotFound()
+    {
+        $this->skipTestEvaluator->shouldSkip(__FUNCTION__);
+
+        $memberAddressId = TestHelper::getNonFixtureId($this->memberAddressRecords);
+
+        $this->MemberAddress->get($memberAddressId);
+    }
+
+    /**
+     * @covers MemberAddress::save
+     */
+    public function testSave()
+    {
+        $this->skipTestEvaluator->shouldSkip(__FUNCTION__);
+
+        $addressData = $this->createAddress();
+
+        $return = $this->MemberAddress->save($addressData);
 
         $this->assertNotEqual(false, $return);
 
-        $sql  = $this->buildMembersAddressQuery($return['Address']['id']);
+        $sql  = $this->buildMemberAddressQuery($addressData['street_address']);
 
-        $dbo = $this->Member->getDataSource();
+        $dbo = $this->MemberAddress->getDataSource();
         $dbo->rawQuery($sql);
         $row = $dbo->fetchRow();
 
-        $this->assertEqual($addressData['Address']['street_address'], $row['addresses']['street_address']);
-        $this->assertEqual($addressData['Address']['city'], $row['addresses']['city']);
-        $this->assertEqual($addressData['Address']['state'], $row['addresses']['state']);
-        $this->assertEqual($addressData['Address']['zipcode'], $row['addresses']['zipcode']);
-        $this->assertEqual($addressData['Address']['country'], $row['addresses']['country']);
-        $this->assertEqual($addressData['Member']['id'], $row['members']['id']);
+        $this->assertEqual($addressData['street_address'], $row['member_addresses']['street_address']);
+        $this->assertEqual($addressData['city'], $row['member_addresses']['city']);
+        $this->assertEqual($addressData['state'], $row['member_addresses']['state']);
+        $this->assertEqual($addressData['zipcode'], $row['member_addresses']['zipcode']);
+        $this->assertEqual($addressData['country'], $row['member_addresses']['country']);
+        $this->assertEqual($addressData['member_id'], $row['member_addresses']['member_id']);
     }
 
-    public function testAdd_InvalidState()
+    /**
+     * @covers MemberAddress::save
+     */
+    public function testSave_InvalidZipcode_NonNumeric()
     {
         $this->skipTestEvaluator->shouldSkip(__FUNCTION__);
 
-        $addressData = array(
-            'Member' => array('id' => 1), //id from member fixture record
-            'Address' => array(
-                'street_address' => '555 elm grove',
-                'city' => 'stl',
-                'state' => 'invalid',
-                'zipcode' => '66000',
-                'country' => 'United States'
-            )
+        $this->validate('zipcode', 'AAAAA');
+    }
+
+    /**
+     * @covers MemberAddress::save
+     */
+    public function testSave_InvalidZipcode_LengthLong()
+    {
+        $this->skipTestEvaluator->shouldSkip(__FUNCTION__);
+
+        $this->validate('zipcode', '640555');
+    }
+
+    /**
+     * @covers MemberAddress::save
+     */
+    public function testSave_InvalidZipcode_LengthShort()
+    {
+        $this->skipTestEvaluator->shouldSkip(__FUNCTION__);
+
+        $this->validate('zipcode', '6405');
+    }
+
+    /**
+     * @covers MemberAddress::save
+     */
+    public function testSave_InvalidState()
+    {
+        $this->skipTestEvaluator->shouldSkip(__FUNCTION__);
+
+        $this->validate('state', 'invalid');
+    }
+
+    /**
+     * @covers MemberAddress::save
+     */
+    public function testSave_EmptyCity()
+    {
+        $this->skipTestEvaluator->shouldSkip(__FUNCTION__);
+
+        $this->validate('city', '');
+    }
+
+    /**
+     * @covers MemberAddress::save
+     */
+    public function testSave_InvalidCountry()
+    {
+        $this->skipTestEvaluator->shouldSkip(__FUNCTION__);
+
+        $this->validate('country', 'China');
+    }
+
+    /**
+     * @covers MemberAddress::save
+     */
+    public function testSave_EmptyCountry()
+    {
+        $this->skipTestEvaluator->shouldSkip(__FUNCTION__);
+
+        $this->validate('country', '');
+    }
+
+    /**
+     * helper method to validate the key value pairs are invalid
+     * @param string $key field to be saved
+     * @param string $value value of the field to be saved
+     */
+    private function validate($key, $value)
+    {
+        $data = $this->createAddress();
+        $data[$key] = $value;
+
+        $result = $this->MemberAddress->save($data);
+        $this->assertFalse($result);
+    }
+
+    /**
+     * helper method to create a valid address data array
+     * @return array with the address properties
+     */
+    private function createAddress()
+    {
+        return array(
+            'member_id' => 1, //id from fixture
+            'street_address' => '7 e elm st',
+            'city' => 'gotham city',
+            'state' => 'Missouri',
+            'zipcode' => '64055',
+            'country' => 'United States'
         );
-
-        $return = $this->Member->addAddress($addressData);
-
-        $this->assertEqual(false, $return);
     }
 
-    public function testAdd_InvalidZipcode()
-    {
-        $this->skipTestEvaluator->shouldSkip(__FUNCTION__);
-
-        $addressData = array(
-            'Member' => array('id' => 1), //id from member fixture record
-            'Address' => array(
-                'street_address' => '555 elm grove',
-                'city' => 'stl',
-                'state' => 'Florida',
-                'zipcode' => '6600A',
-                'country' => 'United States'
-            )
-        );
-
-        $return = $this->Member->addAddress($addressData);
-
-        $this->assertEqual(false, $return);
-    }
-
-    public function testDelete()
-    {
-        $this->skipTestEvaluator->shouldSkip(__FUNCTION__);
-
-        $this->Member->id = 1; //id from member fixture record
-
-        $sql = "SELECT addresses_members.address_id, addresses.id
-                FROM addresses_members
-                JOIN addresses ON addresses_members.address_id = addresses.id
-                WHERE member_id= '" . $this->Member->id . "'";
-
-        $dbo = $this->Member->getDataSource();
-        $dbo->rawQuery($sql);
-        $row = $dbo->fetchRow();
-
-        $this->assertNotNull($row['addresses_members']['address_id']);
-        $addressId = $row['addresses']['id'];
-        $this->assertNotNull($addressId);
-
-        $this->Member->deleteAddress($addressId);
-
-        $dbo->rawQuery($sql);
-        $rowAfter = $dbo->fetchRow();
-
-        $this->assertNull($rowAfter['addresses_members']['address_id']);
-        $this->assertNull($rowAfter['addresses']['id']);
-
-        $sqlAddress = "SELECT id
-                     FROM addresses where addresses.id= '" . $addressId . "'";
-
-        $dbo->rawQuery($sqlAddress);
-        $rowAddress = $dbo->fetchRow();
-
-        $this->assertNull($rowAddress['addresses']['id']);
-    }
-
-    public function testDelete_IsInUse()
-    {
-        $this->skipTestEvaluator->shouldSkip(__FUNCTION__);
-
-        $addressData = array(
-            'Member' => array('id' => 2), //id from member fixture record
-            'Address' => array(
-                'street_address' => 'test street address',
-                'city' => 'test city',
-                'state' => 'test state',
-                'zipcode' => '66066',
-                'country' => 'test country',
-            )
-        );
-
-        $return = $this->Member->addAddress($addressData);
-
-        $this->assertNotEqual(false, $return);
-
-        $this->Member->id = 1; //id from member fixture record
-
-        $sql = "SELECT addresses_members.address_id, addresses.id
-                FROM addresses_members
-                JOIN addresses ON addresses_members.address_id = addresses.id
-                WHERE member_id= '" . $this->Member->id . "'";
-
-        $dbo = $this->Member->getDataSource();
-        $dbo->rawQuery($sql);
-        $row = $dbo->fetchRow();
-
-        $this->assertNotNull($row['addresses_members']['address_id']);
-        $addressId = $row['addresses']['id'];
-        $this->assertNotNull($addressId);
-
-        $this->Member->deleteAddress($addressId);
-
-        $dbo->rawQuery($sql);
-        $rowAfter = $dbo->fetchRow();
-
-        $this->assertNull($rowAfter['addresses_members']['address_id']);
-        $this->assertNull($rowAfter['addresses']['id']);
-
-        $sqlAddress = "SELECT id
-                     FROM addresses where addresses.id= '" . $addressId . "'";
-
-        $dbo->rawQuery($sqlAddress);
-        $rowAddress = $dbo->fetchRow();
-
-        $this->assertNotNull($rowAddress['addresses']['id']);
-    }
-
-    private function buildMembersAddressQuery($addressId)
+    public function buildMemberAddressQuery($streetAddress)
     {
         return "SELECT
-                members.id,
-                addresses.street_address, addresses.city, addresses.state, addresses.zipcode, addresses.country
-                FROM addresses
-                JOIN addresses_members am ON addresses.id = am.address_id
-                JOIN members ON am.member_id = members.id
-                WHERE addresses.id = '" . $addressId . "'";
+                member_id, street_address, city, state, zipcode, country
+                FROM member_addresses
+                WHERE member_addresses.street_address = '" . $streetAddress . "'";
     }
 
     /**
@@ -195,7 +228,6 @@ class MemberAddressTest extends MemberBase
      */
     public $fixtures = array(
         'app.member',
-        'app.addresses_member',
-        'app.congregation',
+        'app.member_address'
     );
 }
