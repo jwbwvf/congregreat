@@ -1,147 +1,124 @@
 <?php
 
-App::uses('Member', 'Model');
-App::uses('MemberBase', 'Test/Case/Model');
+App::uses('MemberEmailAddress', 'Model');
+App::uses('SkipTestEvaluator', 'Test/Lib');
+App::uses('TestHelper', 'Test/Lib');
 
-class MemberEmailAddressTest extends MemberBase
+class MemberEmailAddressTest extends CakeTestCase
 {
     //Add the line below at the beginning of each test
     //$this->skipTestEvaluator->shouldSkip(__FUNCTION__);
     //add test name to the array with
     //1 - run, 0 - do not run
     protected $tests = array(
-        'testAdd'                       => 0,
-        'testAdd_InvalidEmailAddress'   => 0,
-        'testDelete'                    => 0,
-        'testDelete_IsInUse'            => 0,
+        'testGet'                       => 1,
+        'testGet_NotFound'              => 1,
+        'testSave'                      => 1,
+        'testSave_InvalidEmailAddress'  => 1,
     );
 
+    protected $skipTestEvaluator;
+
     /**
-     * test adding an email address to an existing member
-     * @covers Member::addEmailAddress
-     * @covers Member::isRelatedModelValid
+     * setUp method
+     *
+     * @return void
      */
-    public function testAdd()
+    public function setUp()
+    {
+        parent::setUp();
+
+        $this->MemberEmailAddress = ClassRegistry::init('MemberEmailAddress');
+
+        $memberEmailAddressFixture = new MemberEmailAddressFixture();
+        $this->memberEmailAddressRecords = $memberEmailAddressFixture->records;
+
+        $this->skipTestEvaluator = new SkipTestEvaluator($this->tests);
+    }
+
+    /**
+     * tearDown method
+     *
+     * @return void
+     */
+    public function tearDown()
+    {
+        unset($this->MemberEmailAddress);
+
+        parent::tearDown();
+    }
+
+    /**
+     * @covers MemberEmailAddress::get
+     */
+    public function testGet()
+    {
+        $this->skipTestEvaluator->shouldSkip(__FUNCTION__);
+
+        $memberEmailAddressRecord = $this->memberEmailAddressRecords[0];
+        $memberEmailAddress = $this->MemberEmailAddress->get($memberEmailAddressRecord['id']);
+
+
+        $this->assertEquals($memberEmailAddressRecord['id'], $memberEmailAddress['MemberEmailAddress']['id']);
+        $this->assertEquals($memberEmailAddressRecord['email_address'], $memberEmailAddress['MemberEmailAddress']['email_address']);
+    }
+
+    /**
+     * Test getting a MemberEmailAddress that doesn't exist will throw an exception
+     * @covers MemberEmailAddress::get
+     * @expectedException NotFoundException
+     */
+    public function testGet_NotFound()
+    {
+        $this->skipTestEvaluator->shouldSkip(__FUNCTION__);
+
+        $memberEmailAddressId = TestHelper::getNonFixtureId($this->memberEmailAddressRecords);
+
+        $this->MemberEmailAddress->get($memberEmailAddressId);
+    }
+
+    /**
+     * @covers MemberEmailAddress::save
+     */
+    public function testSave()
     {
         $this->skipTestEvaluator->shouldSkip(__FUNCTION__);
 
         $emailAddressData = array(
-            'Member' => array('id' => 1), //id from member fixture record
-            'EmailAddress' => array('email_address' => 'emailAddress@emails.com')
+            'member_id' => 1, //id from member fixture record
+            'email_address' => 'emailAddress@emails.com'
         );
 
-        $return = $this->Member->addEmailAddress($emailAddressData);
+        $this->MemberEmailAddress->save($emailAddressData);
 
-        $this->assertNotEqual(false, $return);
+        $this->assertGreaterThan(0, $this->MemberEmailAddress->id);
 
-        $sql  = $this->buildMembersEmailAddressQuery($return['EmailAddress']['id']);
+        $sql  = $this->buildMembersEmailAddressQuery($this->MemberEmailAddress->id);
 
-        $dbo = $this->Member->getDataSource();
+        $dbo = $this->MemberEmailAddress->getDataSource();
         $dbo->rawQuery($sql);
         $row = $dbo->fetchRow();
 
-        $this->assertEqual($emailAddressData['EmailAddress']['email_address'], $row['email_addresses']['email_address']);
-        $this->assertEqual($emailAddressData['Member']['id'], $row['members']['id']);
+        $this->assertEqual($emailAddressData['email_address'], $row['member_email_addresses']['email_address']);
+        $this->assertEqual($emailAddressData['member_id'], $row['member_email_addresses']['member_id']);
     }
 
     /**
      * tests adding an invalid email address to an existing member
-     * @covers Member::addEmailAddress
-     * @covers Member::isRelatedModelValid
+     * @covers MemberEmailAddress::save
      */
-    public function testAdd_InvalidEmailAddress()
+    public function testSave_InvalidEmailAddress()
     {
         $this->skipTestEvaluator->shouldSkip(__FUNCTION__);
 
         $emailAddressData = array(
-            'Member' => array('id' => 1), //id from member fixture record
-            'EmailAddress' => array('email_address' => 'emailAddressemails.com')
+            'member_id' => 1, //id from member fixture record
+            'email_address' => 'emailAddressemails.com'
         );
 
-        $return = $this->Member->addEmailAddress($emailAddressData);
+        $return = $this->MemberEmailAddress->save($emailAddressData);
 
         $this->assertFalse($return);
-    }
-
-    public function testDelete()
-    {
-        $this->skipTestEvaluator->shouldSkip(__FUNCTION__);
-
-        $this->Member->id = 1; //id from member fixture record
-
-        $sql = "SELECT email_addresses_members.email_address_id, email_addresses.id
-                FROM email_addresses_members
-                JOIN email_addresses ON email_addresses_members.email_address_id = email_addresses.id
-                WHERE member_id= '" . $this->Member->id . "'";
-
-        $dbo = $this->Member->getDataSource();
-        $dbo->rawQuery($sql);
-        $row = $dbo->fetchRow();
-
-        $this->assertNotNull($row['email_addresses_members']['email_address_id']);
-        $emailAddressId = $row['email_addresses']['id'];
-        $this->assertNotNull($emailAddressId);
-
-        $this->Member->deleteEmailAddress($emailAddressId);
-
-        $dbo->rawQuery($sql);
-        $rowAfter = $dbo->fetchRow();
-
-        $this->assertNull($rowAfter['email_addresses_members']['email_address_id']);
-        $this->assertNull($rowAfter['email_addresses']['id']);
-
-        $sqlEmailAddress = "SELECT id
-                     FROM email_addresses where email_addresses.id= '" . $emailAddressId . "'";
-
-        $dbo->rawQuery($sqlEmailAddress);
-        $rowEmailAddress = $dbo->fetchRow();
-
-        $this->assertNull($rowEmailAddress['email_addresses']['id']);
-    }
-
-    public function testDelete_IsInUse()
-    {
-        $this->skipTestEvaluator->shouldSkip(__FUNCTION__);
-
-        $emailAddressData = array(
-            'Member' => array('id' => 2), //id from member fixture record
-            'EmailAddress' => array('email_address' => 'emailAddress1@test.com')//email address from emailAddress fixture record
-        );
-
-        $return = $this->Member->addEmailAddress($emailAddressData);
-
-        $this->assertNotEqual(false, $return);
-
-        $this->Member->id = 1; //id from member fixture record
-
-        $sql = "SELECT email_addresses_members.email_address_id, email_addresses.id, email_addresses.email_address
-                FROM email_addresses_members
-                JOIN email_addresses ON email_addresses_members.email_address_id = email_addresses.id
-                WHERE member_id= '" . $this->Member->id . "'";
-
-        $dbo = $this->Member->getDataSource();
-        $dbo->rawQuery($sql);
-        $row = $dbo->fetchRow();
-
-        $this->assertNotNull($row['email_addresses_members']['email_address_id']);
-        $emailAddressId = $row['email_addresses']['id'];
-        $this->assertNotNull($emailAddressId);
-
-        $this->Member->deleteEmailAddress($emailAddressId);
-
-        $dbo->rawQuery($sql);
-        $rowAfter = $dbo->fetchRow();
-
-        $this->assertNull($rowAfter['email_addresses_members']['email_address_id']);
-        $this->assertNull($rowAfter['email_addresses']['id']);
-
-        $sqlEmailAddress = "SELECT id
-                     FROM email_addresses where email_addresses.id= '" . $emailAddressId . "'";
-
-        $dbo->rawQuery($sqlEmailAddress);
-        $rowEmailAddress = $dbo->fetchRow();
-
-        $this->assertNotNull($rowEmailAddress['email_addresses']['id']);
     }
 
     /**
@@ -150,15 +127,13 @@ class MemberEmailAddressTest extends MemberBase
      * @param int $emailAddressId
      * @return string
      */
-    private function buildMembersEmailAddressQuery($emailAddressId)
+    private function buildMembersEmailAddressQuery($id)
     {
         return "SELECT
-                members.id,
-                email_addresses.email_address
-                FROM email_addresses
-                JOIN email_addresses_members eam ON email_addresses.id = eam.email_address_id
-                JOIN members ON eam.member_id = members.id
-                WHERE email_addresses.id = '" . $emailAddressId . "'";
+                member_id,
+                email_address
+                FROM member_email_addresses
+                WHERE id = '" . $id . "'";
     }
 
     /**
@@ -168,9 +143,7 @@ class MemberEmailAddressTest extends MemberBase
      */
     public $fixtures = array(
         'app.member',
-        'app.member_email_address',
-        //needed because the EmailAddress.isInUse checks for member or congregation using the email address
-        'app.congregation'
+        'app.member_email_address'
     );
 }
 

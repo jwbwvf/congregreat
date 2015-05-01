@@ -1,10 +1,12 @@
 <?php
 
 App::uses('Congregation', 'Model');
-App::uses('CongregationEmailAddressFixuture', 'Fixture');
 App::uses('SkipTestEvaluator', 'Test/Lib');
 App::uses('TestHelper', 'Test/Lib');
 
+/**
+ * @covers CongregationEmailAddress
+ */
 class CongregationEmailAddressTest extends CakeTestCase
 {
     //Add the line below at the beginning of each test
@@ -50,6 +52,9 @@ class CongregationEmailAddressTest extends CakeTestCase
         parent::tearDown();
     }
 
+    /**
+     * @covers CongregationEmailAddress::get
+     */
     public function testGet()
     {
         $this->skipTestEvaluator->shouldSkip(__FUNCTION__);
@@ -64,6 +69,7 @@ class CongregationEmailAddressTest extends CakeTestCase
 
     /**
      * Test getting a CongregationEmailAddress that doesn't exist will throw an exception
+     * @covers CongregationEmailAddress::get
      * @expectedException NotFoundException
      */
     public function testGet_NotFound()
@@ -76,43 +82,41 @@ class CongregationEmailAddressTest extends CakeTestCase
     }
 
     /**
-     * test adding an email address to an existing congregation
+     * @covers CongregationEmailAddress::save
      */
     public function testSave()
     {
         $this->skipTestEvaluator->shouldSkip(__FUNCTION__);
 
-        $congregationId = 1; //id from congregation fixture record
-        $emailAddress = 'emailAddress@emails.com';
         $emailAddressData = array(
-            'CongregationEmailAddress' => array('congregation_id' => $congregationId, 'email_address' => $emailAddress)
+                'congregation_id' => 1, //id from congregation fixture record
+                'email_address' => 'emailAddress@emails.com'
         );
 
         $this->CongregationEmailAddress->save($emailAddressData);
 
         $this->assertGreaterThan(0, $this->CongregationEmailAddress->id);
 
-        $sql  = $this->buildCongregationsEmailAddressQuery($emailAddress);
+        $sql  = $this->buildCongregationsEmailAddressQuery($this->CongregationEmailAddress->id);
 
         $dbo = $this->CongregationEmailAddress->getDataSource();
         $dbo->rawQuery($sql);
         $row = $dbo->fetchRow();
 
-        $this->assertEqual($emailAddress, $row['congregation_email_addresses']['email_address']);
-        $this->assertEqual($congregationId, $row['congregation_email_addresses']['congregation_id']);
+        $this->assertEqual($emailAddressData['email_address'], $row['congregation_email_addresses']['email_address']);
+        $this->assertEqual($emailAddressData['congregation_id'], $row['congregation_email_addresses']['congregation_id']);
     }
 
     /**
-     * tests adding an invalid email address to an existing congregation
+     * @covers CongregationEmailAddress::save
      */
     public function testSave_InvalidEmailAddress()
     {
         $this->skipTestEvaluator->shouldSkip(__FUNCTION__);
 
-        $congregationId = 1; //id from congregation fixture record
-        $invalidEmailAddress = 'emailAddressemails.com';
         $emailAddressData = array(
-            'CongregationEmailAddress' => array('congregation_id' => $congregationId, 'email_address' => $invalidEmailAddress)
+            'congregation_id' => 1, //id from congregation fixture record
+            'email_address' => 'emailAddressemails.com'
         );
 
         $return = $this->CongregationEmailAddress->save($emailAddressData);
@@ -126,12 +130,12 @@ class CongregationEmailAddressTest extends CakeTestCase
      * @param int $emailAddressId
      * @return string
      */
-    private function buildCongregationsEmailAddressQuery($emailAddress)
+    private function buildCongregationsEmailAddressQuery($id)
     {
         return "SELECT
                 congregation_id, email_address
                 FROM congregation_email_addresses
-                WHERE congregation_email_addresses.email_address = '" . $emailAddress . "'";
+                WHERE congregation_email_addresses.id = '" . $id . "'";
     }
 
      /**
