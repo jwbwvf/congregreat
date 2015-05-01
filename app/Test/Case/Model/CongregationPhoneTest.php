@@ -63,6 +63,9 @@ class CongregationPhoneTest extends CakeTestCase
         parent::tearDown();
     }
 
+    /**
+     * @covers CongregationPhone::get
+     */
     public function testGet()
     {
         $this->skipTestEvaluator->shouldSkip(__FUNCTION__);
@@ -76,6 +79,7 @@ class CongregationPhoneTest extends CakeTestCase
     }
 
     /**
+     * @covers CongregationPhone::get
      * @expectedException NotFoundException
      */
     public function testGet_NotFound()
@@ -88,37 +92,36 @@ class CongregationPhoneTest extends CakeTestCase
     }
 
     /**
-     * test adding a phone number to an existing congregation
-     * @covers Congregation::addPhoneNumber
-     * @covers Congregation::isRelatedModelValid
+     * @covers CongregationPhone::save
      */
     public function testSave()
     {
         $this->skipTestEvaluator->shouldSkip(__FUNCTION__);
 
         $phoneData = array(
-            'CongregationPhone' => array('congregation_id' => 1, //id from congregation fixture record
-            'number' => '555-444-5555', 'type' => 'home')
+            'congregation_id' => 1, //id from congregation fixture record
+            'number' => '555-444-5555',
+            'type' => 'home'
         );
 
-        $return = $this->CongregationPhone->save($phoneData);
+        $this->CongregationPhone->save($phoneData);
 
-        $this->assertNotEqual(false, $return);
+        $this->assertGreaterThan(0, $this->CongregationPhone->id);
 
-        $sql  = $this->buildCongregationsPhoneNumberQuery($return['CongregationPhone']['id']);
+        $sql  = $this->buildCongregationsPhoneNumberQuery($this->CongregationPhone->id);
 
         $dbo = $this->CongregationPhone->getDataSource();
         $dbo->rawQuery($sql);
         $row = $dbo->fetchRow();
 
-        $this->assertEqual($phoneData['CongregationPhone']['number'], $row['congregation_phones']['number']);
-        $this->assertEqual($phoneData['CongregationPhone']['type'], $row['congregation_phones']['type']);
-        $this->assertEqual($phoneData['CongregationPhone']['congregation_id'], $row['congregation_phones']['congregation_id']);
+        $this->assertEqual($phoneData['number'], $row['congregation_phones']['number']);
+        $this->assertEqual($phoneData['type'], $row['congregation_phones']['type']);
+        $this->assertEqual($phoneData['congregation_id'], $row['congregation_phones']['congregation_id']);
     }
 
     /**
      * test adding phone with a missing phone number
-     * @covers Phone::add
+     * @covers CongregationPhone::save
      */
     public function testSave_MissingNumber()
     {
@@ -129,7 +132,7 @@ class CongregationPhoneTest extends CakeTestCase
 
     /**
      * test adding phone with an invalid phone number format
-     * @covers Phone::add
+     * @covers CongregationPhone::save
      */
     public function testSave_InvalidNumberFormat()
     {
@@ -140,7 +143,7 @@ class CongregationPhoneTest extends CakeTestCase
 
     /**
      * test adding phone with too many digits in the phone number
-     * @covers Phone::add
+     * @covers CongregationPhone::save
      */
     public function testSave_InvalidNumber_LengthLong()
     {
@@ -151,7 +154,7 @@ class CongregationPhoneTest extends CakeTestCase
 
     /**
      * test adding phone with too few digits in the phone number
-     * @covers Phone::add
+     * @covers CongregationPhone::save
      */
     public function testSave_InvalidNumber_LengthShort()
     {
@@ -162,7 +165,7 @@ class CongregationPhoneTest extends CakeTestCase
 
     /**
      * test adding a phone with an invalid phone type
-     * @covers Phone::add
+     * @covers CongregationPhone::save
      */
     public function testSave_InvalidType()
     {
@@ -204,11 +207,11 @@ class CongregationPhoneTest extends CakeTestCase
      * @param int $phoneId phone id
      * @return string
      */
-    private function buildCongregationsPhoneNumberQuery($congregationPhoneId)
+    private function buildCongregationsPhoneNumberQuery($id)
     {
         return "SELECT
                 congregation_id, number, type
                 FROM congregation_phones
-                WHERE id = '" . $congregationPhoneId . "'";
+                WHERE id = '" . $id . "'";
     }
 }

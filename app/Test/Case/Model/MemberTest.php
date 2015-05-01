@@ -1,13 +1,13 @@
 <?php
 
 App::uses('Member', 'Model');
-App::uses('MemberBase', 'Test/Case/Model');
+App::uses('SkipTestEvaluator', 'Test/Lib');
 
 /**
  * Member Test Case
  *
  */
-class MemberTest extends MemberBase
+class MemberTest extends CakeTestCase
 {
     //Add the line below at the beginning of each test
     //$this->skipTestEvaluator->shouldSkip(__FUNCTION__);
@@ -24,6 +24,45 @@ class MemberTest extends MemberBase
         'testDelete'                        => 1,
         'testDelete_ExistingAssociations'   => 1,
     );
+
+    /**
+     * Fixtures
+     *
+     * @var array
+     */
+    public $fixtures = array(
+        'app.member',
+        'app.congregation',
+        'app.anniversary',
+        'app.member_address',
+        'app.member_email_address',
+        'app.member_phone',
+    );
+
+    /**
+     * setUp method
+     *
+     * @return void
+     */
+    public function setUp()
+    {
+        parent::setUp();
+        $this->Member = ClassRegistry::init('Member');
+
+        $this->skipTestEvaluator = new SkipTestEvaluator($this->tests);
+    }
+
+    /**
+     * tearDown method
+     *
+     * @return void
+     */
+    public function tearDown()
+    {
+        unset($this->Member);
+
+        parent::tearDown();
+    }
 
     /**
      * test adding a member with all it's related data: phone, email, address
@@ -319,21 +358,5 @@ class MemberTest extends MemberBase
             'zipcode' => '66066',
             'country' => 'United States'
         )
-    );
-
-    /**
-     * Fixtures
-     *
-     * @var array
-     */
-    public $fixtures = array(
-        'app.member',
-        'app.congregation',
-        'app.phone',
-        'app.congregations_phone',
-        'app.anniversary',
-        'app.member_address',
-        'app.member_email_address',
-        'app.members_phone',
     );
 }

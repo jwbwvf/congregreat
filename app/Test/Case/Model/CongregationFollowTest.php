@@ -19,6 +19,17 @@ class CongregationFollowTest extends CongregationBase
         'testGetFollowId'                   => 1,
     );
 
+    /**
+     * Fixtures
+     *
+     * @var array
+     */
+    public $fixtures = array(
+        'app.congregation',
+        'app.congregation_follow_request',
+        'app.congregation_follow'
+    );
+    
     public function testGetFollows()
     {
         $this->skipTestEvaluator->shouldSkip(__FUNCTION__);
@@ -92,15 +103,4 @@ class CongregationFollowTest extends CongregationBase
 
         $this->assertTrue($followIdFollowing != 0);
     }
-
-    /**
-     * Fixtures
-     *
-     * @var array
-     */
-    public $fixtures = array(
-        'app.congregation',
-        'app.congregation_follow_request',
-        'app.congregation_follow'
-    );
 }

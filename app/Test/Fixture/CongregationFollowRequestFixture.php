@@ -27,20 +27,20 @@ class CongregationFollowRequestFixture extends CakeTestFixture
         'tableParameters' => array('charset' => 'utf8', 'collate' => 'utf8_unicode_ci', 'engine' => 'InnoDB')
     );
 
-//    /**
-//     * Records
-//     *
-//     * @var array
-//     */
-//    public $records = array(
-//        array(
-//            'id' => 1,
-//            'leader_id' => 1,
-//            'requesting_follower_id' => 1,
-//            'status' => 1,
-//            'created' => '2014-09-23 18:23:49',
-//            'modified' => '2014-09-23 18:23:49'
-//        ),
-//    );
+    /**
+     * Records
+     *
+     * @var array
+     */
+    public $records = array(
+        array(
+            'id' => 1,
+            'leader_id' => 2,
+            'requesting_follower_id' => 1,
+            'status' => 1,
+            'created' => '2014-09-23 18:23:49',
+            'modified' => '2014-09-23 18:23:49'
+        ),
+    );
 
 }

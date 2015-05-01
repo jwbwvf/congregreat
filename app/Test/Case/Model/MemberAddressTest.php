@@ -23,8 +23,17 @@ class MemberAddressTest extends CakeTestCase
         'testSave_EmptyCountry'                 => 1,
     );
 
-    protected $skipTestEvaluator;
 
+    /**
+     * Fixtures
+     *
+     * @var array
+     */
+    public $fixtures = array(
+        'app.member',
+        'app.member_address'
+    );
+    
     /**
      * setUp method
      *
@@ -95,11 +104,11 @@ class MemberAddressTest extends CakeTestCase
 
         $addressData = $this->createAddress();
 
-        $return = $this->MemberAddress->save($addressData);
+        $this->MemberAddress->save($addressData);
 
-        $this->assertNotEqual(false, $return);
+        $this->assertGreaterThan(0, $this->MemberAddress->id);
 
-        $sql  = $this->buildMemberAddressQuery($addressData['street_address']);
+        $sql  = $this->buildMemberAddressQuery($this->MemberAddress->id);
 
         $dbo = $this->MemberAddress->getDataSource();
         $dbo->rawQuery($sql);
@@ -213,21 +222,11 @@ class MemberAddressTest extends CakeTestCase
         );
     }
 
-    public function buildMemberAddressQuery($streetAddress)
+    public function buildMemberAddressQuery($id)
     {
         return "SELECT
                 member_id, street_address, city, state, zipcode, country
                 FROM member_addresses
-                WHERE member_addresses.street_address = '" . $streetAddress . "'";
+                WHERE id = '" . $id . "'";
     }
-
-    /**
-     * Fixtures
-     *
-     * @var array
-     */
-    public $fixtures = array(
-        'app.member',
-        'app.member_address'
-    );
 }

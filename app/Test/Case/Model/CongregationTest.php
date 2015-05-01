@@ -34,6 +34,21 @@ class CongregationTest extends CongregationBase
     );
 
     /**
+     * Fixtures
+     *
+     * @var array
+     */
+    public $fixtures = array(
+        'app.congregation',
+        'app.congregation_address',
+        'app.congregation_email_address',
+        'app.congregation_phone',
+        'app.congregation_follow_request',
+        'app.congregation_follow',
+        'app.task'
+    );
+    
+    /**
      * test adding a congregation with all of it's related data: phone, email, address
      * @covers Congregation::add
      * @covers Congregation::createModels
@@ -428,20 +443,5 @@ class CongregationTest extends CongregationBase
             'zipcode' => '66066',
             'country' => 'United States'
         )
-    );
-
-    /**
-     * Fixtures
-     *
-     * @var array
-     */
-    public $fixtures = array(
-        'app.congregation',
-        'app.congregation_address',
-        'app.congregation_email_address',
-        'app.congregation_phone',
-        'app.congregation_follow_request',
-        'app.congregation_follow',
-        'app.task'
     );
 }

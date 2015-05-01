@@ -85,33 +85,6 @@ class CongregationAddressTest extends CakeTestCase
     }
 
     /**
-     * @covers CongregationAddress::save
-     */
-    public function testSave()
-    {
-        $this->skipTestEvaluator->shouldSkip(__FUNCTION__);
-
-        $addressData = $this->createAddress();
-
-        $return = $this->CongregationAddress->save($addressData);
-
-        $this->assertNotEqual(false, $return);
-
-        $sql  = $this->buildCongregationAddressQuery($addressData['street_address']);
-
-        $dbo = $this->CongregationAddress->getDataSource();
-        $dbo->rawQuery($sql);
-        $row = $dbo->fetchRow();
-
-        $this->assertEqual($addressData['street_address'], $row['congregation_addresses']['street_address']);
-        $this->assertEqual($addressData['city'], $row['congregation_addresses']['city']);
-        $this->assertEqual($addressData['state'], $row['congregation_addresses']['state']);
-        $this->assertEqual($addressData['zipcode'], $row['congregation_addresses']['zipcode']);
-        $this->assertEqual($addressData['country'], $row['congregation_addresses']['country']);
-        $this->assertEqual($addressData['congregation_id'], $row['congregation_addresses']['congregation_id']);
-    }
-
-    /**
      * Test getting a CongregationAddress that doesn't exist will throw an exception
      * @covers CongregationAddress::get
      * @expectedException NotFoundException
@@ -123,6 +96,33 @@ class CongregationAddressTest extends CakeTestCase
         $congregationAddressId = TestHelper::getNonFixtureId($this->congregationAddressRecords);
 
         $this->CongregationAddress->get($congregationAddressId);
+    }
+    
+    /**
+     * @covers CongregationAddress::save
+     */
+    public function testSave()
+    {
+        $this->skipTestEvaluator->shouldSkip(__FUNCTION__);
+
+        $addressData = $this->createAddress();
+
+        $this->CongregationAddress->save($addressData);
+
+        $this->assertGreaterThan(0, $this->CongregationAddress->id);
+
+        $sql  = $this->buildCongregationAddressQuery($this->CongregationAddress->id);
+
+        $dbo = $this->CongregationAddress->getDataSource();
+        $dbo->rawQuery($sql);
+        $row = $dbo->fetchRow();
+
+        $this->assertEqual($addressData['street_address'], $row['congregation_addresses']['street_address']);
+        $this->assertEqual($addressData['city'], $row['congregation_addresses']['city']);
+        $this->assertEqual($addressData['state'], $row['congregation_addresses']['state']);
+        $this->assertEqual($addressData['zipcode'], $row['congregation_addresses']['zipcode']);
+        $this->assertEqual($addressData['country'], $row['congregation_addresses']['country']);
+        $this->assertEqual($addressData['congregation_id'], $row['congregation_addresses']['congregation_id']);
     }
 
     /**
@@ -209,16 +209,21 @@ class CongregationAddressTest extends CakeTestCase
         $this->assertFalse($result);
     }
 
-    public function buildCongregationAddressQuery($streetAddress)
+    /**
+     * builds a query to get fields for CongregationAddress to verify save
+     * @param int $congregationAddressId
+     * @return string
+     */
+    public function buildCongregationAddressQuery($congregationAddressId)
     {
         return "SELECT
                 congregation_id, street_address, city, state, zipcode, country
                 FROM congregation_addresses
-                WHERE congregation_addresses.street_address = '" . $streetAddress . "'";
+                WHERE id = '" . $congregationAddressId . "'";
     }
 
     /**
-     * helper method to create a valid address data array
+     * helper method to create a valid CongregationAddress data array
      * @return array with the address properties
      */
     private function createAddress()

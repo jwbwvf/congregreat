@@ -1,10 +1,10 @@
 <?php
 
 /**
- * MembersPhoneFixture
+ * MemberPhoneFixture
  *
  */
-class MembersPhoneFixture extends CakeTestFixture
+class MemberPhoneFixture extends CakeTestFixture
 {
 
     /**
@@ -21,7 +21,7 @@ class MembersPhoneFixture extends CakeTestFixture
         'modified' => array('type' => 'datetime', 'null' => false, 'default' => null, 'comment' => 'last date the member phone relation was modified'),
         'indexes' => array(
             'PRIMARY' => array('column' => 'id', 'unique' => 1),
-            'member_id' => array('column' => array('member_id', 'phone_id'), 'unique' => 0)
+            'member_id' => array('column' => array('member_id', 'id'), 'unique' => 0)
         ),
         'tableParameters' => array('charset' => 'utf8', 'collate' => 'utf8_unicode_ci', 'engine' => 'InnoDB')
     );

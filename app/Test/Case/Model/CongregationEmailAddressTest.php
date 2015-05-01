@@ -20,8 +20,15 @@ class CongregationEmailAddressTest extends CakeTestCase
         'testSave_InvalidEmailAddress'  => 1,
     );
 
-    protected $skipTestEvaluator;
-
+    /**
+     * Fixtures
+     *
+     * @var array
+     */
+    public $fixtures = array(
+        'app.congregation',
+        'app.congregation_email_address'
+    );
 
     /**
      * setUp method
@@ -125,26 +132,15 @@ class CongregationEmailAddressTest extends CakeTestCase
     }
 
     /**
-     * builds the query to retrieve the congregations
-     * associated to the email address
-     * @param int $emailAddressId
+     * builds a query to get fields for CongregationEmailAddress to verify save
+     * @param int $congregationEmailAddressId
      * @return string
      */
-    private function buildCongregationsEmailAddressQuery($id)
+    private function buildCongregationsEmailAddressQuery($congregationEmailAddressId)
     {
         return "SELECT
                 congregation_id, email_address
                 FROM congregation_email_addresses
-                WHERE congregation_email_addresses.id = '" . $id . "'";
+                WHERE congregation_email_addresses.id = '" . $congregationEmailAddressId . "'";
     }
-
-     /**
-     * Fixtures
-     *
-     * @var array
-     */
-    public $fixtures = array(
-        'app.congregation',
-        'app.congregation_email_address'
-    );
 }

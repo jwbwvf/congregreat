@@ -17,8 +17,16 @@ class MemberEmailAddressTest extends CakeTestCase
         'testSave_InvalidEmailAddress'  => 1,
     );
 
-    protected $skipTestEvaluator;
-
+    /**
+     * Fixtures
+     *
+     * @var array
+     */
+    public $fixtures = array(
+        'app.member',
+        'app.member_email_address'
+    );
+    
     /**
      * setUp method
      *
@@ -135,15 +143,5 @@ class MemberEmailAddressTest extends CakeTestCase
                 FROM member_email_addresses
                 WHERE id = '" . $id . "'";
     }
-
-    /**
-     * Fixtures
-     *
-     * @var array
-     */
-    public $fixtures = array(
-        'app.member',
-        'app.member_email_address'
-    );
 }
 

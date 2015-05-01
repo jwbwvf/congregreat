@@ -81,12 +81,12 @@ class CongregationFollowRequest extends AppModel
             throw new NotFoundException(__('Invalid congregation follow request'));
         }
         $options = array('conditions' => array('CongregationFollowRequest.' . $this->primaryKey => $id),
-            'fields' => array('leader_id', 'requesting_follower_id')
-        ); 
-        
+            'fields' => array('id', 'leader_id', 'requesting_follower_id', 'status')
+        );
+
         return $this->find('first', $options);
     }
-    
+
     public function getFollowRequests($leaderId)
     {
         $options = array(
@@ -94,11 +94,11 @@ class CongregationFollowRequest extends AppModel
                 'status' => CongregationFollowRequestStatus::PENDING
             ),
             'fields' => array('id', 'RequestingFollower.id', 'RequestingFollower.name')
-        ); 
-        
-        return $this->find('all', $options);        
+        );
+
+        return $this->find('all', $options);
     }
-    
+
     public function getMyPendingRequests($requesting_follower_id)
     {
         $options = array(
@@ -106,11 +106,11 @@ class CongregationFollowRequest extends AppModel
                 'status' => CongregationFollowRequestStatus::PENDING
             ),
             'fields' => array('id', 'RequestedLeader.id', 'RequestedLeader.name')
-        );         
-        
+        );
+
         return $this->find('all', $options);
     }
-    
+
     public function getPendingFollowRequestId($leaderId, $requestingFollowerId)
     {
         $options = array(
@@ -121,7 +121,7 @@ class CongregationFollowRequest extends AppModel
             ),
             'fields' => array('id')
         );
-        
+
         $followRequest = $this->find('first', $options);
         return empty($followRequest) ? 0 : $followRequest['CongregationFollowRequest']['id'];
     }
