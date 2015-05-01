@@ -6,12 +6,6 @@ class CongregationBase extends CakeTestCase
 {
     protected $skipTestEvaluator;
 
-
-    /**
-     * setUp method
-     *
-     * @return void
-     */
     public function setUp()
     {
         parent::setUp();
@@ -20,11 +14,6 @@ class CongregationBase extends CakeTestCase
         $this->skipTestEvaluator = new SkipTestEvaluator($this->tests);
     }
 
-    /**
-     * tearDown method
-     *
-     * @return void
-     */
     public function tearDown()
     {
         unset($this->Congregation);

@@ -15,11 +15,11 @@ class CongregationFollowRequestTest extends CongregationBase
     //add test name to the array with
     //1 - run, 0 - do not run
     protected $tests = array(
-        'testGet'                       => 0,
+        'testGet'                       => 1,
         'testGet_NotFound'              => 1,
-        'testGetFollowRequests'         => 0,
-        'testGetMyPendingRequests'      => 0,
-        'testGetPendingFollowRequestId' => 0,
+        'testGetFollowRequests'         => 1,
+        'testGetMyPendingRequests'      => 1,
+        'testGetPendingFollowRequestId' => 1,
     );
 
     /**
@@ -36,10 +36,18 @@ class CongregationFollowRequestTest extends CongregationBase
     {
         parent::setUp();
 
+        $this->CongregationFollowRequest = ClassRegistry::init('CongregationFollowRequest');
+        
         $congregationFollowRequestFixture = new CongregationFollowRequestFixture();
         $this->congregationFollowRequestRecords = $congregationFollowRequestFixture->records;
     }
 
+    public function tearDown() {
+        unset($this->CongregationFollowRequest);
+        
+        parent::tearDown();        
+    }
+    
     /**
      * @covers CongregationFollowRequest::get
      */
