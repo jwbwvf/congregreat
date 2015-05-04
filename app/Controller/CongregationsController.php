@@ -11,7 +11,6 @@ App::uses('AppController', 'Controller');
 class CongregationsController extends AppController
 {
     private $ADMIN_DIRECTORY = 'Admin/';
-    private $TASK_DIRECTORY = 'Task/';
 
     /**
      * Components
@@ -88,7 +87,7 @@ class CongregationsController extends AppController
         if ($this->request->is('post'))
         {
             $congregationId = $this->Auth->user('Member.congregation_id');
-            $this->request->data['CongregationEmailAddress']['congregation_id'] = $congregationId;            
+            $this->request->data['CongregationEmailAddress']['congregation_id'] = $congregationId;
             if ($this->Congregation->CongregationEmailAddress->save($this->request->data))
             {
                 $this->Session->setFlash(__('The congregation\'s email address has been saved.'));
@@ -302,67 +301,6 @@ class CongregationsController extends AppController
             $this->Session->setFlash(__('Unable to stop following the congregation. Please, try again.'));
         }
     }
-
-//Task methods//////////////////////////////////////////////////////////////////////////////////////////////////////////
-//
-//
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    public function task_index()
-    {
-        $congregationId = $this->Auth->user('Member.congregation_id');
-        $this->set('tasks', $this->Congregation->getTasks($congregationId));
-
-        $this->render($this->TASK_DIRECTORY . __FUNCTION__);
-    }
-
-    public function task_add()
-    {
-        if ($this->request->is('post'))
-        {
-            $congregationId = $this->Auth->user('Member.congregation_id');
-            $this->request->data['Task']['congregation_id'] = $congregationId;
-            if ($this->Congregation->Task->save($this->request->data))
-            {
-                $this->Session->setFlash(__('The task has been saved for the congregation.'));
-                return $this->redirect(array('action' => 'index'));
-            }
-            else
-            {
-                $this->Session->setFlash(__('The task could not be saved. Please, try again.'));
-            }
-        }
-
-        $this->render($this->TASK_DIRECTORY . __FUNCTION__);
-    }
-
-    public function task_view($id = null)
-    {
-        $this->set('task', $this->Congregation->Task->get($id));
-
-        $this->render($this->TASK_DIRECTORY . __FUNCTION__);
-    }
-
-    /**
-     * delete method
-     * @throws NotFoundException
-     * @param string $id task identifier
-     * @return void
-     */
-    public function task_delete($id = null)
-    {
-        $this->request->onlyAllow('post', 'delete');
-        if ($this->Congregation->Task->delete($id))
-        {
-            $this->Session->setFlash(__('The task has been deleted.'));
-        }
-        else
-        {
-            $this->Session->setFlash(__('The task could not be deleted. Please, try again.'));
-        }
-
-       $this->redirect(array('action' => 'task_index'));
-    }
-
 
 //END Task methods using Prefix Routing/////////////////////////////////////////////////////////////////////////////////
 
