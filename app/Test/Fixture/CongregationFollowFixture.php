@@ -25,20 +25,34 @@ class CongregationFollowFixture extends CakeTestFixture
         ),
         'tableParameters' => array('charset' => 'utf8', 'collate' => 'utf8_unicode_ci', 'engine' => 'InnoDB')
     );
-//
-//    /**
-//     * Records
-//     *
-//     * @var array
-//     */
-//    public $records = array(
-//        array(
-//            'id' => 1,
-//            'follower_id' => 1,
-//            'leader_id' => 1,
-//            'created' => '2014-10-02 20:33:48',
-//            'modified' => '2014-10-02 20:33:48'
-//        ),
-//    );
+
+    /**
+     * Records
+     *
+     * @var array
+     */
+    public $records = array(
+        array(
+            'id' => 1,
+            'follower_id' => 1,
+            'leader_id' => 2,
+            'created' => '2014-10-02 20:33:48',
+            'modified' => '2014-10-02 20:33:48'
+        ),
+        array(
+            'id' => 2,
+            'follower_id' => 1,
+            'leader_id' => 3,
+            'created' => '2014-10-02 20:33:48',
+            'modified' => '2014-10-02 20:33:48'
+        ),
+        array(
+            'id' => 3,
+            'follower_id' => 2,
+            'leader_id' => 3,
+            'created' => '2014-10-02 20:33:48',
+            'modified' => '2014-10-02 20:33:48'
+        )
+    );
 
 }

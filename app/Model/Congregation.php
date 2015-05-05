@@ -251,10 +251,16 @@ class Congregation extends ContactableModel
         return $this->CongregationFollow->getFollowers($leaderId);
     }
 
+    /**
+     * maps the leader(key) to the CongregationFollowId for a given follower id
+     * @param type $followerId
+     * @return type array
+     */
     public function getCongregationFollowMap($followerId)
     {
         $congregationFollowMap = array();
         $follows = $this->CongregationFollow->getFollows($followerId);
+
         foreach ($follows as $follow)
         {
             $congregationFollowMap[$follow['Leader']['id']] = $follow['CongregationFollow']['id'];

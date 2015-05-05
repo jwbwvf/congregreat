@@ -52,6 +52,20 @@ class CongregationFixture extends CakeTestFixture
             'created' => '2014-05-13 16:41:14',
             'modified' => '2014-05-13 16:41:14'
         ),
+        array(
+            'id' => 4,
+            'name' => 'congregation name 4',
+            'website' => 'congregation4.com',
+            'created' => '2014-05-13 16:41:14',
+            'modified' => '2014-05-13 16:41:14'
+        ),
+        array(
+            'id' => 5,
+            'name' => 'congregation name 5',
+            'website' => 'congregation5.com',
+            'created' => '2014-05-13 16:41:14',
+            'modified' => '2014-05-13 16:41:14'
+        ),
     );
 
 }

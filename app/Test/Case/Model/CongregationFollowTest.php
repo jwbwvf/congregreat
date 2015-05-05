@@ -1,22 +1,21 @@
 <?php
 
 App::uses('CongregationFollow', 'Model');
-App::uses('CongregationBase', 'Test/Case/Model');
+App::uses('SkipTestEvaluator', 'Test/Lib');
 
 /**
- * CongregationFollow Test Case
- *
+ * @covers CongregationFollow
  */
-class CongregationFollowTest extends CongregationBase
+class CongregationFollowTest extends CakeTestCase
 {
     //Add the line below at the beginning of each test
     //$this->skipTestEvaluator->shouldSkip(__FUNCTION__);
     //add test name to the array with
     //1 - run, 0 - do not run
     protected $tests = array(
-        'testGetFollows'                    => 1,
-        'testGetFollowers'                  => 1,
-        'testGetFollowId'                   => 1,
+        'testGetFollows'    => 1,
+        'testGetFollowers'  => 1,
+        'testGetFollowId'   => 1,
     );
 
     /**
@@ -26,81 +25,85 @@ class CongregationFollowTest extends CongregationBase
      */
     public $fixtures = array(
         'app.congregation',
-        'app.congregation_follow_request',
         'app.congregation_follow'
     );
-    
+
+    public function setup()
+    {
+        parent::setUp();
+
+        $this->CongregationFollow = ClassRegistry::init('CongregationFollow');
+
+        $congregationFixture = new CongregationFixture();
+        $this->congregationRecords = $congregationFixture->records;
+
+        $this->skipTestEvaluator = new SkipTestEvaluator($this->tests);
+    }
+
+    public function tearDown() {
+        unset($this->CongregationFollow);
+
+        parent::tearDown();
+    }
+
+    /**
+     * @covers CongregationFollow::getFollows
+     */
     public function testGetFollows()
     {
         $this->skipTestEvaluator->shouldSkip(__FUNCTION__);
 
-        $followerCongregationId = 1; //first id from congregation fixture record
-        $leadCongregationId = 2; //second id from congregation fixture record
-        $leadCongregationSecondId = 3; //third id from congregation fixture record
+        $followerCongregationId = 1; //follower id from congregationFollow fixture record
+        $leadCongregationId = 2; //first congregation id being followed from congregationFollow fixture record
+        $leadCongregationName = $this->congregationRecords[$leadCongregationId - 1]['name'];
+        $leadCongregationSecondId = 3; //second congregation id being followed from congregationFollow fixture record
+        $leadCongregationSecondName = $this->congregationRecords[$leadCongregationSecondId - 1]['name'];
 
-        $this->Congregation->addFollowRequest($followerCongregationId, $leadCongregationId);
-        $this->Congregation->addFollowRequest($followerCongregationId, $leadCongregationSecondId);
+        $follows = $this->CongregationFollow->getFollows($followerCongregationId);
 
-        $followRequests  = $this->Congregation->getFollowRequests($leadCongregationId);
-        foreach ($followRequests as $followRequest)
-        {
-            $this->Congregation->acceptFollowRequest($followRequest['CongregationFollowRequest']['id']);
-        }
-
-        $followRequestsSecond = $this->Congregation->getFollowRequests($leadCongregationSecondId);
-        foreach ($followRequestsSecond as $followRequest)
-        {
-            $this->Congregation->acceptFollowRequest($followRequest['CongregationFollowRequest']['id']);
-        }
-
-        $follows = $this->Congregation->getFollows($followerCongregationId);
-        $this->assertEqual(2, count($follows));
+        $this->assertEquals(count($follows), 2);
+        $this->assertEquals($follows[0]['Leader']['id'], $leadCongregationId);
+        $this->assertEquals($follows[0]['Leader']['name'], $leadCongregationName);
+        $this->assertEquals($follows[1]['Leader']['id'], $leadCongregationSecondId);
+        $this->assertEquals($follows[1]['Leader']['name'], $leadCongregationSecondName);
     }
 
+    /**
+     * @covers CongregationFollow::getFollowers
+     */
     public function testGetFollowers()
     {
         $this->skipTestEvaluator->shouldSkip(__FUNCTION__);
 
-        $leaderCongregationId = 1; //first id from congregation fixture record
-        $followingCongregationIdOne = 2; //second id from congregation fixture record
-        $followingCongregationIdTwo = 3; //third id from congregation fixture record
+        $leaderCongregationId = 3; //lead id with two followers in CongregationFollow fixture
+        $followingCongregationId = 1; //first congregation id following from CongregationFollow fixture record
+        $followingCongregationName = $this->congregationRecords[$followingCongregationId - 1]['name'];
+        $followingCongregationSecondId = 2; //second congregation id following from CongregationFollow fixture record
+        $followingCongregationSecondName = $this->congregationRecords[$followingCongregationSecondId - 1]['name'];
 
-        $this->Congregation->addFollowRequest($followingCongregationIdOne, $leaderCongregationId);
-        $this->Congregation->addFollowRequest($followingCongregationIdTwo, $leaderCongregationId);
 
-        $followRequests  = $this->Congregation->getFollowRequests($leaderCongregationId);
-        foreach ($followRequests as $followRequest)
-        {
-            $this->Congregation->acceptFollowRequest($followRequest['CongregationFollowRequest']['id']);
-        }
+        $followers = $this->CongregationFollow->getFollowers($leaderCongregationId);
 
-        $followers = $this->Congregation->getFollowers($leaderCongregationId);
-        $this->assertEqual(2, count($followers));
+        $this->assertEquals(count($followers), 2);
+        $this->assertEquals($followers[0]['Follower']['id'], $followingCongregationId);
+        $this->assertEquals($followers[0]['Follower']['name'], $followingCongregationName);
+        $this->assertEquals($followers[1]['Follower']['id'], $followingCongregationSecondId);
+        $this->assertEquals($followers[1]['Follower']['name'], $followingCongregationSecondName);
     }
 
+    /**
+     * @covers CongregationFollow::getFollowId
+     */
     public function testGetFollowId()
     {
         $this->skipTestEvaluator->shouldSkip(__FUNCTION__);
 
-        $leaderCongregationId = 1; //first id from congregation fixture record
-        $followingCongregationIdOne = 2; //second id from congregation fixture record
+        $leaderCongregationId = 2; //lead congregation id from CongregationFollow fixture
+        $followingCongregationId = 1; //follower congregation id from CongregationFollow fixture
+        $congregationFollowRecordId = 1; //id from CongregationFollow fixture
 
-        $this->Congregation->addFollowRequest($followingCongregationIdOne, $leaderCongregationId);
+        $followId = $this->CongregationFollow->getFollowId($followingCongregationId, $leaderCongregationId);
 
-        $followIdBeforeFollowing = $this->Congregation->CongregationFollow->getFollowId($followingCongregationIdOne,
-                $leaderCongregationId);
-
-        $this->assertEqual(0, $followIdBeforeFollowing);
-
-        $followRequests  = $this->Congregation->getFollowRequests($leaderCongregationId);
-        foreach ($followRequests as $followRequest)
-        {
-            $this->Congregation->acceptFollowRequest($followRequest['CongregationFollowRequest']['id']);
-        }
-
-        $followIdFollowing = $this->Congregation->CongregationFollow->getFollowId($followingCongregationIdOne,
-                $leaderCongregationId);
-
-        $this->assertTrue($followIdFollowing != 0);
+        $this->assertEquals($congregationFollowRecordId, $followId);
     }
 }

@@ -136,7 +136,7 @@ class Member extends ContactableModel
         'MemberAddress' => array(
             'className' => 'MemberAddress',
             'foreignKey' => 'member_id',
-            'dependent' => false,
+            'dependent' => true,
             'conditions' => '',
             'fields' => array('id', 'street_address', 'city', 'state', 'zipcode', 'country'),
             'order' => '',
@@ -149,7 +149,7 @@ class Member extends ContactableModel
         'MemberEmailAddress' => array(
             'className' => 'MemberEmailAddress',
             'foreignKey' => 'member_id',
-            'dependent' => false,
+            'dependent' => true,
             'conditions' => '',
             'fields' => array('id', 'email_address'),
             'order' => '',
@@ -162,7 +162,7 @@ class Member extends ContactableModel
         'MemberPhone' => array(
             'className' => 'MemberPhone',
             'foreignKey' => 'member_id',
-            'dependent' => false,
+            'dependent' => true,
             'conditions' => '',
             'fields' => array('id', 'number', 'type'),
             'order' => '',

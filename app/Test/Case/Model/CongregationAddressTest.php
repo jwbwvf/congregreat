@@ -97,7 +97,7 @@ class CongregationAddressTest extends CakeTestCase
 
         $this->CongregationAddress->get($congregationAddressId);
     }
-    
+
     /**
      * @covers CongregationAddress::save
      */
@@ -117,12 +117,12 @@ class CongregationAddressTest extends CakeTestCase
         $dbo->rawQuery($sql);
         $row = $dbo->fetchRow();
 
-        $this->assertEqual($addressData['street_address'], $row['congregation_addresses']['street_address']);
-        $this->assertEqual($addressData['city'], $row['congregation_addresses']['city']);
-        $this->assertEqual($addressData['state'], $row['congregation_addresses']['state']);
-        $this->assertEqual($addressData['zipcode'], $row['congregation_addresses']['zipcode']);
-        $this->assertEqual($addressData['country'], $row['congregation_addresses']['country']);
-        $this->assertEqual($addressData['congregation_id'], $row['congregation_addresses']['congregation_id']);
+        $this->assertEquals($addressData['street_address'], $row['congregation_addresses']['street_address']);
+        $this->assertEquals($addressData['city'], $row['congregation_addresses']['city']);
+        $this->assertEquals($addressData['state'], $row['congregation_addresses']['state']);
+        $this->assertEquals($addressData['zipcode'], $row['congregation_addresses']['zipcode']);
+        $this->assertEquals($addressData['country'], $row['congregation_addresses']['country']);
+        $this->assertEquals($addressData['congregation_id'], $row['congregation_addresses']['congregation_id']);
     }
 
     /**

@@ -4,6 +4,9 @@ App::uses('MemberPhone', 'Model');
 App::uses('SkipTestEvaluator', 'Test/Lib');
 App::uses('TestHelper', 'Test/Lib');
 
+/**
+ * @covers MemberPhone
+ */
 class MemberPhoneTest extends CakeTestCase
 {
     //Add the line below at the beginning of each test
@@ -58,6 +61,35 @@ class MemberPhoneTest extends CakeTestCase
         unset($this->MemberPhone);
 
         parent::tearDown();
+    }
+
+    /**
+     * @covers MemberPhone::get
+     */
+    public function testGet()
+    {
+        $this->skipTestEvaluator->shouldSkip(__FUNCTION__);
+
+        $memberPhoneRecord = $this->memberPhoneRecords[0];
+
+        $memberPhone = $this->MemberPhone->get($memberPhoneRecord['id']);
+
+        $this->assertEquals($memberPhoneRecord['id'], $memberPhone['MemberPhone']['id']);
+        $this->assertEquals($memberPhoneRecord['number'], $memberPhone['MemberPhone']['number']);
+        $this->assertEquals($memberPhoneRecord['type'], $memberPhone['MemberPhone']['type']);
+    }
+
+    /**
+     * @covers MemberPhone::get
+     * @expectedException NotFoundException
+     */
+    public function testGet_NotFound()
+    {
+        $this->skipTestEvaluator->shouldSkip(__FUNCTION__);
+
+        $memberPhoneId = TestHelper::getNonFixtureId($this->memberPhoneRecords);
+
+        $this->MemberPhone->get($memberPhoneId);
     }
 
     /**
@@ -173,7 +205,7 @@ class MemberPhoneTest extends CakeTestCase
     /**
      * builds the query to retrieve the member
      * associated to the phone
-     * @param int $phoneId phone id
+     * @param int $id
      * @return string
      */
     private function buildMembersPhoneNumberQuery($id)

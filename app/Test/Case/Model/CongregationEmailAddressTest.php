@@ -110,8 +110,8 @@ class CongregationEmailAddressTest extends CakeTestCase
         $dbo->rawQuery($sql);
         $row = $dbo->fetchRow();
 
-        $this->assertEqual($emailAddressData['email_address'], $row['congregation_email_addresses']['email_address']);
-        $this->assertEqual($emailAddressData['congregation_id'], $row['congregation_email_addresses']['congregation_id']);
+        $this->assertEquals($emailAddressData['email_address'], $row['congregation_email_addresses']['email_address']);
+        $this->assertEquals($emailAddressData['congregation_id'], $row['congregation_email_addresses']['congregation_id']);
     }
 
     /**

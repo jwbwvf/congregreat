@@ -1,5 +1,7 @@
 <?php
 
+App::uses('CongregationFollowRequestStatus', 'Model');
+
 /**
  * CongregationFollowRequestFixture
  *
@@ -35,12 +37,28 @@ class CongregationFollowRequestFixture extends CakeTestFixture
     public $records = array(
         array(
             'id' => 1,
-            'leader_id' => 2,
-            'requesting_follower_id' => 1,
-            'status' => 1,
+            'leader_id' => 1,
+            'requesting_follower_id' => 2,
+            'status' => CongregationFollowRequestStatus::PENDING,
             'created' => '2014-09-23 18:23:49',
             'modified' => '2014-09-23 18:23:49'
         ),
+        array(
+            'id' => 2,
+            'leader_id' => 1,
+            'requesting_follower_id' => 3,
+            'status' => CongregationFollowRequestStatus::PENDING,
+            'created' => '2014-09-23 18:23:49',
+            'modified' => '2014-09-23 18:23:49'
+        ),
+        array(
+            'id' => 3,
+            'leader_id' => 3,
+            'requesting_follower_id' => 2,
+            'status' => CongregationFollowRequestStatus::PENDING,
+            'created' => '2014-09-23 18:23:49',
+            'modified' => '2014-09-23 18:23:49'
+        )
     );
 
 }

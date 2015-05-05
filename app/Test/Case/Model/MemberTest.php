@@ -2,9 +2,10 @@
 
 App::uses('Member', 'Model');
 App::uses('SkipTestEvaluator', 'Test/Lib');
+App::uses('TestHelper', 'Test/Lib');
 
 /**
- * Member Test Case
+ * @covers Member
  *
  */
 class MemberTest extends CakeTestCase
@@ -14,6 +15,8 @@ class MemberTest extends CakeTestCase
     //add test name to the array with
     //1 - run, 0 - do not run
     protected $tests = array(
+        'testGet'                           => 1,
+        'testGet_NotFound'                  => 1,
         'testAdd'                           => 1,
         'testAdd_MissingCongregationId'     => 1,
         'testAdd_MissingFirstName'          => 1,
@@ -47,7 +50,14 @@ class MemberTest extends CakeTestCase
     public function setUp()
     {
         parent::setUp();
+
         $this->Member = ClassRegistry::init('Member');
+
+        $memberFixture = new MemberFixture();
+        $this->memberRecords = $memberFixture->records;
+
+        $congregationFixture = new CongregationFixture();
+        $this->congregationRecords = $congregationFixture->records;
 
         $this->skipTestEvaluator = new SkipTestEvaluator($this->tests);
     }
@@ -65,18 +75,55 @@ class MemberTest extends CakeTestCase
     }
 
     /**
+     * @covers Member::get
+     */
+    public function testGet()
+    {
+        $this->skipTestEvaluator->shouldSkip(__FUNCTION__);
+
+        $memberRecord = $this->memberRecords[0];
+        $congregationRecord = $this->congregationRecords[0];
+        $this->assertEquals($memberRecord['congregation_id'], $congregationRecord['id']);
+
+        $member = $this->Member->get($memberRecord['id']);
+
+        $this->assertEquals($memberRecord['id'], $member['Member']['id']);
+        $this->assertEquals($memberRecord['first_name'], $member['Member']['first_name']);
+        $this->assertEquals($memberRecord['last_name'], $member['Member']['last_name']);
+        $this->assertEquals($memberRecord['middle_name'], $member['Member']['middle_name']);
+        $this->assertEquals($memberRecord['profile_picture'], $member['Member']['profile_picture']);
+        $this->assertEquals($memberRecord['baptized'], $member['Member']['baptized']);
+        $this->assertEquals($memberRecord['congregation_id'], $member['Congregation']['id']);
+        $this->assertEquals($congregationRecord['name'], $member['Congregation']['name']);
+    }
+
+    /**
+     * @covers Member::get
+     * @expectedException NotFoundException
+     */
+    public function testGet_NotFound()
+    {
+        $this->skipTestEvaluator->shouldSkip(__FUNCTION__);
+
+        $memberId = TestHelper::getNonFixtureId($this->memberRecords);
+
+        $this->Member->get($memberId);
+    }
+
+    /**
      * test adding a member with all it's related data: phone, email, address
-     *
+     * @covers Member::add
      */
     public function testAdd()
     {
         $this->skipTestEvaluator->shouldSkip(__FUNCTION__);
 
-        $return = $this->Member->add($this->memberAddData);
-        $this->assertTrue($return);
+        $this->Member->add($this->memberAddData);
+
+        $this->assertGreaterThan(0, $this->Member->id);
 
         $dbo = $this->Member->getDataSource();
-        $sql = $this->buildMembersAddDataQuery();
+        $sql = $this->buildMembersAddDataQuery($this->Member->id);
         $dbo->rawQuery($sql);
         $row = $dbo->fetchRow();
 
@@ -89,16 +136,19 @@ class MemberTest extends CakeTestCase
         $this->assertEqual($this->memberAddData['Member']['baptized'], $row['members']['baptized']);
         $this->assertEqual($this->memberAddData['Member']['profile_picture'], $row['members']['profile_picture']);
         $this->assertEqual($this->memberAddData['Member']['anniversary_id'], $row['members']['anniversary_id']);
-        $this->assertEqual($this->memberAddData['EmailAddress']['email_address'], $row['email_addresses']['email_address']);
-        $this->assertEqual($this->memberAddData['Phone']['number'], $row['phones']['number']);
-        $this->assertEqual($this->memberAddData['Phone']['type'], $row['phones']['type']);
-        $this->assertEqual($this->memberAddData['Address']['street_address'], $row['addresses']['street_address']);
-        $this->assertEqual($this->memberAddData['Address']['city'], $row['addresses']['city']);
-        $this->assertEqual($this->memberAddData['Address']['state'], $row['addresses']['state']);
-        $this->assertEqual($this->memberAddData['Address']['zipcode'], $row['addresses']['zipcode']);
-        $this->assertEqual($this->memberAddData['Address']['country'], $row['addresses']['country']);
+        $this->assertEqual($this->memberAddData['MemberEmailAddress']['email_address'], $row['member_email_addresses']['email_address']);
+        $this->assertEqual($this->memberAddData['MemberPhone']['number'], $row['member_phones']['number']);
+        $this->assertEqual($this->memberAddData['MemberPhone']['type'], $row['member_phones']['type']);
+        $this->assertEqual($this->memberAddData['MemberAddress']['street_address'], $row['member_addresses']['street_address']);
+        $this->assertEqual($this->memberAddData['MemberAddress']['city'], $row['member_addresses']['city']);
+        $this->assertEqual($this->memberAddData['MemberAddress']['state'], $row['member_addresses']['state']);
+        $this->assertEqual($this->memberAddData['MemberAddress']['zipcode'], $row['member_addresses']['zipcode']);
+        $this->assertEqual($this->memberAddData['MemberAddress']['country'], $row['member_addresses']['country']);
     }
 
+    /**
+     * @covers Member::add
+     */
     public function testAdd_MissingCongregationId()
     {
         $this->skipTestEvaluator->shouldSkip(__FUNCTION__);
@@ -106,6 +156,9 @@ class MemberTest extends CakeTestCase
         $this->validate('Member', 'congregation_id', '');
     }
 
+    /**
+     * @covers Member::add
+     */
     public function testAdd_MissingFirstName()
     {
         $this->skipTestEvaluator->shouldSkip(__FUNCTION__);
@@ -123,50 +176,40 @@ class MemberTest extends CakeTestCase
     /**
      * test adding a member that has an invalid email address
      * @covers Member::add
-     * @covers Member::createModels
-     * @covers Member::areModelsValid
      */
     public function testAdd_InvalidEmail()
     {
         $this->skipTestEvaluator->shouldSkip(__FUNCTION__);
 
-        $this->validate('EmailAddress', 'email_address', 'invalidEmail@nowhere');
+        $this->validate('MemberEmailAddress', 'email_address', 'invalidEmail@nowhere');
     }
 
     /**
      * test adding a member that has an invalid address
      * @covers Member::add
-     * @covers Member::createModels
-     * @covers Member::areModelsValid
      */
     public function testAdd_InvalidAddress()
     {
         $this->skipTestEvaluator->shouldSkip(__FUNCTION__);
 
-        $this->validate('Address', 'zipcode', '6405A');
+        $this->validate('MemberAddress', 'zipcode', '6405A');
     }
 
     /**
      * test adding a member that has an invalid phone number
      * @covers Member::add
-     * @covers Member::createModels
-     * @covers Member::areModelsValid
      */
     public function testAdd_InvalidPhoneNumber()
     {
         $this->skipTestEvaluator->shouldSkip(__FUNCTION__);
 
-        $this->validate('Phone', 'number', '5555-555-5555');
+        $this->validate('MemberPhone', 'number', '5555-555-5555');
     }
 
     /**
      * test deleting a member and all it's
      * associated models
      * @covers Member::delete
-     * @covers Member::deleteAddress
-     * @covers Member::deleteEmailAddress
-     * @covers Member::deletePhoneNumber
-     * @covers Member::deleteModel
      */
     public function testDelete()
     {
@@ -174,17 +217,19 @@ class MemberTest extends CakeTestCase
 
         $this->Member->add($this->memberAddData);
 
+        $this->assertGreaterThan(0, $this->Member->id);
+
         $dbo = $this->Member->getDataSource();
-        $sql = $this->buildMembersAddDataQuery();
+        $sql = $this->buildMembersAddDataQuery($this->Member->id);
         $dbo->rawQuery($sql);
         $row = $dbo->fetchRow();
 
         $this->Member->delete($row['members']['id']);
 
         $sqlAfterDeleteMember = "SELECT * FROM members WHERE id='" . $row['members']['id'] . "'";
-        $sqlAfterDeleteAddress = "SELECT * FROM addresses WHERE id='" . $row['addresses']['id'] . "'";
-        $sqlAfterDeletePhone = "SELECT * FROM phones WHERE id='" . $row['phones']['id'] . "'";
-        $sqlAfterDeleteEmailAddress = "SELECT * FROM email_addresses WHERE id='" . $row['email_addresses']['id'] . "'";
+        $sqlAfterDeleteAddress = "SELECT * FROM member_addresses WHERE id='" . $row['member_addresses']['id'] . "'";
+        $sqlAfterDeletePhone = "SELECT * FROM member_phones WHERE id='" . $row['member_phones']['id'] . "'";
+        $sqlAfterDeleteEmailAddress = "SELECT * FROM member_email_addresses WHERE id='" . $row['member_email_addresses']['id'] . "'";
 
         $dbo->rawQuery($sqlAfterDeleteMember);
         $rowAfterDeleteMember = $dbo->fetchRow();
@@ -201,58 +246,6 @@ class MemberTest extends CakeTestCase
         $dbo->rawQuery($sqlAfterDeleteEmailAddress);
         $rowAfterDeleteEmailAddress = $dbo->fetchRow();
         $this->assertFalse($rowAfterDeleteEmailAddress);
-    }
-
-    /**
-     * test deleting a member that has the same
-     * address, email address, phone number associated
-     * to another member
-     * @covers Member::delete
-     * @covers Member::deleteAddress
-     * @covers Member::deleteEmailAddress
-     * @covers Member::deletePhoneNumber
-     * @covers Member::deleteModel
-     */
-    public function testDelete_ExistingAssociations()
-    {
-        $this->skipTestEvaluator->shouldSkip(__FUNCTION__);
-
-        $return = $this->Member->add($this->memberAddData);
-        $this->assertTrue($return);
-
-        $secondMemberData = $this->memberAddData;
-        $secondMemberData['Member']['name'] = 'secondName';
-
-        $member = ClassRegistry::init('Member');
-        $member->add($secondMemberData);
-
-        $dbo = $this->Member->getDataSource();
-        $sql = $this->buildMembersAddDataQuery();
-        $dbo->rawQuery($sql);
-        $row = $dbo->fetchRow();
-
-        $this->Member->delete($row['members']['id']);
-
-        $sqlAfterDeleteMember = "SELECT * FROM members WHERE id='" . $row['members']['id'] . "'";
-        $sqlAfterDeleteAddress = "SELECT * FROM addresses WHERE id='" . $row['addresses']['id'] . "'";
-        $sqlAfterDeletePhone = "SELECT * FROM phones WHERE id='" . $row['phones']['id'] . "'";
-        $sqlAfterDeleteEmailAddress = "SELECT * FROM email_addresses WHERE id='" . $row['email_addresses']['id'] . "'";
-
-        $dbo->rawQuery($sqlAfterDeleteMember);
-        $rowAfterDeleteMember = $dbo->fetchRow();
-        $this->assertFalse($rowAfterDeleteMember);
-
-        $dbo->rawQuery($sqlAfterDeleteAddress);
-        $rowAfterDeleteAddress = $dbo->fetchRow();
-        $this->assertEquals($rowAfterDeleteAddress['addresses']['id'], $row['addresses']['id']);
-
-        $dbo->rawQuery($sqlAfterDeletePhone);
-        $rowAfterDeletePhone = $dbo->fetchRow();
-        $this->assertEquals($rowAfterDeletePhone['phones']['id'], $row['phones']['id']);
-
-        $dbo->rawQuery($sqlAfterDeleteEmailAddress);
-        $rowAfterDeleteEmailAddress = $dbo->fetchRow();
-        $this->assertEquals($rowAfterDeleteEmailAddress['email_addresses']['id'], $row['email_addresses']['id']);
     }
 
 //    public function testStoreProfilePicture()
@@ -314,22 +307,20 @@ class MemberTest extends CakeTestCase
      * builds the query to retrieve the member and all it's associated data from an add
      * @return string
      */
-    private function buildMembersAddDataQuery()
+    private function buildMembersAddDataQuery($memberId)
     {
         return "SELECT
             members.id, members.congregation_id, members.first_name, members.last_name, members.middle_name,
             members.gender, members.birth_date, members.baptized, members.profile_picture, members.anniversary_id,
-            addresses.street_address, addresses.city, addresses.state, addresses.zipcode, addresses.country, addresses.id,
-            email_addresses.email_address, email_addresses.id,
-            phones.number, phones.type, phones.id
+            member_addresses.street_address, member_addresses.city, member_addresses.state, member_addresses.zipcode,
+            member_addresses.country, member_addresses.id,
+            member_email_addresses.email_address, member_email_addresses.id,
+            member_phones.number, member_phones.type, member_phones.id
             FROM members
-            JOIN addresses_members am ON members.id = am.member_id
-            JOIN members_phones mp ON members.id = mp.member_id
-            JOIN email_addresses_members eam ON members.id = eam.member_id
-            JOIN addresses ON am.address_id = addresses.id
-            JOIN email_addresses ON eam.email_address_id = email_addresses.id
-            JOIN phones ON mp.phone_id = phones.id
-            WHERE members.first_name = 'testFirstName'";
+            JOIN member_addresses ON members.id = member_addresses.member_id
+            JOIN member_phones ON members.id = member_phones.member_id
+            JOIN member_email_addresses ON members.id = member_email_addresses.member_id
+            WHERE members.id = '" . $memberId . "'";
     }
 
     public $memberAddData = array(
@@ -344,14 +335,14 @@ class MemberTest extends CakeTestCase
             'profile_picture' => 'testFirstName testLastName.jpg',
             'anniversary_id' => '1'
         ),
-        'EmailAddress' => array(
+        'MemberEmailAddress' => array(
             'email_address' => 'test@test.com'
         ),
-        'Phone' => array(
+        'MemberPhone' => array(
             'number' => '555-555-5555',
             'type' => 'home'
         ),
-        'Address' => array(
+        'MemberAddress' => array(
             'street_address' => '123 elm st.',
             'city' => 'kc',
             'state' => 'Missouri',
