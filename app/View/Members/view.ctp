@@ -7,24 +7,21 @@
 <div class="related">
     <?php echo $this->element('display_addresses', array(
             'addresses' => $member['MemberAddress'],
-            'ownerId' => $member['Member']['id'],
             'belongsToModel' => 'Member',
-            'canModify' => $canModify)); 
+            'canModify' => $canModify));
     ?>
 </div>
 <div class="related">
     <?php echo $this->element('display_email_addresses', array(
             'emailAddresses' => $member['MemberEmailAddress'],
-            'ownerId' => $member['Member']['id'],
             'belongsToModel' => 'Member',
-            'canModify' => $canModify)); 
+            'canModify' => $canModify));
     ?>
 </div>
 <div class="related">
     <?php echo $this->element('display_phones', array(
             'phones' => $member['MemberPhone'],
-            'ownerId' => $member['Member']['id'],
             'belongsToModel' => 'Member',
-            'canModify' => $canModify)); 
+            'canModify' => $canModify));
     ?>
 </div>

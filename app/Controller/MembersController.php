@@ -27,7 +27,7 @@ class MembersController extends AppController
     public function index()
     {
         $this->Member->recursive = 0;
-        
+
         $paginator = array('fields' => array('id', 'first_name', 'last_name', 'baptized', 'Congregation.id', 'Congregation.name'));
 
         $this->Paginator->settings = $paginator;
@@ -57,10 +57,10 @@ class MembersController extends AppController
     public function add()
     {
         if ($this->request->is('post'))
-        {            
+        {
             //store the picture on the file system, set the name of the picture to be stored in the database on Members
             $this->request->data['Member']['profile_picture'] = $this->Member->storeProfilePicture($this->request->data);
-            
+
             if ($this->Member->add($this->request->data))
             {
                 $this->Session->setFlash(__('The member has been saved.'));
@@ -71,11 +71,11 @@ class MembersController extends AppController
                 $this->Session->setFlash(__('The member could not be saved. Please, try again.'));
             }
         }
-        
+
         $congregations = $this->Member->Congregation->find('list');
-        $this->set(compact('congregations'));        
+        $this->set(compact('congregations'));
     }
-    
+
     /**
      * Adds a phone number to an existing member
      * @param string $id member identifier
@@ -83,9 +83,9 @@ class MembersController extends AppController
      * @throws NotFoundException
      */
     public function addPhoneNumber($id)
-    {        
+    {
         if ($this->request->is('post'))
-        {            
+        {
             if ($this->Member->MemberPhone->save($this->request->data))
             {
                 $this->Session->setFlash(__('The member\'s phone number has been saved.'));
@@ -96,16 +96,16 @@ class MembersController extends AppController
                 $this->Session->setFlash(__('The member\'s phone number could not be saved. Please, try again.'));
             }
         }
-                
-        $this->set('member', $this->Member->get($id));        
-    }    
-    
+
+        $this->set('member', $this->Member->get($id));
+    }
+
     /**
      * Adds an email address to an existing member
      * @param string $id member identifier
      * @return void
      * @throws NotFoundException
-     */    
+     */
     public function addEmailAddress($id)
     {
         if ($this->request->is('post'))
@@ -120,34 +120,10 @@ class MembersController extends AppController
                 $this->Session->setFlash(__('The member\'s email address could not be saved. Please, try again.'));
             }
         }
-                
-        $this->set('member', $this->Member->get($id));          
-    }    
 
-    /**
-     * Adds an address to an existing member
-     * @param string $id member identifier
-     * @return void
-     * @throws NotFoundException
-     */    
-    public function addAddress($id)
-    {
-        if ($this->request->is('post'))
-        {
-            if ($this->Member->MemberAddress->save($this->request->data))
-            {
-                $this->Session->setFlash(__('The member\'s address has been saved.'));
-                return $this->redirect(array('action' => 'view', $id));
-            }
-            else
-            {
-                $this->Session->setFlash(__('The member\'s address could not be saved. Please, try again.'));
-            }
-        }
-                
-        $this->set('member', $this->Member->get($id));          
+        $this->set('member', $this->Member->get($id));
     }
-    
+
     /**
      * edit method
      *
@@ -165,7 +141,7 @@ class MembersController extends AppController
         {
             //store the picture on the file system, set the name of the picture to be stored in the database on Members
             $this->request->data['Member']['profile_picture'] = $this->Member->storeProfilePicture($this->request->data);
-            
+
             if ($this->Member->save($this->request->data))
             {
                 $this->Session->setFlash(__('The member has been saved.'));
@@ -179,28 +155,23 @@ class MembersController extends AppController
         else
         {
             $this->Member->recursive = -1;
-            $options = array('conditions' => array('Member.' . $this->Member->primaryKey => $id), 
-                'fields' => array('id', 'first_name', 'last_name', 'middle_name', 'gender', 'birth_date', 'baptized', 
+            $options = array('conditions' => array('Member.' . $this->Member->primaryKey => $id),
+                'fields' => array('id', 'first_name', 'last_name', 'middle_name', 'gender', 'birth_date', 'baptized',
                     'profile_picture'));
             $this->request->data = $this->Member->find('first', $options);
         }
         $congregations = $this->Member->Congregation->find('list');
         $this->set(compact('congregations'));
     }
-    
+
     public function editPhone($id, $phoneId)
     {
         $this->editModel($id, $phoneId, 'MemberPhone', 'phone');
     }
-    
+
     public function editEmailAddress($id, $emailAddressId)
     {
         $this->editModel($id, $emailAddressId, 'MemberEmailAddress', 'email address');
-    }
-    
-    public function editAddress($id, $addressId)
-    {
-        $this->editModel($id, $addressId, 'MemberAddress', 'address');
     }
     
     private function editModel($id, $modelId, $model, $modelLabel)
@@ -208,7 +179,7 @@ class MembersController extends AppController
         if ($this->request->is(array('post', 'put')))
         {
             if ($this->Member->$model->save($this->request->data))
-            {                
+            {
                 $this->Session->setFlash(__('The ' . $modelLabel . ' has been saved.'));
                 return $this->redirect(array('action' => 'view', $id));
             }
@@ -218,14 +189,14 @@ class MembersController extends AppController
             }
         }
         else
-        {            
+        {
             $this->Member->$model->recursive = -1;
             $this->request->data = $this->Member->$model->get($modelId);
         }
-    
-        $this->set('memberId', $id);        
-    }   
-        
+
+        $this->set('memberId', $id);
+    }
+
     /**
      * delete method
      *
@@ -250,9 +221,9 @@ class MembersController extends AppController
     public function addImage()
     {
         if ($this->request->is('post'))
-        {            
+        {
             $this->request->data['Member']['profile_picture'] = $this->Member->storeProfilePicture($this->request->data);
             $this->Member->save();
-        }        
-    }    
+        }
+    }
 }

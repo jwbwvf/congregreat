@@ -130,7 +130,7 @@ class MemberAddress extends AppModel
             throw new NotFoundException(__('Invalid address'));
         }
         $options = array('conditions' => array('MemberAddress.' . $this->primaryKey => $id),
-            'fields' => array('id', 'street_address', 'city', 'state', 'zipcode', 'country'));
+            'fields' => array('id', 'member_id', 'street_address', 'city', 'state', 'zipcode', 'country'));
 
         return $this->find('first', $options);
     }
