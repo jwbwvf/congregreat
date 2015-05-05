@@ -15,15 +15,13 @@
 <div class="related">
     <?php echo $this->element('display_email_addresses', array(
         'emailAddresses' => $congregation['CongregationEmailAddress'],
-        'ownerId' => $congregation['Congregation']['id'],
-        'belongsToModel' => 'Congregation',        
+        'belongsToModel' => 'Congregation',
         'canModify' => $canModify));
     ?>
 </div>
 <div class="related">
     <?php echo $this->element('display_phones', array(
         'phones' => $congregation['CongregationPhone'],
-        'ownerId' => $congregation['Congregation']['id'],
         'belongsToModel' => 'Congregation',
         'canModify' => $canModify));
     ?>

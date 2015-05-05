@@ -1,5 +1,5 @@
 <div class="phones form">
-    <?php echo $this->Form->create('Phone'); ?>
+    <?php echo $this->Form->create('CongregationPhone'); ?>
     <fieldset>
         <legend><?php echo __('Edit Phone'); ?></legend>
         <?php

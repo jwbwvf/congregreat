@@ -51,32 +51,6 @@ class CongregationsController extends AppController
     }
 
     /**
-     * Adds a phone number to an existing congregation
-     * @param string $id congregation identifier
-     * @return void
-     * @throws NotFoundException
-     */
-    public function addPhoneNumber($id)
-    {
-        if ($this->request->is('post'))
-        {
-            $congregationId = $this->Auth->user('Member.congregation_id');
-            $this->request->data['CongregationPhone']['congregation_id'] = $congregationId;
-            if ($this->Congregation->CongregationPhone->save($this->request->data))
-            {
-                $this->Session->setFlash(__('The congregation\'s phone number has been saved.'));
-                return $this->redirect(array('action' => 'view', $id));
-            }
-            else
-            {
-                $this->Session->setFlash(__('The congregation\'s phone number could not be saved. Please, try again.'));
-            }
-        }
-
-        $this->set('congregation', $this->Congregation->get($id));
-    }
-
-    /**
      * Adds an address to an existing congregation
      * @param string $id congregation identifier
      * @return void
@@ -136,11 +110,6 @@ class CongregationsController extends AppController
         }
     }
 
-    public function editPhone($id, $phoneId)
-    {
-        $this->editModel($id, $phoneId, 'Phone', 'phone');
-    }
-    
     public function editAddress($id, $addressId)
     {
         $this->editModel($id, $addressId, 'CongregationAddress', 'address');

@@ -70,8 +70,8 @@ class CongregationPhone extends AppModel
             throw new NotFoundException(__('Invalid phone'));
         }
         $options = array('conditions' => array('CongregationPhone.' . $this->primaryKey => $id),
-            'fields' => array('id', 'number', 'type'));
-        
+            'fields' => array('id', 'congregation_id', 'number', 'type'));
+
         return $this->find('first', $options);
     }
 }
