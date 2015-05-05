@@ -77,32 +77,6 @@ class CongregationsController extends AppController
     }
 
     /**
-     * Adds an email address to an existing congregation
-     * @param string $id congregation identifier
-     * @return void
-     * @throws NotFoundException
-     */
-    public function addEmailAddress($id)
-    {
-        if ($this->request->is('post'))
-        {
-            $congregationId = $this->Auth->user('Member.congregation_id');
-            $this->request->data['CongregationEmailAddress']['congregation_id'] = $congregationId;
-            if ($this->Congregation->CongregationEmailAddress->save($this->request->data))
-            {
-                $this->Session->setFlash(__('The congregation\'s email address has been saved.'));
-                return $this->redirect(array('action' => 'view', $id));
-            }
-            else
-            {
-                $this->Session->setFlash(__('The congregation\'s email address could not be saved. Please, try again.'));
-            }
-        }
-
-        $this->set('congregation', $this->Congregation->get($id));
-    }
-
-    /**
      * Adds an address to an existing congregation
      * @param string $id congregation identifier
      * @return void
@@ -166,12 +140,7 @@ class CongregationsController extends AppController
     {
         $this->editModel($id, $phoneId, 'Phone', 'phone');
     }
-
-    public function editEmailAddress($id, $emailAddressId)
-    {
-        $this->editModel($id, $emailAddressId, 'CongregationEmailAddress', 'email address');
-    }
-
+    
     public function editAddress($id, $addressId)
     {
         $this->editModel($id, $addressId, 'CongregationAddress', 'address');

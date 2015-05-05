@@ -4,7 +4,7 @@ App::uses('AppModel', 'Model');
 
 /**
  * CongregationEmailAddress Model
- * 
+ *
  * @property Congregation $Congregation
  */
 class CongregationEmailAddress extends AppModel
@@ -31,7 +31,7 @@ class CongregationEmailAddress extends AppModel
             //'on' => 'create', // Limit validation to 'create' or 'update' operations
         )
     );
-    
+
     /**
      * belongsTo associations
      *
@@ -45,8 +45,8 @@ class CongregationEmailAddress extends AppModel
             'fields' => '',
             'order' => ''
         )
-    );    
-    
+    );
+
     public function get($id)
     {
         if (!$this->exists($id))
@@ -54,9 +54,9 @@ class CongregationEmailAddress extends AppModel
             throw new NotFoundException(__('Invalid email address'));
         }
         $options = array('conditions' => array('CongregationEmailAddress.' . $this->primaryKey => $id),
-            'fields' => array('id', 'email_address'));
-        
+            'fields' => array('id', 'congregation_id', 'email_address'));
+
         return $this->find('first', $options);
-    }    
+    }
 }
 

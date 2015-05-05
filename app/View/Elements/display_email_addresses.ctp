@@ -12,7 +12,7 @@
                 <td><?php echo $emailAddress['email_address']; ?></td>
                 <?php if($canModify) { ?>
                 <td class="actions">
-                    <?php echo $this->Html->link(__('Edit'), array('action' => 'editEmailAddress', $ownerId, $emailAddress['id'])); ?>
+                    <?php echo $this->Html->link(__('Edit'), array('controller' => $belongsToModel . 'EmailAddresses', 'action' => 'edit', $emailAddress['id'])); ?>
                     <?php echo $this->Form->postLink(__('Delete'), array('controller' => $belongsToModel . 'EmailAddresses', 'action' => 'delete', $emailAddress['id']), null, __('Are you sure you want to delete %s?', $emailAddress['email_address'])); ?>
                 </td>
                 <?php }//end can modify ?>
@@ -23,7 +23,7 @@
 <?php if($canModify) { ?>
 <div class="actions">
     <ul>
-        <li><?php echo $this->Html->link(__('New Email Address'), array('action' => 'addEmailAddress', $ownerId)); ?> </li>
+        <li><?php echo $this->Html->link(__('New Email Address'), array('controller' => $belongsToModel . 'EmailAddresses', 'action' => 'add')); ?> </li>
     </ul>
 </div>
 <?php }//end can modify
