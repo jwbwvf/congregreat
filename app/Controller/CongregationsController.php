@@ -51,32 +51,6 @@ class CongregationsController extends AppController
     }
 
     /**
-     * Adds an address to an existing congregation
-     * @param string $id congregation identifier
-     * @return void
-     * @throws NotFoundException
-     */
-    public function addAddress($id)
-    {
-        if ($this->request->is('post'))
-        {
-            $congregationId = $this->Auth->user('Member.congregation_id');
-            $this->request->data['CongregationAddress']['congregation_id'] = $congregationId;
-            if ($this->Congregation->CongregationAddress->save($this->request->data))
-            {
-                $this->Session->setFlash(__('The congregation\'s address has been saved.'));
-                return $this->redirect(array('action' => 'view', $id));
-            }
-            else
-            {
-                $this->Session->setFlash(__('The congregation\'s address could not be saved. Please, try again.'));
-            }
-        }
-
-        $this->set('congregation', $this->Congregation->get($id));
-    }
-
-    /**
      * edit method
      *
      * @throws NotFoundException
@@ -108,34 +82,6 @@ class CongregationsController extends AppController
                 'fields' => array('id', 'name', 'website'));
             $this->request->data = $this->Congregation->find('first', $options);
         }
-    }
-
-    public function editAddress($id, $addressId)
-    {
-        $this->editModel($id, $addressId, 'CongregationAddress', 'address');
-    }
-
-    private function editModel($id, $modelId, $model, $modelLabel)
-    {
-        if ($this->request->is(array('post', 'put')))
-        {
-            if ($this->Congregation->$model->save($this->request->data))
-            {
-                $this->Session->setFlash(__('The ' . $modelLabel . ' has been saved.'));
-                return $this->redirect(array('action' => 'view', $id));
-            }
-            else
-            {
-                $this->Session->setFlash(__('The ' . $modelLabel . ' could not be saved. Please, try again.'));
-            }
-        }
-        else
-        {
-            $this->Congregation->$model->recursive = -1;
-            $this->request->data = $this->Congregation->$model->get($modelId);
-        }
-
-        $this->set('congregationId', $id);
     }
 
     /**

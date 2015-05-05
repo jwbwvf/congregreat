@@ -7,7 +7,6 @@
 <div class="related">
     <?php echo $this->element('display_addresses', array(
         'addresses' => $congregation['CongregationAddress'],
-        'ownerId' => $congregation['Congregation']['id'],
         'belongsToModel' => 'Congregation',
         'canModify' => $canModify));
     ?>

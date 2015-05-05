@@ -20,7 +20,7 @@
                 <td><?php echo $address['country']; ?></td>
                 <?php if($canModify) { ?>
                 <td class="actions">
-                    <?php echo $this->Html->link(__('Edit'), array('action' => 'editAddress', $ownerId, $address['id'])); ?>
+                    <?php echo $this->Html->link(__('Edit'), array('controller' => $belongsToModel . 'Addresses', 'action' => 'edit', $address['id'])); ?>
                     <?php echo $this->Form->postLink(__('Delete'), array('controller' => $belongsToModel . 'Addresses', 'action' => 'delete', $address['id']), null, __('Are you sure you want to delete %s?', $address['street_address'])); ?>
                 </td>
                 <?php }//end can modify ?>
@@ -31,7 +31,7 @@
 <?php if($canModify) { ?>
 <div class="actions">
     <ul>
-        <li><?php echo $this->Html->link(__('New Address'), array('action' => 'addAddress', $ownerId)); ?> </li>
+        <li><?php echo $this->Html->link(__('New Address'), array('controller' => $belongsToModel . 'Addresses', 'action' => 'add')); ?> </li>
     </ul>
 </div>
 <?php }//end can modify
