@@ -14,8 +14,8 @@
             'minYear' => date('Y') - 100,
             'maxYear' => date('Y')
         ));
-        echo $this->Form->input('baptized', array('type' => 'checkbox'));                
-        echo $this->Form->input('EmailAddress.email_address', array('type' => 'email', 'maxlength' => 254));        
+        echo $this->Form->input('baptized', array('type' => 'checkbox'));
+        echo $this->Form->input('MemberEmailAddress.email_address', array('type' => 'email', 'maxlength' => 254));
         echo $this->element('input_phone', array('belongsToModel' => 'Member'));
         echo $this->element('input_address', array('belongsToModel' => 'Member'));
         echo $this->Form->input('profile_picture', array('type' => 'file'));
