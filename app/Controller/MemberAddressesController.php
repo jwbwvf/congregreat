@@ -54,12 +54,12 @@ class MemberAddressesController extends AppController {
         {
             if ($this->MemberAddress->save($this->request->data))
             {
-                $this->Session->setFlash(__('The address has been saved.'));
+                $this->Session->setFlash(__('The member\'s address has been saved.'));
                 return $this->redirect(array('controller' => 'members', 'action' => 'view', $memberAddress['MemberAddress']['member_id']));
             }
             else
             {
-                $this->Session->setFlash(__('The address could not be saved. Please, try again.'));
+                $this->Session->setFlash(__('The member\'s address could not be saved. Please, try again.'));
             }
         }
         else

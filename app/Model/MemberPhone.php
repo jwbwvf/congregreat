@@ -70,7 +70,7 @@ class MemberPhone extends AppModel
             throw new NotFoundException(__('Invalid phone'));
         }
         $options = array('conditions' => array('MemberPhone.' . $this->primaryKey => $id),
-            'fields' => array('id', 'number', 'type'));
+            'fields' => array('id', 'member_id', 'number', 'type'));
 
         return $this->find('first', $options);
     }

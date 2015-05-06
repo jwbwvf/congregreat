@@ -11,7 +11,6 @@ App::uses('AppController', 'Controller');
  */
 class MembersController extends AppController
 {
-
     /**
      * Components
      *
@@ -77,30 +76,6 @@ class MembersController extends AppController
     }
 
     /**
-     * Adds a phone number to an existing member
-     * @param string $id member identifier
-     * @return void
-     * @throws NotFoundException
-     */
-    public function addPhoneNumber($id)
-    {
-        if ($this->request->is('post'))
-        {
-            if ($this->Member->MemberPhone->save($this->request->data))
-            {
-                $this->Session->setFlash(__('The member\'s phone number has been saved.'));
-                return $this->redirect(array('action' => 'view', $id));
-            }
-            else
-            {
-                $this->Session->setFlash(__('The member\'s phone number could not be saved. Please, try again.'));
-            }
-        }
-
-        $this->set('member', $this->Member->get($id));
-    }
-
-    /**
      * edit method
      *
      * @throws NotFoundException
@@ -138,34 +113,6 @@ class MembersController extends AppController
         }
         $congregations = $this->Member->Congregation->find('list');
         $this->set(compact('congregations'));
-    }
-
-    public function editPhone($id, $phoneId)
-    {
-        $this->editModel($id, $phoneId, 'MemberPhone', 'phone');
-    }
-
-    private function editModel($id, $modelId, $model, $modelLabel)
-    {
-        if ($this->request->is(array('post', 'put')))
-        {
-            if ($this->Member->$model->save($this->request->data))
-            {
-                $this->Session->setFlash(__('The ' . $modelLabel . ' has been saved.'));
-                return $this->redirect(array('action' => 'view', $id));
-            }
-            else
-            {
-                $this->Session->setFlash(__('The ' . $modelLabel . ' could not be saved. Please, try again.'));
-            }
-        }
-        else
-        {
-            $this->Member->$model->recursive = -1;
-            $this->request->data = $this->Member->$model->get($modelId);
-        }
-
-        $this->set('memberId', $id);
     }
 
     /**
