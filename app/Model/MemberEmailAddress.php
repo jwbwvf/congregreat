@@ -54,7 +54,7 @@ class MemberEmailAddress extends AppModel
             throw new NotFoundException(__('Invalid email address'));
         }
         $options = array('conditions' => array('MemberEmailAddress.' . $this->primaryKey => $id),
-            'fields' => array('id', 'email_address'));
+            'fields' => array('id', 'member_id', 'email_address'));
 
         return $this->find('first', $options);
     }

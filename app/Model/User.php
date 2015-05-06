@@ -48,7 +48,7 @@ class User extends AppModel
             //'on' => 'create', // Limit validation to 'create' or 'update' operations
             ),
             'minLength' => array(
-                'rule' => array('minLength'),
+                'rule' => array('minLength', '8'),
             //'message' => 'Your custom message here',
             //'allowEmpty' => false,
             //'required' => false,

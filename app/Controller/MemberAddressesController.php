@@ -44,8 +44,8 @@ class MemberAddressesController extends AppController {
      * The member will always be the one logged in
      * This should only be allowed to be called by the member themselves
      * @throws NotFoundException
-     * @param string $id of the CongregationAddress to edit
-     * @return void, redirect to the congregations view page
+     * @param string $id of the MemberAddress to edit
+     * @return void, redirect to the member view page
      */
     public function edit($id)
     {

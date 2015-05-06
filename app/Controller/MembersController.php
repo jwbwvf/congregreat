@@ -101,30 +101,6 @@ class MembersController extends AppController
     }
 
     /**
-     * Adds an email address to an existing member
-     * @param string $id member identifier
-     * @return void
-     * @throws NotFoundException
-     */
-    public function addEmailAddress($id)
-    {
-        if ($this->request->is('post'))
-        {
-            if ($this->Member->MemberEmailAddress->save($this->request->data))
-            {
-                $this->Session->setFlash(__('The member\'s email address has been saved.'));
-                return $this->redirect(array('action' => 'view', $id));
-            }
-            else
-            {
-                $this->Session->setFlash(__('The member\'s email address could not be saved. Please, try again.'));
-            }
-        }
-
-        $this->set('member', $this->Member->get($id));
-    }
-
-    /**
      * edit method
      *
      * @throws NotFoundException
@@ -169,11 +145,6 @@ class MembersController extends AppController
         $this->editModel($id, $phoneId, 'MemberPhone', 'phone');
     }
 
-    public function editEmailAddress($id, $emailAddressId)
-    {
-        $this->editModel($id, $emailAddressId, 'MemberEmailAddress', 'email address');
-    }
-    
     private function editModel($id, $modelId, $model, $modelLabel)
     {
         if ($this->request->is(array('post', 'put')))
