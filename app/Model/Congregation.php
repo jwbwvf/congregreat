@@ -129,6 +129,32 @@ class Congregation extends ContactableModel
             'finderQuery' => '',
             'counterQuery' => ''
         ),
+        'AnnouncementRequest' => array(
+            'className' => 'AnnouncementRequest',
+            'foreignKey' => 'congregation_id',
+            'dependent' => true,
+            'conditions' => '',
+            'fields' => array('id', 'member_id', 'announcement', 'status', 'expiration'),
+            'order' => '',
+            'limit' => '',
+            'offset' => '',
+            'exclusive' => '',
+            'finderQuery' => '',
+            'counterQuery' => ''
+        ),
+        'Announcement' => array(
+            'className' => 'Announcement',
+            'foreignKey' => 'congregation_id',
+            'dependent' => true,
+            'conditions' => '',
+            'fields' => array('id', 'member_id', 'announcement', 'expiration'),
+            'order' => '',
+            'limit' => '',
+            'offset' => '',
+            'exclusive' => '',
+            'finderQuery' => '',
+            'counterQuery' => ''
+        ),
         'Task' => array(
             'className' => 'Task',
             'foreignKey' => 'congregation_id',

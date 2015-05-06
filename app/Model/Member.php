@@ -171,6 +171,19 @@ class Member extends ContactableModel
             'exclusive' => '',
             'finderQuery' => '',
             'counterQuery' => ''
+        ),
+        'AnnouncementRequest' => array(
+            'className' => 'AnnouncementRequest',
+            'foreignKey' => 'member_id',
+            'dependent' => true,
+            'conditions' => '',
+            'fields' => array('id', 'member_id', 'announcement', 'status', 'expiration'),
+            'order' => '',
+            'limit' => '',
+            'offset' => '',
+            'exclusive' => '',
+            'finderQuery' => '',
+            'counterQuery' => ''
         )
 //        'Absence' => array(
 //            'className' => 'Absence',
