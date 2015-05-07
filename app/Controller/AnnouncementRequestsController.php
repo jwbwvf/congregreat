@@ -1,6 +1,7 @@
 <?php
 
 App::uses('AppController', 'Controller');
+App::uses('AnnouncementRequestStatus', 'Model');
 
 /**
  * AnnouncementRequests Controller
@@ -24,9 +25,10 @@ class AnnouncementRequestsController extends AppController {
      * @return void
      */
     public function index() {
-        //TODO only list pending announcement requests
-        $this->AnnouncementRequest->recursive = 0;
-        $this->set('announcementRequests', $this->Paginator->paginate());
+        $memberId = $this->Auth->user('Member.id');
+        //$congregationId = $this->Auth->user('Member.congregation_id');
+        //if congregation admin $this->AnnouncementRequest->getCongregationAnnouncementRequests($congregationId);
+        $this->set('announcementRequests', $this->AnnouncementRequest->getMembersAnnouncementRequests($memberId));
     }
 
     /**
@@ -57,6 +59,7 @@ class AnnouncementRequestsController extends AppController {
 
             $this->request->data['AnnouncementRequest']['member_id'] = $memberId;
             $this->request->data['AnnouncementRequest']['congregation_id'] = $congregationId;
+            $this->request->data['AnnouncementRequest']['status'] = AnnouncementRequestStatus::PENDING;
 
             $this->AnnouncementRequest->create();
             if ($this->AnnouncementRequest->save($this->request->data)) {

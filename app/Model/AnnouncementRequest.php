@@ -1,6 +1,7 @@
 <?php
 
 App::uses('AppModel', 'Model');
+App::uses('AnnouncementRequestStatus', 'Model');
 
 /**
  * AnnouncementRequest Model
@@ -91,4 +92,34 @@ class AnnouncementRequest extends AppModel
         )
     );
 
+    public function get($id)
+    {
+        if (!$this->exists($id))
+        {
+            throw new NotFoundException(__('Invalid announcement request'));
+        }
+
+        $options = array('conditions' => array('AnnouncementRequest.' . $this->primaryKey => $id),
+            'fields' => array('id', 'congregation_id', 'member_id', 'announcement', 'status', 'expiration'));
+
+        return $this->find('first', $options);
+    }
+
+    public function getMembersAnnouncementRequests($memberId)
+    {
+        $options = array('conditions' => array('AnnouncementRequest.member_id' => $memberId,
+            'status' => AnnouncementRequestStatus::PENDING),
+            'fields' => array('id', 'congregation_id', 'member_id', 'announcement', 'expiration'));
+
+        return $this->find('all', $options);
+    }
+
+    public function getCongregationsAnnouncementRequests($congregationId)
+    {
+        $options = array('conditions' => array('AnnouncementRequest.congregation_id' => $congregationId,
+            'status' => AnnouncementRequestStatus::PENDING),
+            'fields' => array('id', 'congregation_id', 'member_id', 'announcement', 'expiration'));
+
+        return $this->find('all', $options);
+    }
 }
