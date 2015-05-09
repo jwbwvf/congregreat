@@ -48,4 +48,8 @@ class AnnouncementTest extends CakeTestCase {
 		parent::tearDown();
 	}
 
+    public function testGet()
+    {
+        
+    }
 }

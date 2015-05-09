@@ -147,7 +147,7 @@ class Congregation extends ContactableModel
             'foreignKey' => 'congregation_id',
             'dependent' => true,
             'conditions' => '',
-            'fields' => array('id', 'member_id', 'announcement', 'expiration'),
+            'fields' => array('id', 'announcement', 'expiration'),
             'order' => '',
             'limit' => '',
             'offset' => '',

@@ -50,6 +50,8 @@ class CongregationTest extends CakeTestCase
         'app.congregation_follow_request',
         'app.congregation_follow',
         'app.task',
+        'app.announcement_request',
+        'app.announcement',
         'app.member'
     );
 
