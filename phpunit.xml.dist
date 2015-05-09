@@ -3,9 +3,18 @@
 <phpunit>
 
   <filter>
-    <blacklist>
-      <directory suffix=".php">src/lib</directory>
-    </blacklist>
+  <whitelist processUncoveredFilesFromWhitelist="true">
+    <directory suffix=".php">/app/Model</directory>
+    <directory suffix=".php">/app/Controller</directory>
+    <exclude>
+      <file>/app/Model/AppModel.php</file>
+      <file>/app/Model/CongregationFollowRequestStatus.php</file>
+      <file>/app/Model/CongregationFollowActionLabels.php</file>
+      <file>/app/Model/CongregationFollowActions.php</file>
+      <file>/app/Model/AnnouncementRequestStatus.php</file>
+      <file>/app/Model/PhoneType</file>
+    </exclude>
+  </whitelist>
   </filter>
 
 </phpunit>
