@@ -4,7 +4,7 @@
 		<legend><?php echo __('Edit Announcement'); ?></legend>
 	<?php
 		echo $this->Form->input('id');
-		echo $this->Form->input('announcement');
+		echo $this->Form->input('announcement', array('type' => 'textarea'));
 		echo $this->Form->input('expiration');
 	?>
 	</fieldset>

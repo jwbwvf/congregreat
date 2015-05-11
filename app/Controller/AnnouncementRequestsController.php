@@ -7,7 +7,6 @@ App::uses('AnnouncementRequestStatus', 'Model');
  * AnnouncementRequests Controller
  *
  * @property AnnouncementRequest $AnnouncementRequest
- * @property PaginatorComponent $Paginator
  * @property SessionComponent $Session
  */
 class AnnouncementRequestsController extends AppController {
@@ -17,7 +16,7 @@ class AnnouncementRequestsController extends AppController {
      *
      * @var array
      */
-    public $components = array('Paginator', 'Session');
+    public $components = array('Session');
 
     /**
      * index method
@@ -118,5 +117,4 @@ class AnnouncementRequestsController extends AppController {
         }
         return $this->redirect(array('action' => 'index'));
     }
-
 }

@@ -11,7 +11,7 @@
         <tbody>
             <?php foreach ($announcementRequests as $announcementRequest): ?>
             <tr>
-                <td><?php echo h($announcementRequest['AnnouncementRequest']['announcement']); ?>&nbsp;</td>
+                <td><?php echo $this->Text->truncate(h($announcementRequest['AnnouncementRequest']['announcement']), 60, array('elipsis' => '...', 'exact' => false)); ?>&nbsp;</td>
                 <td><?php echo h($announcementRequest['AnnouncementRequest']['expiration']); ?>&nbsp;</td>
                 <td class="actions">
                     <?php echo $this->Html->link(__('View'), array('action' => 'view', $announcementRequest['AnnouncementRequest']['id'])); ?>

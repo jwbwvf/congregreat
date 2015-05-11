@@ -3,7 +3,7 @@
 	<fieldset>
 		<legend><?php echo __('Add Announcement'); ?></legend>
 	<?php
-		echo $this->Form->input('announcement');
+		echo $this->Form->input('announcement', array('type' => 'textarea'));
 		echo $this->Form->input('expiration');
 	?>
 	</fieldset>
