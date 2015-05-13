@@ -117,4 +117,17 @@ class AnnouncementRequestsController extends AppController {
         }
         return $this->redirect(array('action' => 'index'));
     }
+
+    public function cancel($id) {
+        $this->request->onlyAllow('post');
+        if ($this->AnnouncementRequest->cancel($id))
+        {
+            $this->Session->setFlash(__('The announcement request has been cancelled'));
+            return $this->redirect(array('action' => 'index'));
+        }
+        else
+        {
+            $this->Session->setFlash(__('Unable to cancel The announcement request.  Please, try again.'));
+        }
+    }
 }

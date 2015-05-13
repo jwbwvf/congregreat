@@ -122,4 +122,10 @@ class AnnouncementRequest extends AppModel
 
         return $this->find('all', $options);
     }
+
+    public function cancel($id)
+    {
+        $this->id = $id;
+        return $this->saveField('status', AnnouncementRequestStatus::CANCELLED);
+    }
 }
