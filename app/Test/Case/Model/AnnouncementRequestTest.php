@@ -1,55 +1,95 @@
 <?php
+
 App::uses('AnnouncementRequest', 'Model');
 
 /**
  * AnnouncementRequest Test Case
  *
  */
-class AnnouncementRequestTest extends CakeTestCase {
+class AnnouncementRequestTest extends CakeTestCase
+{
 
-/**
- * Fixtures
- *
- * @var array
- */
-	public $fixtures = array(
-		'app.announcement_request',
-		'app.congregation',
-		'app.member',
-		'app.member_address',
-		'app.member_email_address',
-		'app.member_phone',
-		'app.congregation_address',
-		'app.congregation_email_address',
-		'app.congregation_phone',
-		'app.congregation_follow_request',
-		'app.congregation_follow',
-		'app.task'
-	);
+    //Add the line below at the beginning of each test
+    //$this->skipTestEvaluator->shouldSkip(__FUNCTION__);
+    //add test name to the array with
+    //1 - run, 0 - do not run
+    protected $tests = array(
+        'testGet' => 1,
+        'testGet_NotFound' => 1,
+        'testGetMembersAnnouncementRequests' => 1,
+        'testGetCongregationsAnnouncementRequests' => 1,
+        'testCancel' => 1,
+        'testReject' => 1,
+        'testAccept' => 1,
+    );
 
-/**
- * setUp method
- *
- * @return void
- */
-	public function setUp() {
-		parent::setUp();
-		$this->AnnouncementRequest = ClassRegistry::init('AnnouncementRequest');
-	}
+    /**
+     * Fixtures
+     *
+     * @var array
+     */
+    public $fixtures = array(
+        'app.announcement_request',
+        'app.congregation',
+        'app.member'
+    );
 
-/**
- * tearDown method
- *
- * @return void
- */
-	public function tearDown() {
-		unset($this->AnnouncementRequest);
+    /**
+     * setUp method
+     *
+     * @return void
+     */
+    public function setUp()
+    {
+        parent::setUp();
+        $this->AnnouncementRequest = ClassRegistry::init('AnnouncementRequest');
+    }
 
-		parent::tearDown();
-	}
+    /**
+     * tearDown method
+     *
+     * @return void
+     */
+    public function tearDown()
+    {
+        unset($this->AnnouncementRequest);
+
+        parent::tearDown();
+    }
 
     public function testGet()
     {
-        
+
     }
+
+    public function testGet_NotFound()
+    {
+
+    }
+
+    public function testGetMembersAnnouncementRequests()
+    {
+
+    }
+
+    public function testGetCongregationsAnnouncementRequests()
+    {
+
+    }
+
+    public function testCancel()
+    {
+
+    }
+
+    public function testReject()
+    {
+
+    }
+
+    public function testAccept()
+    {
+
+    }
+
 }

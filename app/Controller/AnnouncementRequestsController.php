@@ -2,6 +2,7 @@
 
 App::uses('AppController', 'Controller');
 App::uses('AnnouncementRequestStatus', 'Model');
+App::uses('Announcements', 'Model');
 
 /**
  * AnnouncementRequests Controller
@@ -119,15 +120,32 @@ class AnnouncementRequestsController extends AppController {
     }
 
     public function cancel($id) {
-        $this->request->onlyAllow('post');
-        if ($this->AnnouncementRequest->cancel($id))
-        {
+        $this->request->allowMethod('post');
+        if ($this->AnnouncementRequest->cancel($id)) {
             $this->Session->setFlash(__('The announcement request has been cancelled'));
             return $this->redirect(array('action' => 'index'));
-        }
-        else
-        {
+        } else {
             $this->Session->setFlash(__('Unable to cancel The announcement request.  Please, try again.'));
+        }
+    }
+
+    public function reject($id) {
+        $this->request->allowMethod('post');
+        if ($this->AnnouncementRequest->reject($id)) {
+            $this->Session->setFlash(__('The announcement request has been rejected'));
+            return $this->redirect(array('action' => 'index'));
+        } else {
+            $this->Session->setFlash(__('Unable to reject the announcement request.  Please, try again.'));
+        }
+    }
+
+    public function accept($id) {
+        $this->request->allowMethod('post');
+        if ($this->AnnouncementRequest->accept($id)) {
+            $this->Session->setFlash(__('The announcement request has been accepted'));
+            return $this->redirect(array('action' => 'index'));
+        } else {
+            $this->Session->setFlash(__('Unable to accept the announcement request.  Please, try again.'));
         }
     }
 }

@@ -128,4 +128,26 @@ class AnnouncementRequest extends AppModel
         $this->id = $id;
         return $this->saveField('status', AnnouncementRequestStatus::CANCELLED);
     }
+
+    public function reject($id)
+    {
+        $this->id = $id;
+        return $this->saveField('status', AnnouncementRequestStatus::REJECTED);
+    }
+
+    public function accept($id)
+    {
+        $this->id = $id;
+        if ($this->saveField('status', AnnouncementRequestStatus::ACCEPTED))
+        {
+            $data = array('congregation_id' => $this->congregation_id, 'announcement' => $this->announcement,
+                'expiration' => $this->expiration);
+
+            $announcement = ClassRegistry::init('Announcement');
+            $announcement->create();
+            return $announcement->save($data);
+        }
+
+        return false;
+    }
 }

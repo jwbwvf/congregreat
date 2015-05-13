@@ -93,7 +93,7 @@ class CongregationsController extends AppController
     {
         //TODO need ACL for this, check if privileged enough to request to follow another congregation
         //i.e. elder, deacon, admin decides for the congregation what other congregations they want to follow
-        $this->request->onlyAllow('post');
+        $this->request->allowMethod('post');
         $requestingFollowerId = $this->Auth->user('Member.congregation_id');
         if ($this->Congregation->addFollowRequest($requestingFollowerId, $leaderId))
         {
@@ -120,7 +120,7 @@ class CongregationsController extends AppController
 
     public function acceptFollowRequest($followRequestId)
     {
-        $this->request->onlyAllow('post');
+        $this->request->allowMethod('post');
         if ($this->Congregation->acceptFollowRequest($followRequestId))
         {
             $this->Session->setFlash(__('The follow request has been accepted.'));
@@ -134,7 +134,7 @@ class CongregationsController extends AppController
 
     public function rejectFollowRequest($followRequestId)
     {
-        $this->request->onlyAllow('post');
+        $this->request->allowMethod('post');
         if ($this->Congregation->rejectFollowRequest($followRequestId))
         {
             $this->Session->setFlash(__('The follow request has been rejected.'));
@@ -148,7 +148,7 @@ class CongregationsController extends AppController
 
     public function cancelFollowRequest($followRequestId, $viewId)
     {
-        $this->request->onlyAllow('post');
+        $this->request->allowMethod('post');
         if ($this->Congregation->cancelFollowRequest($followRequestId))
         {
             $this->Session->setFlash(__('The follow request has been cancelled.'));
@@ -174,7 +174,7 @@ class CongregationsController extends AppController
 
     public function stopFollowing($followId, $viewId)
     {
-        $this->request->onlyAllow('post');
+        $this->request->allowMethod('post');
         if ($this->Congregation->stopFollowing($followId))
         {
             $this->Session->setFlash(__('No longer following the congregation.'));
@@ -248,7 +248,7 @@ class CongregationsController extends AppController
      */
     public function admin_delete($id = null)
     {
-        $this->request->onlyAllow('post', 'delete');
+        $this->request->allowMethod('post', 'delete');
         if ($this->Congregation->delete($id))
         {
             $this->Session->setFlash(__('The congregation has been deleted.'));

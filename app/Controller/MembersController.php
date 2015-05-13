@@ -124,7 +124,7 @@ class MembersController extends AppController
      */
     public function delete($id = null)
     {
-        $this->request->onlyAllow('post', 'delete');
+        $this->request->allowMethod('post', 'delete');
         if ($this->Member->delete($id))
         {
             $this->Session->setFlash(__('The member has been deleted.'));
