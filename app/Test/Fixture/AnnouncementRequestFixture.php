@@ -1,4 +1,7 @@
 <?php
+
+App::uses('AnnouncementRequestStatus', 'Model');
+
 /**
  * AnnouncementRequestFixture
  *
@@ -36,8 +39,8 @@ class AnnouncementRequestFixture extends CakeTestFixture {
 			'id' => 1,
 			'congregation_id' => 1,
 			'member_id' => 1,
-			'announcement' => 'Lorem ipsum dolor sit amet, aliquet feugiat. Convallis morbi fringilla gravida, phasellus feugiat dapibus velit nunc, pulvinar eget sollicitudin venenatis cum nullam, vivamus ut a sed, mollitia lectus. Nulla vestibulum massa neque ut et, id hendrerit sit, feugiat in taciti enim proin nibh, tempor dignissim, rhoncus duis vestibulum nunc mattis convallis.',
-			'status' => 1,
+			'announcement' => 'test announcement 1',
+			'status' => AnnouncementRequestStatus::PENDING,
 			'expiration' => '2015-05-06 13:47:46',
 			'created' => '2015-05-06 13:47:46',
 			'modified' => '2015-05-06 13:47:46'
