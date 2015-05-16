@@ -39,7 +39,7 @@ class AnnouncementRequestFixture extends CakeTestFixture {
 			'id' => 1,
 			'congregation_id' => 1,
 			'member_id' => 1,
-			'announcement' => 'test announcement 1',
+			'announcement' => 'test announcement request 1',
 			'status' => AnnouncementRequestStatus::PENDING,
 			'expiration' => '2015-05-06 13:47:46',
 			'created' => '2015-05-06 13:47:46',

@@ -32,6 +32,7 @@ class AnnouncementRequestTest extends CakeTestCase
      */
     public $fixtures = array(
         'app.announcement_request',
+        'app.announcement',
         'app.congregation',
         'app.member'
     );
@@ -106,7 +107,7 @@ class AnnouncementRequestTest extends CakeTestCase
         $memberId = 1; //member_id from AnnouncementRequest fixture
         $announcementRequestId = 1; //id from AnnouncementRequest fixture
         $congregationId = 1; //congregation_id from AnnouncementRequest fixture
-        $announcement = 'test announcement 1'; //announcement from AnnouncementRequest fixture
+        $announcement = 'test announcement request 1'; //announcement from AnnouncementRequest fixture
         $status = AnnouncementRequestStatus::PENDING; //status from AnnouncementRequest fixture
         $expiration = '2015-05-06 13:47:46'; //expiration from AnnouncementRequest fixture
 
@@ -129,7 +130,7 @@ class AnnouncementRequestTest extends CakeTestCase
         $congregationId = 1; //congregation_id from AnnouncementRequest fixture
         $announcementRequestId = 1; //id from AnnouncementRequest fixture
         $memberId = 1; //member_id from AnnouncementRequest fixture
-        $announcement = 'test announcement 1'; //announcement from AnnouncementRequest fixture
+        $announcement = 'test announcement request 1'; //announcement from AnnouncementRequest fixture
         $expiration = '2015-05-06 13:47:46'; //expiration from AnnouncementRequest fixture
 
         $announcementRequest = $this->AnnouncementRequest->getCongregationsAnnouncementRequests($congregationId);
@@ -148,7 +149,17 @@ class AnnouncementRequestTest extends CakeTestCase
     {
         $this->skipTestEvaluator->shouldSkip(__FUNCTION__);
 
+        $announcementRequestId = 1; //id from AnnouncementRequest fixture
 
+        $announcementRequest = $this->AnnouncementRequest->get($announcementRequestId);
+
+        $this->assertEquals($announcementRequest['AnnouncementRequest']['status'], AnnouncementRequestStatus::PENDING);
+
+        $this->AnnouncementRequest->cancel($announcementRequestId);
+
+        $announcementRequestCancelled = $this->AnnouncementRequest->get($announcementRequestId);
+
+        $this->assertEquals($announcementRequestCancelled['AnnouncementRequest']['status'], AnnouncementRequestStatus::CANCELLED);
     }
 
     /**
@@ -157,6 +168,18 @@ class AnnouncementRequestTest extends CakeTestCase
     public function testReject()
     {
         $this->skipTestEvaluator->shouldSkip(__FUNCTION__);
+
+        $announcementRequestId = 1; //id from AnnouncementRequest fixture
+
+        $announcementRequest = $this->AnnouncementRequest->get($announcementRequestId);
+
+        $this->assertEquals($announcementRequest['AnnouncementRequest']['status'], AnnouncementRequestStatus::PENDING);
+
+        $this->AnnouncementRequest->reject($announcementRequestId);
+
+        $announcementRequestCancelled = $this->AnnouncementRequest->get($announcementRequestId);
+
+        $this->assertEquals($announcementRequestCancelled['AnnouncementRequest']['status'], AnnouncementRequestStatus::REJECTED);
     }
 
     /**
@@ -165,6 +188,32 @@ class AnnouncementRequestTest extends CakeTestCase
     public function testAccept()
     {
         $this->skipTestEvaluator->shouldSkip(__FUNCTION__);
+
+        $announcementRequestId = 1; //id from AnnouncementRequest fixture
+
+        $announcementRequest = $this->AnnouncementRequest->get($announcementRequestId);
+
+        $this->assertEquals($announcementRequest['AnnouncementRequest']['status'], AnnouncementRequestStatus::PENDING);
+
+        $announcement = $this->AnnouncementRequest->accept($announcementRequestId);
+
+        $announcementRequestAccepted = $this->AnnouncementRequest->get($announcementRequestId);
+
+        $this->assertEquals($announcementRequestAccepted['AnnouncementRequest']['status'], AnnouncementRequestStatus::ACCEPTED);
+
+        $this->assertEquals($announcement['Announcement']['congregation_id'], $announcementRequestAccepted['AnnouncementRequest']['congregation_id']);
+        $this->assertEquals($announcement['Announcement']['announcement'], $announcementRequestAccepted['AnnouncementRequest']['announcement']);
+        $this->assertEquals($announcement['Announcement']['expiration'], $announcementRequestAccepted['AnnouncementRequest']['expiration']);
+
+        $sql = "SELECT congregation_id, announcement, expiration FROM announcements WHERE announcement = '" . $announcementRequestAccepted['AnnouncementRequest']['announcement'] . "'";
+
+        $dbo = $this->AnnouncementRequest->getDataSource();
+        $dbo->rawQuery($sql);
+        $row = $dbo->fetchRow();
+
+        $this->assertEquals($row['announcements']['congregation_id'], $announcementRequestAccepted['AnnouncementRequest']['congregation_id']);
+        $this->assertEquals($row['announcements']['announcement'], $announcementRequestAccepted['AnnouncementRequest']['announcement']);
+        $this->assertEquals($row['announcements']['expiration'], $announcementRequestAccepted['AnnouncementRequest']['expiration']);
     }
 
 }

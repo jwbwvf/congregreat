@@ -125,23 +125,43 @@ class AnnouncementRequest extends AppModel
 
     public function cancel($id)
     {
+        if (!$this->exists($id))
+        {
+            throw new NotFoundException(__('Invalid announcement request'));
+        }
+
         $this->id = $id;
         return $this->saveField('status', AnnouncementRequestStatus::CANCELLED);
     }
 
     public function reject($id)
     {
+        if (!$this->exists($id))
+        {
+            throw new NotFoundException(__('Invalid announcement request'));
+        }
+
         $this->id = $id;
         return $this->saveField('status', AnnouncementRequestStatus::REJECTED);
     }
 
     public function accept($id)
     {
+        if (!$this->exists($id))
+        {
+            throw new NotFoundException(__('Invalid announcement request'));
+        }
+
         $this->id = $id;
         if ($this->saveField('status', AnnouncementRequestStatus::ACCEPTED))
         {
-            $data = array('congregation_id' => $this->congregation_id, 'announcement' => $this->announcement,
-                'expiration' => $this->expiration);
+
+            $announcementRequest = $this->get($id);
+
+            $data = array('Announcement' => array(
+                'congregation_id' => $announcementRequest['AnnouncementRequest']['congregation_id'],
+                'announcement' => $announcementRequest['AnnouncementRequest']['announcement'],
+                'expiration' => $announcementRequest['AnnouncementRequest']['expiration']));
 
             $announcement = ClassRegistry::init('Announcement');
             $announcement->create();
