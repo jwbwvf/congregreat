@@ -1,16 +1,11 @@
 <?php
 
 App::uses('ContactableModel', 'Model');
-App::uses('CongregationFollowRequestStatus', 'Model');
 App::uses('CongregationFollowActions', 'Model');
 App::uses('CongregationFollowActionLabels', 'Model');
 
 /**
  * Congregation Model
- *
- * @property CongregationAddress $CongregationAddress
- * @property CongregationEmailAddress $CongregationEmailAddress
- * @property Phone $Phone
  */
 class Congregation extends ContactableModel
 {
@@ -205,100 +200,6 @@ class Congregation extends ContactableModel
         $data['CongregationEmailAddress']['congregation_id'] = $this->id;
         $data['CongregationPhone']['congregation_id'] = $this->id;
         return parent::add($data);
-    }
-
-    /**
-     *
-     * @param int $followerId the id of the congregation requesting to follow another congregation
-     * @param int $leaderId the id of the congregation to be followed
-     * @return type
-     */
-    public function addFollowRequest($followerId, $leaderId)
-    {
-        $this->CongregationFollowRequest->create();
-        return $this->CongregationFollowRequest->save(array('requesting_follower_id' => $followerId,
-            'leader_id' => $leaderId, 'status' => CongregationFollowRequestStatus::PENDING));
-    }
-
-    /**
-     *
-     * @param int $followRequestId the id of the followRequest that is pending acceptance
-     */
-    public function acceptFollowRequest($followRequestId)
-    {
-        $this->CongregationFollowRequest->id = $followRequestId;
-        if ($this->CongregationFollowRequest->saveField('status', CongregationFollowRequestStatus::ACCEPTED))
-        {
-            $congregationFollowRequest = $this->CongregationFollowRequest->get($followRequestId);
-            $this->CongregationFollow->create();
-            return $this->CongregationFollow->save(array(
-                'follower_id' => $congregationFollowRequest['CongregationFollowRequest']['requesting_follower_id'],
-                'leader_id' => $congregationFollowRequest['CongregationFollowRequest']['leader_id']));
-        }
-
-        return false;
-    }
-
-    /**
-     *
-     * @param int $followRequestId the id of the followRequest that is pending rejection
-     */
-    public function rejectFollowRequest($followRequestId)
-    {
-        $this->CongregationFollowRequest->id = $followRequestId;
-        return $this->CongregationFollowRequest->saveField('status',
-                CongregationFollowRequestStatus::REJECTED);
-    }
-
-    public function cancelFollowRequest($followRequestId)
-    {
-        $this->CongregationFollowRequest->id = $followRequestId;
-        return $this->CongregationFollowRequest->saveField('status',
-                CongregationFollowRequestStatus::CANCELLED);
-    }
-
-    public function getFollowRequests($leaderId)
-    {
-        return $this->CongregationFollowRequest->getFollowRequests($leaderId);
-    }
-
-    public function getMyPendingRequests($requesting_follower_id)
-    {
-        return $this->CongregationFollowRequest->getMyPendingRequests($requesting_follower_id);
-    }
-
-    public function getFollows($followerId)
-    {
-        return $this->CongregationFollow->getFollows($followerId);
-    }
-
-    public function getFollowers($leaderId)
-    {
-        return $this->CongregationFollow->getFollowers($leaderId);
-    }
-
-    /**
-     * maps the leader(key) to the CongregationFollowId for a given follower id
-     * @param type $followerId
-     * @return type array
-     */
-    public function getCongregationFollowMap($followerId)
-    {
-        $congregationFollowMap = array();
-        $follows = $this->CongregationFollow->getFollows($followerId);
-
-        foreach ($follows as $follow)
-        {
-            $congregationFollowMap[$follow['Leader']['id']] = $follow['CongregationFollow']['id'];
-        }
-
-        return $congregationFollowMap;
-    }
-
-    public function stopFollowing($followId)
-    {
-        $this->CongregationFollow->id = $followId;
-        return $this->CongregationFollow->delete();
     }
 
     /**

@@ -13,9 +13,11 @@ class CongregationFollowTest extends CakeTestCase
     //add test name to the array with
     //1 - run, 0 - do not run
     protected $tests = array(
-        'testGetFollows'    => 1,
-        'testGetFollowers'  => 1,
-        'testGetFollowId'   => 1,
+        'testGetFollows'                => 1,
+        'testGetFollowers'              => 1,
+        'testGetFollowId'               => 1,
+        'testStopFollowing'             => 1,
+        'testGetCongregationFollowMap'  => 1,
     );
 
     /**
@@ -105,5 +107,42 @@ class CongregationFollowTest extends CakeTestCase
         $followId = $this->CongregationFollow->getFollowId($followingCongregationId, $leaderCongregationId);
 
         $this->assertEquals($congregationFollowRecordId, $followId);
+    }
+
+    /**
+     * @covers CongregationFollow::stopFollowing
+     */
+    public function testStopFollowing()
+    {
+        $this->skipTestEvaluator->shouldSkip(__FUNCTION__);
+
+        $followerCongregationId = 2; //follower_id from CongregationFollow fixture record, leader_id 3
+        $congregationFollowId = 3; //follow id from CongregationFollow
+
+        $follows = $this->CongregationFollow->getFollows($followerCongregationId);
+        $this->assertEquals(1, count($follows));
+
+        $this->CongregationFollow->stopFollowing($congregationFollowId);
+
+        $afterSopFollows = $this->CongregationFollow->getFollows($followerCongregationId);
+        $this->assertEquals(0, count($afterSopFollows));
+    }
+
+    /**
+     * @covers CongregationFollow::getCongregationFollowMap
+     */
+    public function testGetCongregationFollowMap()
+    {
+        $this->skipTestEvaluator->shouldSkip(__FUNCTION__);
+
+        $followerCongregationId = 1; //follower id from CongregationFollow fixture, following congregation 2 and 3
+        $congregationFollowId1Follow2 = 1; //id from CongregationFollow fixture
+        $congregationFollowLeaderId2 = 2; //leader id from CongregationFollow fixture
+        $congregationFollowId1Follow3 = 2; //id from CongregationFollow fixture
+        $congregationFollowLeaderId3 = 3; //leader id from CongregationFollow fixture
+
+        $followMap = $this->CongregationFollow->getCongregationFollowMap($followerCongregationId);
+        $this->assertEquals($congregationFollowId1Follow2, $followMap[$congregationFollowLeaderId2]);
+        $this->assertEquals($congregationFollowId1Follow3, $followMap[$congregationFollowLeaderId3]);
     }
 }

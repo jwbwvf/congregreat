@@ -108,7 +108,6 @@ class AnnouncementRequestTest extends CakeTestCase
         $announcementRequestId = 1; //id from AnnouncementRequest fixture
         $congregationId = 1; //congregation_id from AnnouncementRequest fixture
         $announcement = 'test announcement request 1'; //announcement from AnnouncementRequest fixture
-        $status = AnnouncementRequestStatus::PENDING; //status from AnnouncementRequest fixture
         $expiration = '2015-05-06 13:47:46'; //expiration from AnnouncementRequest fixture
 
         $announcementRequest = $this->AnnouncementRequest->getMembersAnnouncementRequests($memberId);

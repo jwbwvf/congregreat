@@ -6,7 +6,6 @@ App::uses('SkipTestEvaluator', 'Test/Lib');
 
 /**
  * @covers CongregationFollowRequest
- *
  */
 class CongregationFollowRequestTest extends CakeTestCase
 {
@@ -20,6 +19,10 @@ class CongregationFollowRequestTest extends CakeTestCase
         'testGetFollowRequests'         => 1,
         'testGetMyPendingRequests'      => 1,
         'testGetPendingFollowRequestId' => 1,
+        'testAddFollowRequest'          => 1,
+        'testRejectFollowRequest'       => 1,
+        'testAcceptFollowRequest'       => 1,
+        'testCancelFollowRequest'       => 1,
     );
 
     /**
@@ -29,7 +32,8 @@ class CongregationFollowRequestTest extends CakeTestCase
      */
     public $fixtures = array(
         'app.congregation',
-        'app.congregation_follow_request'
+        'app.congregation_follow_request',
+        'app.congregation_follow'
     );
 
     public function setup()
@@ -82,7 +86,7 @@ class CongregationFollowRequestTest extends CakeTestCase
     }
 
     /**
-     * @covers CongregationFollowRequest::get
+     * @covers CongregationFollowRequest::getFollowRequests
      */
     public function testGetFollowRequests()
     {
@@ -138,5 +142,100 @@ class CongregationFollowRequestTest extends CakeTestCase
 
         $followRequestId = $this->CongregationFollowRequest->getPendingFollowRequestId($leadCongregationId, $followerCongregationId);
         $this->assertEquals($followRequestId, 1);
+    }
+
+    /**
+     * @covers CongregationFollowRequest::addFollowRequest
+     */
+    public function testAddFollowRequest()
+    {
+        $this->skipTestEvaluator->shouldSkip(__FUNCTION__);
+
+        $followerCongregationId = 1; //id from congregation fixture record
+        $leadCongregationId = 2; //id from congregation fixture record
+
+        $this->CongregationFollowRequest->addFollowRequest($followerCongregationId, $leadCongregationId);
+
+        $dbo = $this->CongregationFollowRequest->getDataSource();
+        $sql = "SELECT * FROM congregation_follow_requests WHERE leader_id='" . $leadCongregationId . "' AND "
+                . "requesting_follower_id='" . $followerCongregationId . "'";
+
+        $all = $dbo->fetchAll($sql);
+
+        $this->assertEquals(1, count($all));
+        $this->assertEquals(CongregationFollowRequestStatus::PENDING, $all[0]['congregation_follow_requests']['status']);
+    }
+
+    /**
+     * @covers CongregationFollowRequest::rejectFollowRequest
+     */
+    public function testRejectFollowRequest()
+    {
+        $this->skipTestEvaluator->shouldSkip(__FUNCTION__);
+
+        $congregationFollowRequestId = 1; //id from CongregationFollowRequest, 1 leader, 2 follower status PENDING
+        $this->CongregationFollowRequest->rejectFollowRequest($congregationFollowRequestId);
+
+        $sql = "SELECT id, status FROM congregation_follow_requests WHERE id='" . $congregationFollowRequestId . "'";
+
+        $dbo = $this->CongregationFollowRequest->getDataSource();
+        $dbo->rawQuery($sql);
+        $rowAfterReject = $dbo->fetchRow();
+
+        $this->assertEquals(1, count($rowAfterReject));
+        $this->assertEquals(CongregationFollowRequestStatus::REJECTED,
+                $rowAfterReject['congregation_follow_requests']['status']);
+    }
+
+    /**
+     * @covers CongregationFollowRequest::acceptFollowRequest
+     */
+    public function testAcceptFollowRequest()
+    {
+        $this->skipTestEvaluator->shouldSkip(__FUNCTION__);
+
+        $congregationFollowRequestId = 1; //id from CongregationFollowRequest, 1 leader, 2 follower status PENDING
+        $leadCongregationId   = 1; //id from CongregationFollowRequest
+        $followerCongregationId = 2; //id from CongregationFollowRequest
+
+        $this->CongregationFollowRequest->acceptFollowRequest($congregationFollowRequestId);
+
+        $sql = "SELECT id, status FROM congregation_follow_requests WHERE id='" . $congregationFollowRequestId . "'";
+
+        $dbo = $this->CongregationFollowRequest->getDataSource();
+        $dbo->rawQuery($sql);
+        $rowAfterAccept = $dbo->fetchRow();
+
+        $this->assertEquals(CongregationFollowRequestStatus::ACCEPTED,
+                $rowAfterAccept['congregation_follow_requests']['status']);
+
+        //ensure a new row was added to the follows table
+        $sqlFollow = "SELECT id FROM congregation_follows WHERE leader_id='" . $leadCongregationId . "' AND "
+                . "follower_id='" . $followerCongregationId . "'";
+
+        $dbo->rawQuery($sqlFollow);
+        $rowFollow = $dbo->fetchRow();
+
+        $this->assertTrue(!empty($rowFollow));
+    }
+
+    /**
+     * @covers CongregationFollowRequest::cancelFollowRequest
+     */
+    public function testCancelFollowRequest()
+    {
+        $this->skipTestEvaluator->shouldSkip(__FUNCTION__);
+
+        $congregationFollowRequestId = 1; //id from CongregationFollowRequest, 1 leader, 2 follower status PENDING
+        $this->CongregationFollowRequest->cancelFollowRequest($congregationFollowRequestId);
+
+        $sql = "SELECT id, status FROM congregation_follow_requests WHERE id='" . $congregationFollowRequestId . "'";
+
+        $dbo = $this->CongregationFollowRequest->getDataSource();
+        $dbo->rawQuery($sql);
+        $rowAfterAccept = $dbo->fetchRow();
+
+        $this->assertEquals(CongregationFollowRequestStatus::CANCELLED,
+                $rowAfterAccept['congregation_follow_requests']['status']);
     }
 }

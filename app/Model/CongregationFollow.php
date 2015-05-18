@@ -36,7 +36,7 @@ class CongregationFollow extends AppModel
             //'last' => false, // Stop validation after this rule
             //'on' => 'create', // Limit validation to 'create' or 'update' operations
             )
-        )        
+        )
     );
 
     //The Associations below have been created with all possible keys, those that are not needed can be removed
@@ -68,32 +68,57 @@ class CongregationFollow extends AppModel
         $options = array(
             'conditions' => array('CongregationFollow.follower_id' => $followerId),
             'fields' => array('id', 'Leader.id', 'Leader.name')
-        ); 
-        
-        return $this->find('all', $options);             
+        );
+
+        return $this->find('all', $options);
     }
-    
+
     public function getFollowers($leaderId)
-    {        
+    {
         $options = array(
             'conditions' => array('CongregationFollow.leader_id' => $leaderId),
             'fields' => array('id', 'Follower.id', 'Follower.name')
-        );         
-        
+        );
+
         return $this->find('all', $options);
     }
-    
+
     public function getFollowId($followerId, $leaderId)
     {
         $options = array(
             'conditions' => array(
-                'CongregationFollow.follower_id' => $followerId, 
+                'CongregationFollow.follower_id' => $followerId,
                 'CongregationFollow.leader_id' => $leaderId
             ),
             'fields' => array('id')
         );
-        
+
         $follow = $this->find('first', $options);
         return empty($follow) ? 0 : $follow['CongregationFollow']['id'];
+    }
+
+    //TODO move to controller
+    public function stopFollowing($followId)
+    {
+        $this->id = $followId;
+        return $this->delete();
+    }
+
+    /**
+     * maps the leader(key) to the CongregationFollowId for a given follower id
+     * @param type $followerId
+     * @return type array
+     */
+    public function getCongregationFollowMap($followerId)
+    {
+        $congregationFollowMap = array();
+        $follows = $this->getFollows($followerId);
+
+        foreach ($follows as $follow)
+        {
+            $congregationFollowMap[$follow['Leader']['id']] = $follow['CongregationFollow']['id'];
+        }
+
+        return $congregationFollowMap;
     }
 }

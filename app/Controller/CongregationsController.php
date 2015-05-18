@@ -12,11 +12,6 @@ class CongregationsController extends AppController
 {
     private $ADMIN_DIRECTORY = 'Admin/';
 
-    /**
-     * Components
-     *
-     * @var array
-     */
     public $components = array('Paginator', 'Session');
 
     /**
@@ -81,108 +76,6 @@ class CongregationsController extends AppController
             $options = array('conditions' => array('Congregation.' . $this->Congregation->primaryKey => $id),
                 'fields' => array('id', 'name', 'website'));
             $this->request->data = $this->Congregation->find('first', $options);
-        }
-    }
-
-    /**
-     *
-     * @param int $leaderId the id of the congregation to be followed
-     * @return type
-     */
-    public function requestToFollow($leaderId, $viewId)
-    {
-        //TODO need ACL for this, check if privileged enough to request to follow another congregation
-        //i.e. elder, deacon, admin decides for the congregation what other congregations they want to follow
-        $this->request->allowMethod('post');
-        $requestingFollowerId = $this->Auth->user('Member.congregation_id');
-        if ($this->Congregation->addFollowRequest($requestingFollowerId, $leaderId))
-        {
-            $this->Session->setFlash(__('A request to follow the congregation has been sent.'));
-            return $this->redirect(array('action' => 'view', $viewId));
-        }
-        else
-        {
-            $this->Session->setFlash(__('Unable to send a request to follow the congregation. Please, try again.'));
-        }
-    }
-
-    public function followRequests()
-    {
-        $congregationId = $this->Auth->user('Member.congregation_id');
-        $this->set('followRequests', $this->Congregation->getFollowRequests($congregationId));
-    }
-
-    public function myPendingRequests()
-    {
-        $congregationId = $this->Auth->user('Member.congregation_id');
-        $this->set('followRequests', $this->Congregation->getMyPendingRequests($congregationId));
-    }
-
-    public function acceptFollowRequest($followRequestId)
-    {
-        $this->request->allowMethod('post');
-        if ($this->Congregation->acceptFollowRequest($followRequestId))
-        {
-            $this->Session->setFlash(__('The follow request has been accepted.'));
-            return $this->redirect(array('action' => 'followRequests'));
-        }
-        else
-        {
-            $this->Session->setFlash(__('Unable to accept the follow request. Please, try again.'));
-        }
-    }
-
-    public function rejectFollowRequest($followRequestId)
-    {
-        $this->request->allowMethod('post');
-        if ($this->Congregation->rejectFollowRequest($followRequestId))
-        {
-            $this->Session->setFlash(__('The follow request has been rejected.'));
-            return $this->redirect(array('action' => 'followRequests'));
-        }
-        else
-        {
-            $this->Session->setFlash(__('Unable to reject the follow request. Please, try again.'));
-        }
-    }
-
-    public function cancelFollowRequest($followRequestId, $viewId)
-    {
-        $this->request->allowMethod('post');
-        if ($this->Congregation->cancelFollowRequest($followRequestId))
-        {
-            $this->Session->setFlash(__('The follow request has been cancelled.'));
-            return $this->redirect(array('action' => 'view', $viewId));
-        }
-        else
-        {
-            $this->Session->setFlash(__('Unable to cancel the follow request. Please, try again.'));
-        }
-    }
-
-    public function following()
-    {
-        $congregationId = $this->Auth->user('Member.congregation_id');
-        $this->set('follows', $this->Congregation->getFollows($congregationId));
-    }
-
-    public function followers()
-    {
-        $congregationId = $this->Auth->user('Member.congregation_id');
-        $this->set('followers', $this->Congregation->getFollowers($congregationId));
-    }
-
-    public function stopFollowing($followId, $viewId)
-    {
-        $this->request->allowMethod('post');
-        if ($this->Congregation->stopFollowing($followId))
-        {
-            $this->Session->setFlash(__('No longer following the congregation.'));
-            return $this->redirect(array('action' => 'view', $viewId));
-        }
-        else
-        {
-            $this->Session->setFlash(__('Unable to stop following the congregation. Please, try again.'));
         }
     }
 
