@@ -202,53 +202,6 @@ class Congregation extends ContactableModel
         return parent::add($data);
     }
 
-    /**
-     * Finds what action can be taken given a current congregation(logged in as member of) viewing congregation
-     * no action, follow, stop following, cancel pending follow request
-     * @param int $currentCongregationId - the id of the congregation the logged in user is a member of
-     * @param int $viewCongregationId - the id of the congregation that is being viewed
-     * @return array empty if there are no actions to take
-     * else the array will contain the views label, the controllers action, and the parameter for the action
-     */
-    public function getFollowAction($currentCongregationId, $viewCongregationId)
-    {
-        $followAction = array();
-
-        if ($currentCongregationId === $viewCongregationId)
-        {
-            return $followAction;//no action return empty array
-        }
-
-        $followId = $this->CongregationFollow->getFollowId($currentCongregationId, $viewCongregationId);
-        if ($followId > 0)
-        {
-            $followAction['action'] = CongregationFollowActions::STOP;
-            $followAction['label'] = CongregationFollowActionLabels::STOP;
-            $followAction['param'] = $followId;
-            $followAction['viewId'] = $viewCongregationId;
-
-            return $followAction;
-        }
-
-        $followRequestId = $this->CongregationFollowRequest->getPendingFollowRequestId($viewCongregationId, $currentCongregationId);
-        if ($followRequestId > 0)
-        {
-            $followAction['action'] = CongregationFollowActions::CANCEL;
-            $followAction['label'] = CongregationFollowActionLabels::CANCEL;
-            $followAction['param'] = $followRequestId;
-            $followAction['viewId'] = $viewCongregationId;
-
-            return $followAction;
-        }
-
-        $followAction['action'] = CongregationFollowActions::REQUEST;
-        $followAction['label'] = CongregationFollowActionLabels::REQUEST;
-        $followAction['param'] = $viewCongregationId;
-        $followAction['viewId'] = $viewCongregationId;
-
-        return $followAction;
-    }
-
     public function getTasks($id)
     {
         return $this->Task->getAllForCongregation($id);

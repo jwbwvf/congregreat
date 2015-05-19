@@ -5,13 +5,13 @@
             <th><?php echo __('Name'); ?></th>
             <th class="actions"><?php echo __('Actions'); ?></th>
 	</tr>
-	<?php foreach ($followers as $follower): ?>        
+	<?php foreach ($followers as $follower): ?>
             <tr>
 		<td><?php echo h($follower['Follower']['name']); ?>&nbsp;</td>
 		<td class="actions">
-                    <?php echo $this->Html->link(__('View'), array('action' => 'view', $follower['Follower']['id'])); ?>                                        
+                    <?php echo $this->Html->link(__('View'), array('controller' => 'congregations', 'action' => 'view', $follower['Follower']['id'])); ?>
 		</td>
-            </tr>        
+            </tr>
         <?php endforeach; ?>
     </table>
 </div>

@@ -1,6 +1,6 @@
 <?php
 App::uses('AppController', 'Controller');
-
+App::uses('CongregationFollowAction', 'Model');
 /**
  * Congregations Controller
  *
@@ -40,7 +40,7 @@ class CongregationsController extends AppController
     {
         $membersCongregationId = $this->Auth->user('Member.congregation_id');
         $this->set('congregation', $this->Congregation->get($id));
-        $this->set('followAction', $this->Congregation->getFollowAction($membersCongregationId, $id));
+        $this->set('followAction', CongregationFollowAction::get($membersCongregationId, $id));
         //todo this should be checking if they are an authorized user to make changes ie admin
         $this->set('canModify', $id === $membersCongregationId);
     }
@@ -96,7 +96,7 @@ class CongregationsController extends AppController
         $this->Paginator->settings = $paginator;
         $this->set('congregations', $this->Paginator->paginate());
         $membersCongregationId = $this->Auth->user('Member.congregation_id');
-        $this->set('congregationFollowMap', $this->Congregation->getCongregationFollowMap($membersCongregationId));
+        $this->set('congregationFollowMap', $this->Congregation->CongregationFollow->getCongregationFollowMap($membersCongregationId));
         $this->set('congregationId', $membersCongregationId);
 
         $this->render($this->ADMIN_DIRECTORY . __FUNCTION__);
@@ -128,7 +128,7 @@ class CongregationsController extends AppController
     public function admin_view($id = null)
     {
         $this->set('congregation', $this->Congregation->get($id));
-        $this->set('followAction', $this->Congregation->getFollowAction($this->Auth->user('Member.congregation_id'), $id));
+        $this->set('followAction', CongregationFollowAction::get($this->Auth->user('Member.congregation_id'), $id));
 
         $this->render($this->ADMIN_DIRECTORY . __FUNCTION__);
     }

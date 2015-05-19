@@ -19,7 +19,7 @@ class CongregationFollowRequestsController extends AppController
         if ($this->CongregationFollowRequest->addFollowRequest($requestingFollowerId, $leaderId))
         {
             $this->Session->setFlash(__('A request to follow the congregation has been sent.'));
-            return $this->redirect(array('action' => 'view', $viewId));
+            return $this->redirect(array('controller' => 'congregations', 'action' => 'view', $viewId));
         }
         else
         {
@@ -73,7 +73,7 @@ class CongregationFollowRequestsController extends AppController
         if ($this->CongregationFollowRequest->cancelFollowRequest($followRequestId))
         {
             $this->Session->setFlash(__('The follow request has been cancelled.'));
-            return $this->redirect(array('action' => 'view', $viewId));
+            return $this->redirect(array('controller' => 'congregations', 'action' => 'view', $viewId));
         }
         else
         {

@@ -19,8 +19,10 @@
         <li><?php if ($canModify) {echo $this->Html->link(__('Edit Congregation'), array('action' => 'edit', $congregation['id']));} ?> </li>
         <li><?php echo $this->Html->link(__('List Congregations'), array('action' => 'index')); ?> </li>
         <?php if (!empty($followAction)) { ?>
-            <li><?php echo $this->Form->postLink(__($followAction['label']), array('action' => $followAction['action'], $followAction['param'], $followAction['viewId'])); ?> </li>
+            <li><?php echo $this->Form->postLink(__($followAction['label']),
+                array('controller' => $followAction['controller'], 'action' => $followAction['action'],
+                    $followAction['param'], $followAction['viewId'])); ?> </li>
         <?php } //end if ?>
-        
+
     </ul>
 </div>

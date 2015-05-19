@@ -32,6 +32,7 @@ class CongregationFollowAction
         $followId = $congregationFollow->getFollowId($currentCongregationId, $viewCongregationId);
         if ($followId > 0)
         {
+            $followAction['controller'] = 'congregationFollows';
             $followAction['action'] = CongregationFollowActions::STOP;
             $followAction['label'] = CongregationFollowActionLabels::STOP;
             $followAction['param'] = $followId;
@@ -46,6 +47,7 @@ class CongregationFollowAction
         $followRequestId = $congregationFollowRequest->getPendingFollowRequestId($viewCongregationId, $currentCongregationId);
         if ($followRequestId > 0)
         {
+            $followAction['controller'] = 'congregationFollowRequests';
             $followAction['action'] = CongregationFollowActions::CANCEL;
             $followAction['label'] = CongregationFollowActionLabels::CANCEL;
             $followAction['param'] = $followRequestId;
@@ -54,6 +56,7 @@ class CongregationFollowAction
             return $followAction;
         }
 
+        $followAction['controller'] = 'congregationFollowRequests';
         $followAction['action'] = CongregationFollowActions::REQUEST;
         $followAction['label'] = CongregationFollowActionLabels::REQUEST;
         $followAction['param'] = $viewCongregationId;

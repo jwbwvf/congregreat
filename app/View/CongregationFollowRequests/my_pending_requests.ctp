@@ -5,13 +5,13 @@
             <th><?php echo __('Name'); ?></th>
             <th class="actions"><?php echo __('Actions'); ?></th>
 	</tr>
-	<?php foreach ($followRequests as $followRequest): ?>        
+	<?php foreach ($followRequests as $followRequest): ?>
             <tr>
 		<td><?php echo h($followRequest['RequestedLeader']['name']); ?>&nbsp;</td>
 		<td class="actions">
-                    <?php echo $this->Html->link(__('View'), array('action' => 'view', $followRequest['RequestedLeader']['id'])); ?>
+                    <?php echo $this->Html->link(__('View'), array('controller' => 'congregations', 'action' => 'view', $followRequest['RequestedLeader']['id'])); ?>
 		</td>
-            </tr>        
+            </tr>
         <?php endforeach; ?>
     </table>
 </div>

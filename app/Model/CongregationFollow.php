@@ -97,13 +97,6 @@ class CongregationFollow extends AppModel
         return empty($follow) ? 0 : $follow['CongregationFollow']['id'];
     }
 
-    //TODO move to controller
-    public function stopFollowing($followId)
-    {
-        $this->id = $followId;
-        return $this->delete();
-    }
-
     /**
      * maps the leader(key) to the CongregationFollowId for a given follower id
      * @param type $followerId

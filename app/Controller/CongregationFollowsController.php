@@ -19,11 +19,16 @@ class CongregationFollowsController extends AppController
 
     public function stopFollowing($followId, $viewId)
     {
-        $this->request->allowMethod('post');
-        if ($this->CongregationFollow->stopFollowing($followId))
+        $this->CongregationFollow->id = $followId;
+        if (!$this->CongregationFollow->exists())
+        {
+            throw new NotFoundException(__('Invalid congregation follow'));
+        }
+        $this->request->allowMethod('post', 'delete');
+        if ($this->CongregationFollow->delete())
         {
             $this->Session->setFlash(__('No longer following the congregation.'));
-            return $this->redirect(array('action' => 'view', $viewId));
+            return $this->redirect(array('controller' => 'congregations', 'action' => 'view', $viewId));
         }
         else
         {
