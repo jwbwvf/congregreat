@@ -17,7 +17,7 @@ class CongregationFollowsController extends AppController
         $this->set('followers', $this->CongregationFollow->getFollowers($congregationId));
     }
 
-    public function stopFollowing($followId, $viewId)
+    public function delete($followId, $viewId)
     {
         $this->CongregationFollow->id = $followId;
         if (!$this->CongregationFollow->exists())

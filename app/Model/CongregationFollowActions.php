@@ -1,12 +1,12 @@
 <?php
 
 class CongregationFollowActions {
-    
-    const STOP = 'stopFollowing';
-    const CANCEL = 'cancelFollowRequest';
-    const REQUEST = 'requestToFollow';
-    
-    private function __construct() 
+
+    const STOP_FOLLOWING = 'delete';
+    const CANCEL_REQUEST = 'cancel';
+    const ADD_REQUEST = 'add';
+
+    private function __construct()
     {
         //empty private constructor to prevent instance
     }

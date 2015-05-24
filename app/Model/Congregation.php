@@ -1,7 +1,6 @@
 <?php
 
 App::uses('ContactableModel', 'Model');
-App::uses('CongregationFollowActions', 'Model');
 App::uses('CongregationFollowActionLabels', 'Model');
 
 /**

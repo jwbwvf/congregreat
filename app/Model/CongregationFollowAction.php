@@ -11,58 +11,72 @@ class CongregationFollowAction
 
     /**
      * Finds what action can be taken given a current congregation(logged in as member of) viewing congregation
-     * no action, follow, stop following, cancel pending follow request
-     * @param int $currentCongregationId - the id of the congregation the logged in user is a member of
-     * @param int $viewCongregationId - the id of the congregation that is being viewed
+     * no action, request to follow, stop following, cancel pending follow request
+     * @param int $followerId - the id of the congregation will take the action
+     * @param int $leaderId - the id of the congregation that is being followed, pending requested to follow, or
+     *                          requesting to follow
      * @return array empty if there are no actions to take
      * else the array will contain the views label, the controllers action, and the parameter for the action
      */
-    public static function get($currentCongregationId, $viewCongregationId)
+    public static function get($followerId, $leaderId)
     {
-        $followAction = array();
-
-        if ($currentCongregationId === $viewCongregationId)
+        if ($followerId === $leaderId)
         {
-            return $followAction;//no action return empty array
+            return array();//no action return empty array
         }
 
         $congregationFollow = ClassRegistry::init('CongregationFollow');
         $congregationFollow->create();
 
-        $followId = $congregationFollow->getFollowId($currentCongregationId, $viewCongregationId);
+        $followId = $congregationFollow->getFollowId($followerId, $leaderId);
         if ($followId > 0)
         {
-            $followAction['controller'] = 'congregationFollows';
-            $followAction['action'] = CongregationFollowActions::STOP;
-            $followAction['label'] = CongregationFollowActionLabels::STOP;
-            $followAction['param'] = $followId;
-            $followAction['viewId'] = $viewCongregationId;
-
-            return $followAction;
+            return CongregationFollowAction::getStopFollowing($followId, $leaderId);
         }
 
         $congregationFollowRequest = ClassRegistry::init('CongregationFollowRequest');
         $congregationFollowRequest->create();
 
-        $followRequestId = $congregationFollowRequest->getPendingFollowRequestId($viewCongregationId, $currentCongregationId);
+        $followRequestId = $congregationFollowRequest->getIdByLeaderFollower($leaderId, $followerId);
         if ($followRequestId > 0)
         {
-            $followAction['controller'] = 'congregationFollowRequests';
-            $followAction['action'] = CongregationFollowActions::CANCEL;
-            $followAction['label'] = CongregationFollowActionLabels::CANCEL;
-            $followAction['param'] = $followRequestId;
-            $followAction['viewId'] = $viewCongregationId;
-
-            return $followAction;
+            return CongregationFollowAction::getCancelRequest($followRequestId, $leaderId);
         }
 
-        $followAction['controller'] = 'congregationFollowRequests';
-        $followAction['action'] = CongregationFollowActions::REQUEST;
-        $followAction['label'] = CongregationFollowActionLabels::REQUEST;
-        $followAction['param'] = $viewCongregationId;
-        $followAction['viewId'] = $viewCongregationId;
+        return CongregationFollowAction::getAddRequest($leaderId);
+    }
 
-        return $followAction;
+    private static function getStopFollowing($followId, $leaderId)
+    {
+        return array(
+            'controller' => 'congregationFollows',
+            'action' => CongregationFollowActions::STOP_FOLLOWING,
+            'label' => CongregationFollowActionLabels::STOP_FOLLOWING,
+            'param' => $followId,
+            'viewId' => $leaderId
+        );
+    }
+
+    private static function getCancelRequest($followRequestId, $leaderId)
+    {
+        return array(
+            'controller' => 'congregationFollowRequests',
+            'action' => CongregationFollowActions::CANCEL_REQUEST,
+            'label' => CongregationFollowActionLabels::CANCEL_REQUEST,
+            'param' => $followRequestId,
+            'viewId' => $leaderId
+        );
+    }
+
+    private static function getAddRequest($leaderId)
+    {
+        return array(
+            'controller' => 'congregationFollowRequests',
+            'action' => CongregationFollowActions::ADD_REQUEST,
+            'label' => CongregationFollowActionLabels::ADD_REQUEST,
+            'param' => $leaderId,
+            'viewId' => $leaderId
+        );
     }
 }
 

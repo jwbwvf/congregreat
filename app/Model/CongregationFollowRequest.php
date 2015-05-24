@@ -87,7 +87,7 @@ class CongregationFollowRequest extends AppModel
         return $this->find('first', $options);
     }
 
-    public function getFollowRequests($leaderId)
+    public function getAll($leaderId)
     {
         $options = array(
             'conditions' => array('CongregationFollowRequest.leader_id' => $leaderId,
@@ -99,7 +99,7 @@ class CongregationFollowRequest extends AppModel
         return $this->find('all', $options);
     }
 
-    public function getMyPendingRequests($requestingFollowerId)
+    public function getPending($requestingFollowerId)
     {
         $options = array(
             'conditions' => array('CongregationFollowRequest.requesting_follower_id' => $requestingFollowerId,
@@ -111,7 +111,7 @@ class CongregationFollowRequest extends AppModel
         return $this->find('all', $options);
     }
 
-    public function getPendingFollowRequestId($leaderId, $requestingFollowerId)
+    public function getIdByLeaderFollower($leaderId, $requestingFollowerId)
     {
         $options = array(
             'conditions' => array(
@@ -126,7 +126,7 @@ class CongregationFollowRequest extends AppModel
         return empty($followRequest) ? 0 : $followRequest['CongregationFollowRequest']['id'];
     }
 
-    public function acceptFollowRequest($followRequestId)
+    public function accept($followRequestId)
     {
         $this->id = $followRequestId;
         if ($this->saveField('status', CongregationFollowRequestStatus::ACCEPTED))
@@ -145,26 +145,25 @@ class CongregationFollowRequest extends AppModel
         return false;
     }
 
-    public function rejectFollowRequest($followRequestId)
+    public function reject($followRequestId)
     {
         $this->id = $followRequestId;
         return $this->saveField('status', CongregationFollowRequestStatus::REJECTED);
     }
 
-    public function cancelFollowRequest($followRequestId)
+    public function cancel($followRequestId)
     {
         $this->id = $followRequestId;
         return $this->saveField('status', CongregationFollowRequestStatus::CANCELLED);
     }
 
-    //TODO move to controller
     /**
      *
      * @param int $followerId the id of the congregation requesting to follow another congregation
      * @param int $leaderId the id of the congregation to be followed
      * @return type
      */
-    public function addFollowRequest($followerId, $leaderId)
+    public function add($followerId, $leaderId)
     {
         return $this->save(array('requesting_follower_id' => $followerId,
             'leader_id' => $leaderId, 'status' => CongregationFollowRequestStatus::PENDING));

@@ -16,7 +16,6 @@ class CongregationFollowTest extends CakeTestCase
         'testGetFollows'                => 1,
         'testGetFollowers'              => 1,
         'testGetFollowId'               => 1,
-        'testStopFollowing'             => 1,
         'testGetCongregationFollowMap'  => 1,
     );
 
@@ -107,25 +106,6 @@ class CongregationFollowTest extends CakeTestCase
         $followId = $this->CongregationFollow->getFollowId($followingCongregationId, $leaderCongregationId);
 
         $this->assertEquals($congregationFollowRecordId, $followId);
-    }
-
-    /**
-     * @covers CongregationFollow::stopFollowing
-     */
-    public function testStopFollowing()
-    {
-        $this->skipTestEvaluator->shouldSkip(__FUNCTION__);
-
-        $followerCongregationId = 2; //follower_id from CongregationFollow fixture record, leader_id 3
-        $congregationFollowId = 3; //follow id from CongregationFollow
-
-        $follows = $this->CongregationFollow->getFollows($followerCongregationId);
-        $this->assertEquals(1, count($follows));
-
-        $this->CongregationFollow->stopFollowing($congregationFollowId);
-
-        $afterSopFollows = $this->CongregationFollow->getFollows($followerCongregationId);
-        $this->assertEquals(0, count($afterSopFollows));
     }
 
     /**

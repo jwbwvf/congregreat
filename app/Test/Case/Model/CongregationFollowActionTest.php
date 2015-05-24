@@ -67,8 +67,8 @@ class CongregationFollowActionTest extends CakeTestCase
 
         $followAction = CongregationFollowAction::get($followerCongregationId, $leadCongregationId);
 
-        $this->assertEquals($followAction['action'], CongregationFollowActions::STOP);
-        $this->assertEquals($followAction['label'], CongregationFollowActionLabels::STOP);
+        $this->assertEquals($followAction['action'], CongregationFollowActions::STOP_FOLLOWING);
+        $this->assertEquals($followAction['label'], CongregationFollowActionLabels::STOP_FOLLOWING);
         $this->assertEquals($followAction['param'], $congregationFollowId);
         $this->assertEquals($followAction['viewId'], $leadCongregationId);
     }
@@ -86,8 +86,8 @@ class CongregationFollowActionTest extends CakeTestCase
 
         $followAction = CongregationFollowAction::get($followerCongregationId, $leadCongregationId);
 
-        $this->assertEquals($followAction['action'], CongregationFollowActions::CANCEL);
-        $this->assertEquals($followAction['label'], CongregationFollowActionLabels::CANCEL);
+        $this->assertEquals($followAction['action'], CongregationFollowActions::CANCEL_REQUEST);
+        $this->assertEquals($followAction['label'], CongregationFollowActionLabels::CANCEL_REQUEST);
         $this->assertEquals($followAction['param'], $congregationFollowRequestId);
         $this->assertEquals($followAction['viewId'], $leadCongregationId);
     }
@@ -104,8 +104,8 @@ class CongregationFollowActionTest extends CakeTestCase
 
         $followAction = CongregationFollowAction::get($followerCongregationId, $leadCongregationId);
 
-        $this->assertEquals($followAction['action'], CongregationFollowActions::REQUEST);
-        $this->assertEquals($followAction['label'], CongregationFollowActionLabels::REQUEST);
+        $this->assertEquals($followAction['action'], CongregationFollowActions::ADD_REQUEST);
+        $this->assertEquals($followAction['label'], CongregationFollowActionLabels::ADD_REQUEST);
         $this->assertEquals($followAction['param'], $leadCongregationId);
         $this->assertEquals($followAction['viewId'], $leadCongregationId);
     }

@@ -10,13 +10,13 @@ class CongregationFollowRequestsController extends AppController
      * @param int $leaderId the id of the congregation to be followed
      * @return type
      */
-    public function requestToFollow($leaderId, $viewId)
+    public function add($leaderId, $viewId)
     {
         //TODO need ACL for this, check if privileged enough to request to follow another congregation
         //i.e. elder, deacon, admin decides for the congregation what other congregations they want to follow
         $this->request->allowMethod('post');
         $requestingFollowerId = $this->Auth->user('Member.congregation_id');
-        if ($this->CongregationFollowRequest->addFollowRequest($requestingFollowerId, $leaderId))
+        if ($this->CongregationFollowRequest->add($requestingFollowerId, $leaderId))
         {
             $this->Session->setFlash(__('A request to follow the congregation has been sent.'));
             return $this->redirect(array('controller' => 'congregations', 'action' => 'view', $viewId));
@@ -27,25 +27,25 @@ class CongregationFollowRequestsController extends AppController
         }
     }
 
-    public function followRequests()
+    public function index()
     {
         $congregationId = $this->Auth->user('Member.congregation_id');
-        $this->set('followRequests', $this->CongregationFollowRequest->getFollowRequests($congregationId));
+        $this->set('followRequests', $this->CongregationFollowRequest->getAll($congregationId));
     }
 
-    public function myPendingRequests()
+    public function pending()
     {
         $congregationId = $this->Auth->user('Member.congregation_id');
-        $this->set('followRequests', $this->CongregationFollowRequest->getMyPendingRequests($congregationId));
+        $this->set('followRequests', $this->CongregationFollowRequest->getPending($congregationId));
     }
 
-    public function acceptFollowRequest($followRequestId)
+    public function accept($followRequestId)
     {
         $this->request->allowMethod('post');
-        if ($this->CongregationFollowRequest->acceptFollowRequest($followRequestId))
+        if ($this->CongregationFollowRequest->accept($followRequestId))
         {
             $this->Session->setFlash(__('The follow request has been accepted.'));
-            return $this->redirect(array('action' => 'followRequests'));
+            return $this->redirect(array('action' => 'index'));
         }
         else
         {
@@ -53,13 +53,13 @@ class CongregationFollowRequestsController extends AppController
         }
     }
 
-    public function rejectFollowRequest($followRequestId)
+    public function reject($followRequestId)
     {
         $this->request->allowMethod('post');
-        if ($this->CongregationFollowRequest->rejectFollowRequest($followRequestId))
+        if ($this->CongregationFollowRequest->reject($followRequestId))
         {
             $this->Session->setFlash(__('The follow request has been rejected.'));
-            return $this->redirect(array('action' => 'followRequests'));
+            return $this->redirect(array('action' => 'index'));
         }
         else
         {
@@ -67,7 +67,7 @@ class CongregationFollowRequestsController extends AppController
         }
     }
 
-    public function cancelFollowRequest($followRequestId, $viewId)
+    public function cancel($followRequestId, $viewId)
     {
         $this->request->allowMethod('post');
         if ($this->CongregationFollowRequest->cancelFollowRequest($followRequestId))

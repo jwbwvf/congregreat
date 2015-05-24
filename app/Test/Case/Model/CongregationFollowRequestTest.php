@@ -14,15 +14,15 @@ class CongregationFollowRequestTest extends CakeTestCase
     //add test name to the array with
     //1 - run, 0 - do not run
     protected $tests = array(
-        'testGet'                       => 1,
-        'testGet_NotFound'              => 1,
-        'testGetFollowRequests'         => 1,
-        'testGetMyPendingRequests'      => 1,
-        'testGetPendingFollowRequestId' => 1,
-        'testAddFollowRequest'          => 1,
-        'testRejectFollowRequest'       => 1,
-        'testAcceptFollowRequest'       => 1,
-        'testCancelFollowRequest'       => 1,
+        'testGet'                   => 1,
+        'testGet_NotFound'          => 1,
+        'testGetAll'                => 1,
+        'testGetPending'            => 1,
+        'testGetIdByLeaderFollower' => 1,
+        'testAdd'                   => 1,
+        'testReject'                => 1,
+        'testAccept'                => 1,
+        'testCancel'                => 1,
     );
 
     /**
@@ -86,9 +86,9 @@ class CongregationFollowRequestTest extends CakeTestCase
     }
 
     /**
-     * @covers CongregationFollowRequest::getFollowRequests
+     * @covers CongregationFollowRequest::getAll
      */
-    public function testGetFollowRequests()
+    public function testGetAll()
     {
         $this->skipTestEvaluator->shouldSkip(__FUNCTION__);
 
@@ -98,7 +98,7 @@ class CongregationFollowRequestTest extends CakeTestCase
         $followerCongregationSecondId = 3; //second requesting follower id from CongregationFollow fixture record
         $followerCongregationSecondName = $this->congregationRecords[$followerCongregationSecondId - 1]['name'];
 
-        $followRequests  = $this->CongregationFollowRequest->getFollowRequests($leadCongregationId);
+        $followRequests  = $this->CongregationFollowRequest->getAll($leadCongregationId);
 
         $this->assertEquals(count($followRequests), 2);
         $this->assertEquals($followRequests[0]['RequestingFollower']['id'], $followerCongregationId);
@@ -109,9 +109,9 @@ class CongregationFollowRequestTest extends CakeTestCase
     }
 
     /**
-     * @covers CongregationFollowRequest::getMyPendingRequests
+     * @covers CongregationFollowRequest::getPending
      */
-    public function testGetMyPendingRequests()
+    public function testGetPending()
     {
         $this->skipTestEvaluator->shouldSkip(__FUNCTION__);
 
@@ -121,7 +121,7 @@ class CongregationFollowRequestTest extends CakeTestCase
         $leadCongregationSecondId = 3; //second leader id from CongregationFollowRequest fixture record
         $leadCongregationSecondName = $this->congregationRecords[$leadCongregationSecondId - 1]['name'];
 
-        $followRequests  = $this->CongregationFollowRequest->getMyPendingRequests($followerCongregationId);
+        $followRequests  = $this->CongregationFollowRequest->getPending($followerCongregationId);
 
         $this->assertEquals(count($followRequests), 2);
         $this->assertEquals($followRequests[0]['RequestedLeader']['id'], $leadCongregationId);
@@ -133,28 +133,28 @@ class CongregationFollowRequestTest extends CakeTestCase
     /**
      * @covers CongregationFollowRequest::getPendingFollowRequestId
      */
-    public function testGetPendingFollowRequestId()
+    public function testGetIdByLeaderFollower()
     {
         $this->skipTestEvaluator->shouldSkip(__FUNCTION__);
 
         $leadCongregationId = 1; //leader id from CongregationFollowRequest fixture record
         $followerCongregationId = 2; //requesting follower id from CongregationFollowRequest fixture record
 
-        $followRequestId = $this->CongregationFollowRequest->getPendingFollowRequestId($leadCongregationId, $followerCongregationId);
+        $followRequestId = $this->CongregationFollowRequest->getIdByLeaderFollower($leadCongregationId, $followerCongregationId);
         $this->assertEquals($followRequestId, 1);
     }
 
     /**
-     * @covers CongregationFollowRequest::addFollowRequest
+     * @covers CongregationFollowRequest::add
      */
-    public function testAddFollowRequest()
+    public function testAdd()
     {
         $this->skipTestEvaluator->shouldSkip(__FUNCTION__);
 
         $followerCongregationId = 1; //id from congregation fixture record
         $leadCongregationId = 2; //id from congregation fixture record
 
-        $this->CongregationFollowRequest->addFollowRequest($followerCongregationId, $leadCongregationId);
+        $this->CongregationFollowRequest->add($followerCongregationId, $leadCongregationId);
 
         $dbo = $this->CongregationFollowRequest->getDataSource();
         $sql = "SELECT * FROM congregation_follow_requests WHERE leader_id='" . $leadCongregationId . "' AND "
@@ -167,14 +167,14 @@ class CongregationFollowRequestTest extends CakeTestCase
     }
 
     /**
-     * @covers CongregationFollowRequest::rejectFollowRequest
+     * @covers CongregationFollowRequest::reject
      */
-    public function testRejectFollowRequest()
+    public function testReject()
     {
         $this->skipTestEvaluator->shouldSkip(__FUNCTION__);
 
         $congregationFollowRequestId = 1; //id from CongregationFollowRequest, 1 leader, 2 follower status PENDING
-        $this->CongregationFollowRequest->rejectFollowRequest($congregationFollowRequestId);
+        $this->CongregationFollowRequest->reject($congregationFollowRequestId);
 
         $sql = "SELECT id, status FROM congregation_follow_requests WHERE id='" . $congregationFollowRequestId . "'";
 
@@ -188,9 +188,9 @@ class CongregationFollowRequestTest extends CakeTestCase
     }
 
     /**
-     * @covers CongregationFollowRequest::acceptFollowRequest
+     * @covers CongregationFollowRequest::accept
      */
-    public function testAcceptFollowRequest()
+    public function testAccept()
     {
         $this->skipTestEvaluator->shouldSkip(__FUNCTION__);
 
@@ -198,7 +198,7 @@ class CongregationFollowRequestTest extends CakeTestCase
         $leadCongregationId   = 1; //id from CongregationFollowRequest
         $followerCongregationId = 2; //id from CongregationFollowRequest
 
-        $this->CongregationFollowRequest->acceptFollowRequest($congregationFollowRequestId);
+        $this->CongregationFollowRequest->accept($congregationFollowRequestId);
 
         $sql = "SELECT id, status FROM congregation_follow_requests WHERE id='" . $congregationFollowRequestId . "'";
 
@@ -222,12 +222,12 @@ class CongregationFollowRequestTest extends CakeTestCase
     /**
      * @covers CongregationFollowRequest::cancelFollowRequest
      */
-    public function testCancelFollowRequest()
+    public function testCancel()
     {
         $this->skipTestEvaluator->shouldSkip(__FUNCTION__);
 
         $congregationFollowRequestId = 1; //id from CongregationFollowRequest, 1 leader, 2 follower status PENDING
-        $this->CongregationFollowRequest->cancelFollowRequest($congregationFollowRequestId);
+        $this->CongregationFollowRequest->cancel($congregationFollowRequestId);
 
         $sql = "SELECT id, status FROM congregation_follow_requests WHERE id='" . $congregationFollowRequestId . "'";
 
