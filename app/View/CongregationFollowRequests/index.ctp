@@ -11,7 +11,7 @@
                 <td class="actions">
                     <?php echo $this->Html->link(__('View'), array('controller' => 'congregations', 'action' => 'view', $followRequest['RequestingFollower']['id'])); ?>
                     <?php echo $this->Form->postLink(__('Accept'), array('action' => 'accept', $followRequest['CongregationFollowRequest']['id'])); ?>
-                    <?php echo $this->Form->postLink(__('Reject'), array('action' => 'reject', $followRequest['CongregationFollowRequest']['id'])); ?>
+                    <?php echo $this->Form->postLink(__('Decline'), array('action' => 'decline', $followRequest['CongregationFollowRequest']['id'])); ?>
                 </td>
             </tr>
         <?php endforeach; ?>

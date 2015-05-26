@@ -1,7 +1,6 @@
 <?php
 
 App::uses('AppModel', 'Model');
-App::uses('CongregationFollowRequestStatus', 'Model');
 
 /**
  * CongregationFollowRequest Model
@@ -29,16 +28,6 @@ class CongregationFollowRequest extends AppModel
             ),
         ),
         'requesting_follower_id' => array(
-            'numeric' => array(
-                'rule' => array('numeric'),
-            //'message' => 'Your custom message here',
-            //'allowEmpty' => false,
-            //'required' => false,
-            //'last' => false, // Stop validation after this rule
-            //'on' => 'create', // Limit validation to 'create' or 'update' operations
-            ),
-        ),
-        'status' => array(
             'numeric' => array(
                 'rule' => array('numeric'),
             //'message' => 'Your custom message here',
@@ -81,7 +70,7 @@ class CongregationFollowRequest extends AppModel
             throw new NotFoundException(__('Invalid congregation follow request'));
         }
         $options = array('conditions' => array('CongregationFollowRequest.' . $this->primaryKey => $id),
-            'fields' => array('id', 'leader_id', 'requesting_follower_id', 'status')
+            'fields' => array('id', 'leader_id', 'requesting_follower_id')
         );
 
         return $this->find('first', $options);
@@ -90,8 +79,7 @@ class CongregationFollowRequest extends AppModel
     public function getAll($leaderId)
     {
         $options = array(
-            'conditions' => array('CongregationFollowRequest.leader_id' => $leaderId,
-                'status' => CongregationFollowRequestStatus::PENDING
+            'conditions' => array('CongregationFollowRequest.leader_id' => $leaderId
             ),
             'fields' => array('id', 'RequestingFollower.id', 'RequestingFollower.name')
         );
@@ -102,8 +90,7 @@ class CongregationFollowRequest extends AppModel
     public function getPending($requestingFollowerId)
     {
         $options = array(
-            'conditions' => array('CongregationFollowRequest.requesting_follower_id' => $requestingFollowerId,
-                'status' => CongregationFollowRequestStatus::PENDING
+            'conditions' => array('CongregationFollowRequest.requesting_follower_id' => $requestingFollowerId
             ),
             'fields' => array('id', 'RequestedLeader.id', 'RequestedLeader.name')
         );
@@ -116,8 +103,7 @@ class CongregationFollowRequest extends AppModel
         $options = array(
             'conditions' => array(
                 'CongregationFollowRequest.leader_id'=> $leaderId,
-                'CongregationFollowRequest.requesting_follower_id' => $requestingFollowerId,
-                'status' => CongregationFollowRequestStatus::PENDING
+                'CongregationFollowRequest.requesting_follower_id' => $requestingFollowerId
             ),
             'fields' => array('id')
         );
@@ -126,35 +112,24 @@ class CongregationFollowRequest extends AppModel
         return empty($followRequest) ? 0 : $followRequest['CongregationFollowRequest']['id'];
     }
 
-    public function accept($followRequestId)
+    public function accept($id)
     {
-        $this->id = $followRequestId;
-        if ($this->saveField('status', CongregationFollowRequestStatus::ACCEPTED))
+        $congregationFollowRequest = $this->get($id);
+
+        $data = array('CongregationFollow' => array(
+            'follower_id' => $congregationFollowRequest['CongregationFollowRequest']['requesting_follower_id'],
+            'leader_id' => $congregationFollowRequest['CongregationFollowRequest']['leader_id']));
+
+        $congregationFollow = ClassRegistry::init('CongregationFollow');
+        $congregationFollow->create();
+
+        if ($congregationFollow->save($data))
         {
-            $congregationFollowRequest = $this->get($followRequestId);
-
-            $data = array('CongregationFollow' => array(
-                'follower_id' => $congregationFollowRequest['CongregationFollowRequest']['requesting_follower_id'],
-                'leader_id' => $congregationFollowRequest['CongregationFollowRequest']['leader_id']));
-
-            $congregationFollow = ClassRegistry::init('CongregationFollow');
-            $congregationFollow->create();
-            return $congregationFollow->save($data);
+            $this->id = $id;
+            return $this->delete();
         }
 
         return false;
-    }
-
-    public function reject($followRequestId)
-    {
-        $this->id = $followRequestId;
-        return $this->saveField('status', CongregationFollowRequestStatus::REJECTED);
-    }
-
-    public function cancel($followRequestId)
-    {
-        $this->id = $followRequestId;
-        return $this->saveField('status', CongregationFollowRequestStatus::CANCELLED);
     }
 
     /**
@@ -165,8 +140,7 @@ class CongregationFollowRequest extends AppModel
      */
     public function add($followerId, $leaderId)
     {
-        return $this->save(array('requesting_follower_id' => $followerId,
-            'leader_id' => $leaderId, 'status' => CongregationFollowRequestStatus::PENDING));
+        return $this->save(array('requesting_follower_id' => $followerId, 'leader_id' => $leaderId,));
     }
 }
 ;

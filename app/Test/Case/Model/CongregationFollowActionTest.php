@@ -80,7 +80,7 @@ class CongregationFollowActionTest extends CakeTestCase
     {
         $this->skipTestEvaluator->shouldSkip(__FUNCTION__);
 
-        $congregationFollowRequestId = 1; //id from CongregationFollowRequest fixutre, leader_id 1, requesting_follower_id 2, status PENDING
+        $congregationFollowRequestId = 1; //id from CongregationFollowRequest fixutre, leader_id 1, requesting_follower_id 2
         $followerCongregationId = 2; //first id from congregation fixture record
         $leadCongregationId = 1; //second id from congregation fixture record
 

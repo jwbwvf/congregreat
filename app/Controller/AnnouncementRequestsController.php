@@ -1,7 +1,6 @@
 <?php
 
 App::uses('AppController', 'Controller');
-App::uses('AnnouncementRequestStatus', 'Model');
 App::uses('Announcements', 'Model');
 
 /**
@@ -59,7 +58,6 @@ class AnnouncementRequestsController extends AppController {
 
             $this->request->data['AnnouncementRequest']['member_id'] = $memberId;
             $this->request->data['AnnouncementRequest']['congregation_id'] = $congregationId;
-            $this->request->data['AnnouncementRequest']['status'] = AnnouncementRequestStatus::PENDING;
 
             $this->AnnouncementRequest->create();
             if ($this->AnnouncementRequest->save($this->request->data)) {
@@ -120,8 +118,12 @@ class AnnouncementRequestsController extends AppController {
     }
 
     public function cancel($id) {
-        $this->request->allowMethod('post');
-        if ($this->AnnouncementRequest->cancel($id)) {
+        $this->AnnouncementRequest->id = $id;
+        if (!$this->AnnouncementRequest->exists()) {
+            throw new NotFoundException(__('Invalid announcement request'));
+        }
+        $this->request->allowMethod('post', 'delete');
+        if ($this->AnnouncementRequest->delete()) {
             $this->Session->setFlash(__('The announcement request has been cancelled'));
             return $this->redirect(array('action' => 'index'));
         } else {
@@ -129,13 +131,17 @@ class AnnouncementRequestsController extends AppController {
         }
     }
 
-    public function reject($id) {
-        $this->request->allowMethod('post');
-        if ($this->AnnouncementRequest->reject($id)) {
-            $this->Session->setFlash(__('The announcement request has been rejected'));
+    public function decline($id) {
+        $this->AnnouncementRequest->id = $id;
+        if (!$this->AnnouncementRequest->exists()) {
+            throw new NotFoundException(__('Invalid announcement request'));
+        }
+        $this->request->allowMethod('post', 'delete');
+        if ($this->AnnouncementRequest->delete()) {
+            $this->Session->setFlash(__('The announcement request has been declined'));
             return $this->redirect(array('action' => 'index'));
         } else {
-            $this->Session->setFlash(__('Unable to reject the announcement request.  Please, try again.'));
+            $this->Session->setFlash(__('Unable to decline the announcement request.  Please, try again.'));
         }
     }
 

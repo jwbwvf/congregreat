@@ -1,7 +1,5 @@
 <?php
 
-App::uses('CongregationFollowRequestStatus', 'Model');
-
 /**
  * CongregationFollowRequestFixture
  *
@@ -18,7 +16,6 @@ class CongregationFollowRequestFixture extends CakeTestFixture
         'id' => array('type' => 'integer', 'null' => false, 'default' => null, 'unsigned' => true, 'key' => 'primary'),
         'leader_id' => array('type' => 'integer', 'null' => false, 'default' => null, 'unsigned' => true, 'key' => 'index', 'comment' => 'the id of the congregation that is being asked to be followed by another congregation'),
         'requesting_follower_id' => array('type' => 'integer', 'null' => false, 'default' => null, 'unsigned' => true, 'key' => 'index', 'comment' => 'the id of the congregation that is requesting to follow another congregation'),
-        'status' => array('type' => 'integer', 'null' => false, 'default' => null, 'length' => 3, 'unsigned' => true, 'comment' => 'the status of the request - pending, accepted, denied'),
         'created' => array('type' => 'datetime', 'null' => false, 'default' => null, 'comment' => 'date the request was created'),
         'modified' => array('type' => 'datetime', 'null' => false, 'default' => null, 'comment' => 'date the last time the request was updated'),
         'indexes' => array(
@@ -39,7 +36,6 @@ class CongregationFollowRequestFixture extends CakeTestFixture
             'id' => 1,
             'leader_id' => 1,
             'requesting_follower_id' => 2,
-            'status' => CongregationFollowRequestStatus::PENDING,
             'created' => '2014-09-23 18:23:49',
             'modified' => '2014-09-23 18:23:49'
         ),
@@ -47,7 +43,6 @@ class CongregationFollowRequestFixture extends CakeTestFixture
             'id' => 2,
             'leader_id' => 1,
             'requesting_follower_id' => 3,
-            'status' => CongregationFollowRequestStatus::PENDING,
             'created' => '2014-09-23 18:23:49',
             'modified' => '2014-09-23 18:23:49'
         ),
@@ -55,7 +50,6 @@ class CongregationFollowRequestFixture extends CakeTestFixture
             'id' => 3,
             'leader_id' => 3,
             'requesting_follower_id' => 2,
-            'status' => CongregationFollowRequestStatus::PENDING,
             'created' => '2014-09-23 18:23:49',
             'modified' => '2014-09-23 18:23:49'
         )

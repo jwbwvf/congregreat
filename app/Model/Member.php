@@ -177,7 +177,7 @@ class Member extends ContactableModel
             'foreignKey' => 'member_id',
             'dependent' => true,
             'conditions' => '',
-            'fields' => array('id', 'member_id', 'announcement', 'status', 'expiration'),
+            'fields' => array('id', 'member_id', 'announcement', 'expiration'),
             'order' => '',
             'limit' => '',
             'offset' => '',

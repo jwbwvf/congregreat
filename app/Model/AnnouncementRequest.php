@@ -1,7 +1,6 @@
 <?php
 
 App::uses('AppModel', 'Model');
-App::uses('AnnouncementRequestStatus', 'Model');
 
 /**
  * AnnouncementRequest Model
@@ -41,16 +40,6 @@ class AnnouncementRequest extends AppModel
         'announcement' => array(
             'notEmpty' => array(
                 'rule' => array('notEmpty'),
-            //'message' => 'Your custom message here',
-            //'allowEmpty' => false,
-            //'required' => false,
-            //'last' => false, // Stop validation after this rule
-            //'on' => 'create', // Limit validation to 'create' or 'update' operations
-            ),
-        ),
-        'status' => array(
-            'numeric' => array(
-                'rule' => array('numeric'),
             //'message' => 'Your custom message here',
             //'allowEmpty' => false,
             //'required' => false,
@@ -100,15 +89,14 @@ class AnnouncementRequest extends AppModel
         }
 
         $options = array('conditions' => array('AnnouncementRequest.' . $this->primaryKey => $id),
-            'fields' => array('id', 'congregation_id', 'member_id', 'announcement', 'status', 'expiration'));
+            'fields' => array('id', 'congregation_id', 'member_id', 'announcement', 'expiration'));
 
         return $this->find('first', $options);
     }
 
     public function getMembersAnnouncementRequests($memberId)
     {
-        $options = array('conditions' => array('AnnouncementRequest.member_id' => $memberId,
-            'status' => AnnouncementRequestStatus::PENDING),
+        $options = array('conditions' => array('AnnouncementRequest.member_id' => $memberId),
             'fields' => array('id', 'congregation_id', 'member_id', 'announcement', 'expiration'));
 
         return $this->find('all', $options);
@@ -116,33 +104,10 @@ class AnnouncementRequest extends AppModel
 
     public function getCongregationsAnnouncementRequests($congregationId)
     {
-        $options = array('conditions' => array('AnnouncementRequest.congregation_id' => $congregationId,
-            'status' => AnnouncementRequestStatus::PENDING),
+        $options = array('conditions' => array('AnnouncementRequest.congregation_id' => $congregationId),
             'fields' => array('id', 'congregation_id', 'member_id', 'announcement', 'expiration'));
 
         return $this->find('all', $options);
-    }
-
-    public function cancel($id)
-    {
-        if (!$this->exists($id))
-        {
-            throw new NotFoundException(__('Invalid announcement request'));
-        }
-
-        $this->id = $id;
-        return $this->saveField('status', AnnouncementRequestStatus::CANCELLED);
-    }
-
-    public function reject($id)
-    {
-        if (!$this->exists($id))
-        {
-            throw new NotFoundException(__('Invalid announcement request'));
-        }
-
-        $this->id = $id;
-        return $this->saveField('status', AnnouncementRequestStatus::REJECTED);
     }
 
     public function accept($id)
@@ -152,20 +117,20 @@ class AnnouncementRequest extends AppModel
             throw new NotFoundException(__('Invalid announcement request'));
         }
 
-        $this->id = $id;
-        if ($this->saveField('status', AnnouncementRequestStatus::ACCEPTED))
+        $announcementRequest = $this->get($id);
+
+        $data = array('Announcement' => array(
+            'congregation_id' => $announcementRequest['AnnouncementRequest']['congregation_id'],
+            'announcement' => $announcementRequest['AnnouncementRequest']['announcement'],
+            'expiration' => $announcementRequest['AnnouncementRequest']['expiration']));
+
+        $announcement = ClassRegistry::init('Announcement');
+        $announcement->create();
+
+        if($announcement->save($data))
         {
-
-            $announcementRequest = $this->get($id);
-
-            $data = array('Announcement' => array(
-                'congregation_id' => $announcementRequest['AnnouncementRequest']['congregation_id'],
-                'announcement' => $announcementRequest['AnnouncementRequest']['announcement'],
-                'expiration' => $announcementRequest['AnnouncementRequest']['expiration']));
-
-            $announcement = ClassRegistry::init('Announcement');
-            $announcement->create();
-            return $announcement->save($data);
+            $this->id = $id;
+            return $this->delete();
         }
 
         return false;

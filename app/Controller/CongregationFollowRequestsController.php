@@ -39,10 +39,10 @@ class CongregationFollowRequestsController extends AppController
         $this->set('followRequests', $this->CongregationFollowRequest->getPending($congregationId));
     }
 
-    public function accept($followRequestId)
+    public function accept($id)
     {
         $this->request->allowMethod('post');
-        if ($this->CongregationFollowRequest->accept($followRequestId))
+        if ($this->CongregationFollowRequest->accept($id))
         {
             $this->Session->setFlash(__('The follow request has been accepted.'));
             return $this->redirect(array('action' => 'index'));
@@ -53,24 +53,34 @@ class CongregationFollowRequestsController extends AppController
         }
     }
 
-    public function reject($followRequestId)
+    public function decline($id)
     {
-        $this->request->allowMethod('post');
-        if ($this->CongregationFollowRequest->reject($followRequestId))
+        $this->CongregationFollowRequest->id = $id;
+        if (!$this->CongregationFollowRequest->exists())
         {
-            $this->Session->setFlash(__('The follow request has been rejected.'));
+            throw new NotFoundException(__('Invalid congregation follow request'));
+        }
+        $this->request->allowMethod('post', 'delete');
+        if ($this->CongregationFollowRequest->delete())
+        {
+            $this->Session->setFlash(__('The follow request has been declined.'));
             return $this->redirect(array('action' => 'index'));
         }
         else
         {
-            $this->Session->setFlash(__('Unable to reject the follow request. Please, try again.'));
+            $this->Session->setFlash(__('Unable to decline the follow request. Please, try again.'));
         }
     }
 
-    public function cancel($followRequestId, $viewId)
+    public function cancel($id, $viewId)
     {
-        $this->request->allowMethod('post');
-        if ($this->CongregationFollowRequest->cancelFollowRequest($followRequestId))
+        $this->CongregationFollowRequest->id = $id;
+        if (!$this->CongregationFollowRequest->exists())
+        {
+            throw new NotFoundException(__('Invalid congregation follow request'));
+        }
+        $this->request->allowMethod('post', 'delete');
+        if ($this->CongregationFollowRequest->delete())
         {
             $this->Session->setFlash(__('The follow request has been cancelled.'));
             return $this->redirect(array('controller' => 'congregations', 'action' => 'view', $viewId));
