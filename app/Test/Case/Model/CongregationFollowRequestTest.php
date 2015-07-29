@@ -13,7 +13,7 @@ class CongregationFollowRequestTest extends CakeTestCase
     //$this->skipTestEvaluator->shouldSkip(__FUNCTION__);
     //add test name to the array with
     //1 - run, 0 - do not run
-    protected $tests = array(
+    public $tests = array(
         'testGet'                   => 1,
         'testGet_NotFound'          => 1,
         'testGetAll'                => 1,
@@ -40,12 +40,15 @@ class CongregationFollowRequestTest extends CakeTestCase
 
         $this->CongregationFollowRequest = ClassRegistry::init('CongregationFollowRequest');
 
-        $congregationFollowRequestFixture = new CongregationFollowRequestFixture();
-        $this->congregationFollowRequestRecords = $congregationFollowRequestFixture->records;
+        if (in_array(1, $this->tests, true))
+        {
+            $congregationFollowRequestFixture = new CongregationFollowRequestFixture();
+            $this->congregationFollowRequestRecords = $congregationFollowRequestFixture->records;
 
-        $congregationFixture = new CongregationFixture();
-        $this->congregationRecords = $congregationFixture->records;
-
+            $congregationFixture = new CongregationFixture();
+            $this->congregationRecords = $congregationFixture->records;
+        }
+        
         $this->skipTestEvaluator = new SkipTestEvaluator($this->tests);
     }
 

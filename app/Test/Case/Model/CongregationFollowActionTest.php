@@ -9,7 +9,7 @@ class CongregationFollowActionTest extends CakeTestCase
     //$this->skipTestEvaluator->shouldSkip(__FUNCTION__);
     //add test name to the array with
     //1 - run, 0 - do not run
-    protected $tests = array(
+    public $tests = array(
         'testGet'                                       => 1,
         'testGet_SameCongregationId'                    => 1,
         'testGet_Following'                             => 1,

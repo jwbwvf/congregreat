@@ -14,7 +14,7 @@ class AnnouncementRequestTest extends CakeTestCase
     //$this->skipTestEvaluator->shouldSkip(__FUNCTION__);
     //add test name to the array with
     //1 - run, 0 - do not run
-    protected $tests = array(
+    public $tests = array(
         'testGet'                                   => 1,
         'testGet_NotFound'                          => 1,
         'testGetMembersAnnouncementRequests'        => 1,
@@ -22,11 +22,6 @@ class AnnouncementRequestTest extends CakeTestCase
         'testAccept'                                => 1,
     );
 
-    /**
-     * Fixtures
-     *
-     * @var array
-     */
     public $fixtures = array(
         'app.announcement_request',
         'app.announcement',
@@ -45,8 +40,11 @@ class AnnouncementRequestTest extends CakeTestCase
 
         $this->AnnouncementRequest = ClassRegistry::init('AnnouncementRequest');
 
-        $announcementRequestFixture = new AnnouncementRequestFixture();
-        $this->announcementRequestRecords = $announcementRequestFixture->records;
+        if (in_array(1, $this->tests, true))
+        {
+            $announcementRequestFixture = new AnnouncementRequestFixture();
+            $this->announcementRequestRecords = $announcementRequestFixture->records;
+        }
 
         $this->skipTestEvaluator = new SkipTestEvaluator($this->tests);
     }
@@ -168,5 +166,4 @@ class AnnouncementRequestTest extends CakeTestCase
 
         $this->assertEmpty($rowAfterDelete);
     }
-
 }

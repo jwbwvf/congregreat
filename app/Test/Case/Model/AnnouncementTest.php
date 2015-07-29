@@ -7,11 +7,12 @@ App::uses('Announcement', 'Model');
  */
 class AnnouncementTest extends CakeTestCase {
 
-/**
- * Fixtures
- *
- * @var array
- */
+    //Add the line below at the beginning of each test
+    //$this->skipTestEvaluator->shouldSkip(__FUNCTION__);
+    //add test name to the array with
+    //1 - run, 0 - do not run
+    public $tests = array();
+
 	public $fixtures = array(
 		'app.announcement',
 		'app.congregation',
@@ -50,6 +51,6 @@ class AnnouncementTest extends CakeTestCase {
 
     public function testGet()
     {
-        
+
     }
 }

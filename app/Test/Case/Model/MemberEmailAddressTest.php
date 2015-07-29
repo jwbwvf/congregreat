@@ -10,7 +10,7 @@ class MemberEmailAddressTest extends CakeTestCase
     //$this->skipTestEvaluator->shouldSkip(__FUNCTION__);
     //add test name to the array with
     //1 - run, 0 - do not run
-    protected $tests = array(
+    public $tests = array(
         'testGet'                       => 1,
         'testGet_NotFound'              => 1,
         'testSave'                      => 1,
@@ -26,7 +26,7 @@ class MemberEmailAddressTest extends CakeTestCase
         'app.member',
         'app.member_email_address'
     );
-    
+
     /**
      * setUp method
      *
@@ -38,8 +38,11 @@ class MemberEmailAddressTest extends CakeTestCase
 
         $this->MemberEmailAddress = ClassRegistry::init('MemberEmailAddress');
 
-        $memberEmailAddressFixture = new MemberEmailAddressFixture();
-        $this->memberEmailAddressRecords = $memberEmailAddressFixture->records;
+        if (in_array(1, $this->tests, true))
+        {
+            $memberEmailAddressFixture = new MemberEmailAddressFixture();
+            $this->memberEmailAddressRecords = $memberEmailAddressFixture->records;
+        }
 
         $this->skipTestEvaluator = new SkipTestEvaluator($this->tests);
     }
